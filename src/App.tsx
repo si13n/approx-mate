@@ -219,28 +219,24 @@ function SalaryCard({
         </div>
       </div>
 
-      {/* Hourly */}
-      <div className="rounded-xl px-3 py-2 flex flex-col gap-2" style={{ background: "var(--color-muted)" }}>
-        <div className="flex justify-between items-start">
-          <div>
-            <div className="text-xs mb-0.5" style={{ color: "var(--color-muted-foreground)" }}>{primaryLabel}{t.perHour}</div>
+      {/* Hourly — 2×2 grid */}
+      <div className="rounded-xl px-3 py-2.5 grid grid-cols-2 gap-x-3 gap-y-1" style={{ background: "var(--color-muted)" }}>
+        {[
+          { label: `Gross${t.perHour}`, plnVal: hourlyPrimaryPLN },
+          { label: `Net${t.perHour}`, plnVal: hourlySecPLN },
+        ].map(({ label, plnVal }) => (
+          <div key={label}>
+            <div className="text-xs mb-0.5" style={{ color: "var(--color-muted-foreground)" }}>{label}</div>
             <div className="text-sm font-semibold tabular-nums" style={{ fontFamily: "var(--font-display)", color: "var(--color-foreground)" }}>
-              {fmt(fromPLN(hourlyPrimaryPLN, currency), currency, 2)}
+              {fmt(fromPLN(plnVal, currency), currency, 2)}
             </div>
-            <div className="text-xs tabular-nums" style={{ color: "var(--color-muted-foreground)" }}>
-              {allCurrencies(hourlyPrimaryPLN, 2)}
-            </div>
+            {currency !== "PLN" && (
+              <div className="text-xs tabular-nums" style={{ color: "var(--color-muted-foreground)" }}>
+                {fmt(plnVal, "PLN")}
+              </div>
+            )}
           </div>
-          <div className="text-right">
-            <div className="text-xs mb-0.5" style={{ color: "var(--color-muted-foreground)" }}>{secondaryLabel}{t.perHour}</div>
-            <div className="text-sm font-semibold tabular-nums" style={{ fontFamily: "var(--font-display)", color: "var(--color-foreground)" }}>
-              {fmt(fromPLN(hourlySecPLN, currency), currency, 2)}
-            </div>
-            <div className="text-xs tabular-nums" style={{ color: "var(--color-muted-foreground)" }}>
-              {allCurrencies(hourlySecPLN, 2)}
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
