@@ -14,8 +14,6 @@ const T = {
   en: {
     title: "Salary Calculator",
     subtitle: "Poland · B2B ryczałt 12% · UoP skala podatkowa",
-    modeOffer: "They offer me",
-    modeWant: "I want to earn",
     gross: "Gross",
     net: "Net",
     monthly: "Monthly",
@@ -43,8 +41,6 @@ const T = {
   pl: {
     title: "Kalkulator wynagrodzeń",
     subtitle: "Polska · B2B ryczałt 12% · UoP skala podatkowa",
-    modeOffer: "Oferują mi",
-    modeWant: "Chcę zarabiać",
     gross: "Brutto",
     net: "Netto",
     monthly: "Miesięcznie",
@@ -72,8 +68,6 @@ const T = {
   ua: {
     title: "Калькулятор зарплати",
     subtitle: "Польща · B2B ryczałt 12% · UoP skala podatkowa",
-    modeOffer: "Мені пропонують",
-    modeWant: "Я хочу отримувати",
     gross: "Брутто",
     net: "Нетто",
     monthly: "На місяць",
@@ -103,7 +97,6 @@ const T = {
 // ── Types ──────────────────────────────────────────────────────────────────
 type Currency = "PLN" | "USD" | "EUR";
 type ContractType = "B2B" | "UoP";
-type Mode = "offer" | "want";
 type Period = "monthly" | "hourly";
 
 // ── Formatters ─────────────────────────────────────────────────────────────
@@ -263,7 +256,6 @@ function ResultRow({
 // ── Main App ───────────────────────────────────────────────────────────────
 export default function App() {
   const [lang, setLang] = useState<Lang>("en");
-  const [mode, setMode] = useState<Mode>("offer");
   const [inputType, setInputType] = useState<"gross" | "net">("gross");
   const [copied, setCopied] = useState(false);
   const [rawAmount, setRawAmount] = useState<string>("5000");
@@ -345,7 +337,7 @@ export default function App() {
       hourlyB2BPLN,
       hourlyUoPPLN,
     };
-  }, [amount, currency, contractType, period, hoursPerMonth, mode, inputType, toPLN]);
+  }, [amount, currency, contractType, period, hoursPerMonth, inputType, toPLN]);
 
   const recruiterMessage = useMemo(() => {
     if (!results || amount <= 0) return "";
@@ -400,13 +392,13 @@ Jestem otwarty na rozmowę o ostatecznych warunkach w zależności od stanowiska
     return msgs[inputType][lang];
   }, [results, amount, rawAmount, currency, lang, fromPLN, contractType, inputType]);
 
-  const quickScenarios: { label: string; amount: number; currency: Currency; mode: Mode; contract: ContractType }[] = [
-    { label: "$3k net", amount: 3000, currency: "USD", mode: "want", contract: "B2B" },
-    { label: "$4k net", amount: 4000, currency: "USD", mode: "want", contract: "B2B" },
-    { label: "$5k net", amount: 5000, currency: "USD", mode: "want", contract: "B2B" },
-    { label: "€3.5k net", amount: 3500, currency: "EUR", mode: "want", contract: "B2B" },
-    { label: "20k PLN B2B", amount: 20000, currency: "PLN", mode: "offer", contract: "B2B" },
-    { label: "25k PLN UoP", amount: 25000, currency: "PLN", mode: "offer", contract: "UoP" },
+  const quickScenarios: { label: string; amount: number; currency: Currency; contract: ContractType }[] = [
+    { label: "$3k net", amount: 3000, currency: "USD", contract: "B2B" },
+    { label: "$4k net", amount: 4000, currency: "USD", contract: "B2B" },
+    { label: "$5k net", amount: 5000, currency: "USD", contract: "B2B" },
+    { label: "€3.5k net", amount: 3500, currency: "EUR", contract: "B2B" },
+    { label: "20k PLN B2B", amount: 20000, currency: "PLN", contract: "B2B" },
+    { label: "25k PLN UoP", amount: 25000, currency: "PLN", contract: "UoP" },
   ];
 
   return !ratesData ? (
@@ -459,12 +451,12 @@ Jestem otwarty na rozmowę o ostatecznych warunkach w zależności od stanowiska
           </div>
         </div>
 
-        {/* Mode toggle */}
+        {/* Input Type toggle */}
         <div className="flex justify-center">
           <Toggle
-            options={[t.modeOffer, t.modeWant]}
-            value={mode === "want"}
-            onChange={(v) => setMode(v ? "want" : "offer")}
+            options={[t.gross, t.net]}
+            value={inputType === "net"}
+            onChange={(v) => setInputType(v ? "net" : "gross")}
           />
         </div>
 
@@ -475,26 +467,10 @@ Jestem otwarty na rozmowę o ostatecznych warunkach w zależności od stanowiska
         >
           {/* Amount row */}
           <div>
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="mb-1.5">
               <label className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-muted-foreground)" }}>
                 Amount
               </label>
-              <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
-                {(["gross", "net"] as const).map((v, i) => (
-                  <button
-                    key={v}
-                    onClick={() => setInputType(v)}
-                    className="px-3 py-1 text-xs font-semibold uppercase transition-all duration-150"
-                    style={{
-                      background: inputType === v ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-card)",
-                      color: inputType === v ? "#fff" : "var(--color-muted-foreground)",
-                      borderLeft: i > 0 ? "1px solid var(--color-border)" : "none",
-                    }}
-                  >
-                    {v === "gross" ? t.gross : t.net}
-                  </button>
-                ))}
-              </div>
             </div>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg font-semibold select-none" style={{ color: "var(--color-muted-foreground)" }}>
@@ -610,7 +586,7 @@ Jestem otwarty na rozmowę o ostatecznych warunkach w zależności od stanowiska
             <div className="flex items-center gap-3 my-1 py-1">
               <div className="flex-1 h-px" style={{ background: "var(--color-border)" }} />
               <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-muted-foreground)" }}>
-                {mode === "offer" ? "equivalents" : "gross needed"}
+                equivalents
               </span>
               <div className="flex-1 h-px" style={{ background: "var(--color-border)" }} />
             </div>
@@ -725,7 +701,6 @@ Jestem otwarty na rozmowę o ostatecznych warunkach w zależności od stanowiska
                 onClick={() => {
                   setRawAmount(String(s.amount));
                   setCurrency(s.currency);
-                  setMode(s.mode);
                   setContractType(s.contract);
                   setPeriod("monthly");
                 }}
