@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-08-19T00:00:00Z",
+  "source": "manual",
+  "rates": {
+    "PLN_PLN": 1.0,
+    "USD_PLN": 3.85,
+    "EUR_PLN": 4.25
+  }
+}

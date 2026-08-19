@@ -1,0 +1,63 @@
+name: Update Exchange Rates
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch exchange rates from NBP
+        id: fetch-rates
+        run: |
+          # Fetch USD rate
+          USD_RESPONSE=$(curl -s 'https://api.nbp.pl/api/exchangerates/rates/A/USD/?format=json')
+          USD_RATE=$(echo $USD_RESPONSE | jq -r '.rates[0].mid')
+
+          # Fetch EUR rate
+          EUR_RESPONSE=$(curl -s 'https://api.nbp.pl/api/exchangerates/rates/A/EUR/?format=json')
+          EUR_RATE=$(echo $EUR_RESPONSE | jq -r '.rates[0].mid')
+
+          # Output rates
+          echo "USD_RATE=$USD_RATE" >> $GITHUB_OUTPUT
+          echo "EUR_RATE=$EUR_RATE" >> $GITHUB_OUTPUT
+          echo "Fetched USD: $USD_RATE, EUR: $EUR_RATE"
+
+      - name: Update exchange rates JSON
+        env:
+          USD_RATE: ${{ steps.fetch-rates.outputs.USD_RATE }}
+          EUR_RATE: ${{ steps.fetch-rates.outputs.EUR_RATE }}
+        run: |
+          cat > public/exchange-rates.json << EOF
+          {
+            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "source": "NBP",
+            "rates": {
+              "PLN_PLN": 1.0,
+              "USD_PLN": ${USD_RATE},
+              "EUR_PLN": ${EUR_RATE}
+            }
+          }
+          EOF
+          cat public/exchange-rates.json
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/exchange-rates.json
+          git commit -m "chore: update exchange rates" || echo "No changes to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        if: github.event_name == 'workflow_dispatch' || success()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
