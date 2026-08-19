@@ -763,7 +763,7 @@ Jestem otwarty na rozmowę o ostatecznych warunkach w zależności od stanowiska
             {t.disclaimer}
           </p>
           <a
-            href="mailto:feedback@approxmate.app"
+            href="mailto:si13n@yahoo.com"
             className="text-xs transition-opacity duration-150 hover:opacity-100"
             style={{ color: "var(--color-muted-foreground)", opacity: 0.5, textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
