@@ -283,19 +283,14 @@ export default function App() {
   const recruiterMessage = useMemo(() => {
     if (!results || amount <= 0) return "";
     const inputVal = fmt(amount, currency);
+    const typeLabel = inputType === "net" ? t.net.toLowerCase() : t.gross.toLowerCase();
     const msgs: Record<Lang, string> = {
-      en: inputType === "net"
-        ? `Hi! I'm currently considering opportunities with a take-home of around ${inputVal} net/month. I'm open to discussion depending on the project, team, and growth potential. Looking forward to learning more!`
-        : `Hi! I was offered ${inputVal} gross/month and I'm currently evaluating this opportunity. I'm open to discussion depending on the project, team, and growth potential. Looking forward to learning more!`,
-      pl: inputType === "net"
-        ? `Cześć! Aktualnie rozpatruję oferty z wynagrodzeniem netto około ${inputVal}/miesiąc. Jestem otwarty/a na rozmowę w zależności od projektu, zespołu i możliwości rozwoju. Chętnie dowiem się więcej!`
-        : `Cześć! Otrzymałem/am ofertę ${inputVal} brutto/miesiąc i aktualnie ją rozpatruję. Jestem otwarty/a na rozmowę w zależności od projektu, zespołu i możliwości rozwoju. Chętnie dowiem się więcej!`,
-      ua: inputType === "net"
-        ? `Привіт! Зараз я розглядаю пропозиції з чистим доходом близько ${inputVal}/місяць. Готовий/а до обговорення залежно від проєкту та команди. Буду радий/а дізнатися більше!`
-        : `Привіт! Мені запропонували ${inputVal} брутто/місяць і я зараз розглядаю цю пропозицію. Готовий/а до обговорення залежно від проєкту та команди. Буду радий/а дізнатися більше!`,
+      en: `Hi! I'm currently looking at opportunities in the range of around ${inputVal} ${typeLabel} per month, but I'm flexible depending on the project, team, and growth opportunities. Happy to discuss the details and learn more about the role.`,
+      pl: `Cześć! Aktualnie szukam oportunności w przedziale około ${inputVal} ${typeLabel} miesięcznie, ale jestem elastyczny/a w zależności od projektu, zespołu i możliwości rozwoju. Chętnie omówię szczegóły i dowiem się więcej o stanowisku.`,
+      ua: `Привіт! Зараз я шукаю можливості в діапазоні близько ${inputVal} ${typeLabel} на місяць, але я гнучкий/а залежно від проєкту, команди та можливостей розвитку. Радий/а обговорити деталі та дізнатися більше про посаду.`,
     };
     return msgs[lang];
-  }, [results, amount, currency, lang, inputType]);
+  }, [results, amount, currency, lang, inputType, t]);
 
   const quickScenarios = [
     { label: "$3k net", amount: 3000, currency: "USD" as Currency, type: "net" as InputType },
