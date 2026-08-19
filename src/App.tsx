@@ -282,16 +282,20 @@ export default function App() {
 
   const recruiterMessage = useMemo(() => {
     if (!results || amount <= 0) return "";
-    const netVal = fmt(fromPLN(results.b2bNetPLN, currency), currency);
-    const b2bVal = fmt(fromPLN(results.b2bGrossPLN, currency), currency);
-    const uopVal = fmt(fromPLN(results.uopGrossPLN, currency), currency);
+    const inputVal = fmt(amount, currency);
     const msgs: Record<Lang, string> = {
-      en: `Hi! I'm currently considering opportunities with a take-home of around ${netVal} net/month. That translates to approximately ${b2bVal} gross on B2B or ${uopVal} gross on UoP. I'm open to discussion depending on the project, team, and growth potential. Looking forward to learning more!`,
-      pl: `Cześć! Aktualnie rozpatruję oferty z wynagrodzeniem netto około ${netVal}/miesiąc. Odpowiada to mniej więcej ${b2bVal} brutto na B2B lub ${uopVal} brutto na UoP. Jestem otwarty/a na rozmowę w zależności od projektu, zespołu i możliwości rozwoju. Chętnie dowiem się więcej!`,
-      ua: `Привіт! Зараз я розглядаю пропозиції з чистим доходом близько ${netVal}/місяць. Це приблизно ${b2bVal} брутто за B2B або ${uopVal} брутто за UoP. Готовий/а до обговорення залежно від проєкту та команди. Буду радий/а дізнатися більше!`,
+      en: inputType === "net"
+        ? `Hi! I'm currently considering opportunities with a take-home of around ${inputVal} net/month. I'm open to discussion depending on the project, team, and growth potential. Looking forward to learning more!`
+        : `Hi! I was offered ${inputVal} gross/month and I'm currently evaluating this opportunity. I'm open to discussion depending on the project, team, and growth potential. Looking forward to learning more!`,
+      pl: inputType === "net"
+        ? `Cześć! Aktualnie rozpatruję oferty z wynagrodzeniem netto około ${inputVal}/miesiąc. Jestem otwarty/a na rozmowę w zależności od projektu, zespołu i możliwości rozwoju. Chętnie dowiem się więcej!`
+        : `Cześć! Otrzymałem/am ofertę ${inputVal} brutto/miesiąc i aktualnie ją rozpatruję. Jestem otwarty/a na rozmowę w zależności od projektu, zespołu i możliwości rozwoju. Chętnie dowiem się więcej!`,
+      ua: inputType === "net"
+        ? `Привіт! Зараз я розглядаю пропозиції з чистим доходом близько ${inputVal}/місяць. Готовий/а до обговорення залежно від проєкту та команди. Буду радий/а дізнатися більше!`
+        : `Привіт! Мені запропонували ${inputVal} брутто/місяць і я зараз розглядаю цю пропозицію. Готовий/а до обговорення залежно від проєкту та команди. Буду радий/а дізнатися більше!`,
     };
     return msgs[lang];
-  }, [results, amount, currency, lang]);
+  }, [results, amount, currency, lang, inputType]);
 
   const quickScenarios = [
     { label: "$3k net", amount: 3000, currency: "USD" as Currency, type: "net" as InputType },
