@@ -6,6 +6,28 @@
     <meta name="description" content="Compare salaries in Poland between B2B and UoP contracts. Instant salary calculator for gross, net, hourly rates in PLN, USD, EUR." />
     <title>Approxmate - Salary Calculator for Poland</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Analytics 4 -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    </script>
+    <script async id="ga-script"></script>
+    <script>
+      (function() {
+        const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+        if (measurementId) {
+          const gaScript = document.getElementById('ga-script');
+          gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+          gtag('config', measurementId, {
+            'anonymize_ip': true,
+            'allow_google_signals': false,
+            'allow_ad_personalization_signals': false
+          });
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

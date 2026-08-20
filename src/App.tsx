@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { initializeGA, trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick } from "./lib/analytics";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
 type Lang = "en" | "pl" | "ua";
@@ -256,6 +257,17 @@ export default function App() {
   const t = T[lang];
   const amount = parseFloat(rawAmount) || 0;
 
+  useEffect(() => {
+    initializeGA();
+    trackPageView();
+  }, []);
+
+  useEffect(() => {
+    if (amount > 0) {
+      trackCalculatorUsed();
+    }
+  }, [amount]);
+
   const results = useMemo(() => {
     if (amount <= 0) return null;
     const monthlyPLN = toPLN(amount, currency);
@@ -325,7 +337,7 @@ export default function App() {
             {(["en", "pl", "ua"] as Lang[]).map((l) => (
               <button
                 key={l}
-                onClick={() => setLang(l)}
+                onClick={() => { setLang(l); trackLanguageChanged(l); }}
                 className="px-2.5 py-1.5 text-xs font-semibold uppercase transition-all"
                 style={{
                   background: lang === l ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "transparent",
@@ -356,7 +368,7 @@ export default function App() {
             {(["net", "gross"] as InputType[]).map((v, i) => (
               <button
                 key={v}
-                onClick={() => setInputType(v)}
+                onClick={() => { setInputType(v); trackModeChanged(v); }}
                 className="py-3 flex flex-col items-center gap-0.5 transition-all duration-200"
                 style={{
                   background: inputType === v ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
@@ -420,7 +432,7 @@ export default function App() {
             {(["USD", "EUR", "PLN"] as Currency[]).map((c, i) => (
               <button
                 key={c}
-                onClick={() => { setCurrency(c); setSliderValue(10500); }}
+                onClick={() => { setCurrency(c); setSliderValue(10500); trackCurrencyChanged(c); }}
                 className="py-2 text-sm font-semibold transition-all duration-150"
                 style={{
                   background: currency === c ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
@@ -509,7 +521,7 @@ export default function App() {
                 {t.recruiterTitle}
               </span>
               <button
-                onClick={() => { navigator.clipboard.writeText(recruiterMessage); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+                onClick={() => { navigator.clipboard.writeText(recruiterMessage); setCopied(true); setTimeout(() => setCopied(false), 2000); trackRecruiterMessageCopy(); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={{
                   background: copied ? "#DBEAFE" : "var(--color-muted)",
@@ -539,7 +551,7 @@ export default function App() {
             {quickScenarios.map((s) => (
               <button
                 key={s.label}
-                onClick={() => { setRawAmount(String(s.amount)); setCurrency(s.currency); setInputType(s.type); }}
+                onClick={() => { setRawAmount(String(s.amount)); setCurrency(s.currency); setInputType(s.type); trackQuickScenarioClick(s.label); }}
                 className="px-3.5 py-2 rounded-full text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98]"
                 style={{
                   background: "var(--color-card)",
@@ -568,6 +580,7 @@ export default function App() {
             style={{ color: "var(--color-muted-foreground)", opacity: 0.4, textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.4")}
+            onClick={() => trackFeedbackClick()}
           >
             {t.feedback}
           </a>
