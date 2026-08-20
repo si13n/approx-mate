@@ -440,7 +440,7 @@ export default function App() {
               Adjust
             </span>
             <input
-              type="range" min={1000} max={20000} step={100} value={sliderValue}
+              type="range" min={1000} max={50000} step={100} value={sliderValue}
               onChange={(e) => { const val = e.target.value; setSliderValue(Number(val)); setRawAmount(val); }}
               className="flex-1 accent-blue-500"
               style={{ height: 4 }}
