@@ -173,4 +173,4 @@ MIT
 
 ## Contributing
 
-Feedback and suggestions welcome at `feedback@approxmate.app`
+Feedback and suggestions welcome at `si13n@yahoo.com`
