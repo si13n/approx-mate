@@ -250,6 +250,7 @@ export default function App() {
   const [rawAmount, setRawAmount] = useState<string>("5000");
   const [currency, setCurrency] = useState<Currency>("USD");
   const [copied, setCopied] = useState(false);
+  const [sliderValue, setSliderValue] = useState<number>(5000);
   const hoursPerMonth = 160;
 
   const t = T[lang];
@@ -306,7 +307,10 @@ export default function App() {
 
         {/* Brand + lang */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div
+            className="flex items-center gap-2.5 cursor-pointer transition-opacity hover:opacity-75"
+            onClick={() => { setLang("en"); setInputType("net"); setRawAmount("5000"); setCurrency("USD"); setSliderValue(5000); setCopied(false); }}
+          >
             <div
               className="flex items-center justify-center rounded-xl shrink-0"
               style={{ width: 38, height: 38, background: "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)", boxShadow: "0 2px 8px rgba(59,130,246,0.3)" }}
@@ -384,7 +388,7 @@ export default function App() {
               <input
                 type="number"
                 value={rawAmount}
-                onChange={(e) => setRawAmount(e.target.value)}
+                onChange={(e) => { setRawAmount(e.target.value); setSliderValue(10500); }}
                 placeholder="0"
                 className="w-full rounded-xl outline-none transition-all tabular-nums"
                 style={{
@@ -416,7 +420,7 @@ export default function App() {
             {(["USD", "EUR", "PLN"] as Currency[]).map((c, i) => (
               <button
                 key={c}
-                onClick={() => setCurrency(c)}
+                onClick={() => { setCurrency(c); setSliderValue(10500); }}
                 className="py-2 text-sm font-semibold transition-all duration-150"
                 style={{
                   background: currency === c ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
@@ -436,8 +440,8 @@ export default function App() {
               Adjust
             </span>
             <input
-              type="range" min={1000} max={20000} step={100} value={amount || 5000}
-              onChange={(e) => setRawAmount(e.target.value)}
+              type="range" min={1000} max={20000} step={100} value={sliderValue}
+              onChange={(e) => { const val = e.target.value; setSliderValue(Number(val)); setRawAmount(val); }}
               className="flex-1 accent-blue-500"
               style={{ height: 4 }}
             />
