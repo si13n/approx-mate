@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-08-19T00:00:00Z",
-  "source": "manual",
+  "timestamp": "2026-08-20T08:36:44Z",
+  "source": "NBP",
   "rates": {
     "PLN_PLN": 1.0,
-    "USD_PLN": 3.85,
-    "EUR_PLN": 4.25
+    "USD_PLN": 3.7306,
+    "EUR_PLN": 4.3267
   }
 }
