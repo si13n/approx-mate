@@ -312,6 +312,7 @@ export default function App() {
   const currSymbol = SYM[currency];
   const showPLNLabel = currency === "PLN";
   const sliderMax = currency === "PLN" ? 50000 : 10000;
+  const sliderCenter = (1000 + sliderMax) / 2;
 
   return (
     <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
@@ -400,7 +401,7 @@ export default function App() {
               <input
                 type="number"
                 value={rawAmount}
-                onChange={(e) => { setRawAmount(e.target.value); setSliderValue(10500); }}
+                onChange={(e) => { setRawAmount(e.target.value); setSliderValue(sliderCenter); }}
                 placeholder="0"
                 className="w-full rounded-xl outline-none transition-all tabular-nums"
                 style={{
@@ -432,7 +433,7 @@ export default function App() {
             {(["USD", "EUR", "PLN"] as Currency[]).map((c, i) => (
               <button
                 key={c}
-                onClick={() => { setCurrency(c); setSliderValue(10500); trackCurrencyChanged(c); }}
+                onClick={() => { setCurrency(c); setSliderValue(sliderCenter); trackCurrencyChanged(c); }}
                 className="py-2 text-sm font-semibold transition-all duration-150"
                 style={{
                   background: currency === c ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
