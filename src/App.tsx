@@ -11,7 +11,6 @@ type Lang = "en" | "pl" | "ua";
 const T = {
   en: {
     title: "Salary Calculator",
-    subtitle: "Poland · B2B ryczałt 12% · UoP skala podatkowa",
     gross: "Gross",
     net: "Net",
     grossDesc: "I know the offered gross",
@@ -35,7 +34,6 @@ const T = {
   },
   pl: {
     title: "Kalkulator wynagrodzeń",
-    subtitle: "Polska · B2B ryczałt 12% · UoP skala podatkowa",
     gross: "Brutto",
     net: "Netto",
     grossDesc: "Znam oferowane brutto",
@@ -59,7 +57,6 @@ const T = {
   },
   ua: {
     title: "Калькулятор зарплати",
-    subtitle: "Польща · B2B ryczałt 12% · UoP skala podatkowa",
     gross: "Брутто",
     net: "Нетто",
     grossDesc: "Знаю запропоноване брутто",
@@ -333,7 +330,6 @@ export default function App() {
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.375rem", fontWeight: 400, color: "var(--color-foreground)", letterSpacing: "-0.02em", marginBottom: 2 }}>
             {t.title}
           </h1>
-          <p style={{ fontSize: "0.75rem", color: "var(--color-muted-foreground)" }}>{t.subtitle}</p>
         </div>
 
         {/* Tax Profile Display */}
