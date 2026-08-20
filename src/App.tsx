@@ -75,7 +75,7 @@ const T = {
     recruiterTitle: "Повідомлення для рекрутера",
     recruiterCopy: "Копіювати",
     recruiterCopied: "Скопійовано!",
-    feedback: "Зворотний зв'язок",
+    feedback: "Зворотній зв'язок",
     disclaimer: "approxmate · Poland 2026",
   },
 };
