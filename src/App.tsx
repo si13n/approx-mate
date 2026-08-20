@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { initializeGA, trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick } from "./lib/analytics";
+import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick } from "./lib/analytics";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
 type Lang = "en" | "pl" | "ua";
@@ -258,7 +258,6 @@ export default function App() {
   const amount = parseFloat(rawAmount) || 0;
 
   useEffect(() => {
-    initializeGA();
     trackPageView();
   }, []);
 
