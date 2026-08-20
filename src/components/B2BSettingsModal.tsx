@@ -236,28 +236,55 @@ export function B2BSettingsModal({
           2026 rates · Official sources
         </div>
 
-        <button
-          onClick={handleReset}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            borderRadius: "0.5rem",
-            border: "1px solid var(--color-border)",
-            background: "transparent",
-            color: "var(--color-muted-foreground)",
-            fontSize: "0.875rem",
-            cursor: "pointer",
-            transition: "all 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "var(--color-muted)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
-          }}
-        >
-          Reset to defaults
-        </button>
+        {/* Buttons */}
+        <div style={{ display: "flex", gap: "0.75rem" }}>
+          <button
+            onClick={handleReset}
+            style={{
+              flex: 1,
+              padding: "0.75rem",
+              borderRadius: "0.5rem",
+              border: "1px solid var(--color-border)",
+              background: "transparent",
+              color: "var(--color-muted-foreground)",
+              fontSize: "0.875rem",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--color-muted)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+            }}
+          >
+            Reset
+          </button>
+
+          <button
+            onClick={onClose}
+            style={{
+              flex: 1,
+              padding: "0.75rem",
+              borderRadius: "0.5rem",
+              border: "none",
+              background: "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)",
+              color: "#fff",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.9";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+            }}
+          >
+            OK
+          </button>
+        </div>
       </div>
     </div>
   );
