@@ -84,6 +84,7 @@ type InputType = "gross" | "net";
 
 // ── Exchange rates ─────────────────────────────────────────────────────────
 const RATES: Record<string, number> = { PLN_PLN: 1, USD_PLN: 3.85, EUR_PLN: 4.25 };
+const RATES_UPDATED_AT = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 function toPLN(a: number, from: Currency) { return a * (RATES[`${from}_PLN`] ?? 1); }
 function fromPLN(a: number, to: Currency) { return a / (RATES[`${to}_PLN`] ?? 1); }
 
@@ -248,8 +249,8 @@ export default function App() {
   const [inputType, setInputType] = useState<InputType>("net");
   const [rawAmount, setRawAmount] = useState<string>("5000");
   const [currency, setCurrency] = useState<Currency>("USD");
-  const [hoursPerMonth, setHoursPerMonth] = useState<number>(160);
   const [copied, setCopied] = useState(false);
+  const hoursPerMonth = 160;
 
   const t = T[lang];
   const amount = parseFloat(rawAmount) || 0;
@@ -429,22 +430,22 @@ export default function App() {
             ))}
           </div>
 
-          {/* 4. Hours — subdued */}
-          <div className="flex items-center gap-3" style={{ opacity: 0.65 }}>
+          {/* 4. Salary slider */}
+          <div className="flex items-center gap-3">
             <span className="text-xs shrink-0" style={{ color: "var(--color-muted-foreground)" }}>
-              {t.hoursPerMonth}
+              Adjust
             </span>
             <input
-              type="range" min={80} max={240} step={8} value={hoursPerMonth}
-              onChange={(e) => setHoursPerMonth(Number(e.target.value))}
+              type="range" min={1000} max={20000} step={100} value={amount || 5000}
+              onChange={(e) => setRawAmount(e.target.value)}
               className="flex-1 accent-blue-500"
               style={{ height: 4 }}
             />
             <span
               className="text-sm font-semibold tabular-nums rounded-lg px-2 py-1 shrink-0"
-              style={{ background: "var(--color-muted)", color: "var(--color-foreground)", minWidth: 42, textAlign: "center", fontFamily: "var(--font-display)" }}
+              style={{ background: "var(--color-muted)", color: "var(--color-foreground)", minWidth: 50, textAlign: "center", fontFamily: "var(--font-display)" }}
             >
-              {hoursPerMonth}
+              {fmt(amount, currency)}
             </span>
           </div>
         </div>
@@ -558,7 +559,7 @@ export default function App() {
             {t.disclaimer}
           </p>
           <a
-            href="mailto:feedback@approxmate.app"
+            href="mailto:si13n@yahoo.com"
             className="text-xs transition-opacity"
             style={{ color: "var(--color-muted-foreground)", opacity: 0.4, textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
@@ -566,6 +567,9 @@ export default function App() {
           >
             {t.feedback}
           </a>
+          <p className="text-xs" style={{ color: "var(--color-muted-foreground)", opacity: 0.3 }}>
+            Rates updated {RATES_UPDATED_AT}
+          </p>
         </div>
 
       </div>
