@@ -30,7 +30,7 @@ const T = {
     recruiterCopy: "Copy",
     recruiterCopied: "Copied!",
     feedback: "Send feedback",
-    disclaimer: "approxmate · Poland 2026",
+    disclaimer: "ApproxMate · Poland 2026",
   },
   pl: {
     title: "Kalkulator wynagrodzeń",
@@ -53,7 +53,7 @@ const T = {
     recruiterCopy: "Kopiuj",
     recruiterCopied: "Skopiowano!",
     feedback: "Prześlij opinię",
-    disclaimer: "approxmate · Poland 2026",
+    disclaimer: "ApproxMate · Poland 2026",
   },
   ua: {
     title: "Калькулятор зарплати",
@@ -76,7 +76,7 @@ const T = {
     recruiterCopy: "Копіювати",
     recruiterCopied: "Скопійовано!",
     feedback: "Зворотній зв'язок",
-    disclaimer: "approxmate · Poland 2026",
+    disclaimer: "ApproxMate · Poland 2026",
   },
 };
 
