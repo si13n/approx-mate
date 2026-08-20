@@ -1,4 +1,5 @@
 import { TaxProfile, TAX_2026, UoPKUPType } from "../config/tax";
+import { trackUoPKUPChanged, trackUoPPPKChanged, trackTaxProfileReset } from "../lib/analytics";
 
 interface UoPSettingsModalProps {
   profile: TaxProfile;
@@ -18,6 +19,7 @@ export function UoPSettingsModal({
       ...profile,
       uop: { ...profile.uop, kupType },
     });
+    trackUoPKUPChanged(kupType);
   };
 
   const handlePPKChange = (enabled: boolean) => {
@@ -25,9 +27,11 @@ export function UoPSettingsModal({
       ...profile,
       uop: { ...profile.uop, ppkEnabled: enabled },
     });
+    trackUoPPPKChanged(enabled);
   };
 
   const handleReset = () => {
+    trackTaxProfileReset();
     onReset();
     onClose();
   };

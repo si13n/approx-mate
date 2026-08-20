@@ -1,4 +1,5 @@
 import { TaxProfile, TAX_2026, B2BZUSProfile, DEFAULT_TAX_PROFILE } from "../config/tax";
+import { trackB2BRateChanged, trackB2BZUSChanged, trackB2BSicknessChanged, trackTaxProfileReset } from "../lib/analytics";
 
 interface B2BSettingsModalProps {
   profile: TaxProfile;
@@ -18,6 +19,7 @@ export function B2BSettingsModal({
       ...profile,
       b2b: { ...profile.b2b, ryczaltRate: rate },
     });
+    trackB2BRateChanged(rate);
   };
 
   const handleZUSChange = (zusProfile: B2BZUSProfile) => {
@@ -25,6 +27,7 @@ export function B2BSettingsModal({
       ...profile,
       b2b: { ...profile.b2b, zusProfile },
     });
+    trackB2BZUSChanged(zusProfile);
   };
 
   const handleSicknessChange = (enabled: boolean) => {
@@ -32,9 +35,11 @@ export function B2BSettingsModal({
       ...profile,
       b2b: { ...profile.b2b, sicknesInsurance: enabled },
     });
+    trackB2BSicknessChanged(enabled);
   };
 
   const handleReset = () => {
+    trackTaxProfileReset();
     onReset();
     onClose();
   };

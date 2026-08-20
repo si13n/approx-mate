@@ -1,5 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
-import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick } from "./lib/analytics";
+import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick, trackTaxProfileOpen } from "./lib/analytics";
+import { useTaxProfile } from "./lib/useTaxProfile";
+import { TaxProfileDisplay } from "./components/TaxProfileDisplay";
+import { B2BSettingsModal } from "./components/B2BSettingsModal";
+import { UoPSettingsModal } from "./components/UoPSettingsModal";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
 type Lang = "en" | "pl" | "ua";
@@ -254,6 +258,11 @@ export default function App() {
   const [sliderValue, setSliderValue] = useState<number>(5000);
   const hoursPerMonth = 160;
 
+  // Tax profile management
+  const { profile, updateProfile, resetToDefaults, isLoaded } = useTaxProfile();
+  const [showB2BSettings, setShowB2BSettings] = useState(false);
+  const [showUoPSettings, setShowUoPSettings] = useState(false);
+
   const t = T[lang];
   const amount = parseFloat(rawAmount) || 0;
 
@@ -358,6 +367,15 @@ export default function App() {
           </h1>
           <p style={{ fontSize: "0.75rem", color: "var(--color-muted-foreground)" }}>{t.subtitle}</p>
         </div>
+
+        {/* Tax Profile Display */}
+        {isLoaded && (
+          <TaxProfileDisplay
+            profile={profile}
+            onB2BClick={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
+            onUoPClick={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
+          />
+        )}
 
         {/* ── INPUT CARD ── */}
         <div
@@ -574,6 +592,25 @@ export default function App() {
             Rates updated {RATES_UPDATED_AT}
           </p>
         </div>
+
+        {/* Tax Settings Modals */}
+        {showB2BSettings && (
+          <B2BSettingsModal
+            profile={profile}
+            onUpdate={updateProfile}
+            onReset={resetToDefaults}
+            onClose={() => setShowB2BSettings(false)}
+          />
+        )}
+
+        {showUoPSettings && (
+          <UoPSettingsModal
+            profile={profile}
+            onUpdate={updateProfile}
+            onReset={resetToDefaults}
+            onClose={() => setShowUoPSettings(false)}
+          />
+        )}
 
       </div>
     </div>
