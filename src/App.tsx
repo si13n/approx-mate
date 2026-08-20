@@ -270,7 +270,7 @@ export default function App() {
     const msgs: Record<Lang, string> = {
       en: `Hi! I'm currently looking at opportunities in the range of around ${inputVal} ${typeLabel} per month, but I'm flexible depending on the project, team, and growth opportunities. Happy to discuss the details and learn more about the role.`,
       pl: `Cześć! Aktualnie szukam oportunności w przedziale około ${inputVal} ${typeLabel} miesięcznie, ale jestem elastyczny/a w zależności od projektu, zespołu i możliwości rozwoju. Chętnie omówię szczegóły i dowiem się więcej o stanowisku.`,
-      ua: `Привіт! Зараз я шукаю можливості в діапазоні близько ${inputVal} ${typeLabel} на місяць, але я гнучкий/а залежно від проєкту, команди та можливостей розвитку. Радий/а обговорити деталі та дізнатися більше про посаду.`,
+      ua: `Привіт! Шукаю можливості в діапазоні близько ${inputVal} ${typeLabel} на місяць. Розглядаю гнучкість залежно від проєкту, команди та можливостей розвитку. Можемо обговорити деталі щоб дізнатися більше про посаду.`,
     };
     return msgs[lang];
   }, [results, amount, currency, lang, inputType, t]);
