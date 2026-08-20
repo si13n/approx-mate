@@ -1,176 +1,170 @@
-# Approxmate - Salary Calculator for Poland
+# Approxmate
 
-A modern, lightweight salary calculator for comparing B2B and UoP contracts in Poland. Instantly see take-home pay, tax equivalents, and hourly rates across different currencies.
+A lightweight salary calculator for comparing employment contracts in Poland. One number in → all equivalents out.
 
-## Features
+**[🌐 Live Demo](https://si13n.github.io/approx-mate/)** · **[📊 Tax Rules](./TAX_RULES_POLAND.md)** · **[📈 v1.1 Changelog](./V1.1_IMPLEMENTATION_SUMMARY.md)**
 
-- **Two Calculator Modes**
-  - "They offer me" - Enter an offer and see all equivalent contract types
-  - "I want to earn" - Enter desired take-home and see what to ask for
+---
 
-- **Multi-Currency Support** - PLN, USD, EUR with automatic conversion
+## What It Does
 
-- **Contract Types** - B2B (ryczałt 12%) and UoP (skala podatkowa)
+Enter a salary (gross or net) → instantly see:
+- Net/gross equivalents across 3 currencies (PLN, USD, EUR)
+- B2B vs UoP comparison
+- Hourly rates
+- Pre-formatted recruiter message
 
-- **Multiple Results** - Net/gross amounts, hourly rates, effective tax rates
+Customize tax assumptions without leaving the interface.
 
-- **Message for Recruiter** - Auto-generated, recruiter-friendly message with one-click copy
-
-- **Quick Scenarios** - Pre-configured salary ranges for quick exploration
-
-- **Multi-Language** - English, Polish, Ukrainian
-
-- **Automatic Exchange Rates** - GitHub Actions keeps rates updated daily from NBP API
-
-## Tech Stack
-
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS v4
-- No backend required
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- pnpm (or npm/yarn)
-
-### Installation
+## Quick Start
 
 ```bash
 pnpm install
-```
-
-### Development
-
-```bash
 pnpm dev
 ```
 
-Opens on `http://localhost:8443` (or configured port).
+Open `http://localhost:5173/approx-mate/`
 
-### Build
-
-```bash
-pnpm build
-```
-
-### Preview
-
-```bash
-pnpm preview
-```
-
-## Configuration
-
-### Tax Rules
-
-Polish tax configuration for 2026 is in `src/config/tax.config.ts`. Update this file when tax rules change:
-
-- UoP tax brackets and ZUS rates
-- B2B ryczałt rate and health insurance thresholds
-- Tax-free amounts (KUP)
-
-### Exchange Rates
-
-Exchange rates are stored in `public/exchange-rates.json`. 
-
-**For V1:** Manually update this file with current rates.
-
-**Exchange Rate Updates:**
-A GitHub Actions workflow (`.github/workflows/update-exchange-rates.yml`) fetches rates daily from [NBP API](https://api.nbp.pl) and commits updates automatically.
-
-## Project Structure
+## Architecture
 
 ```
-├── src/
-│   ├── App.tsx              # Main calculator component
-│   ├── index.css            # Global styles + Tailwind config
-│   ├── main.tsx             # React entry point
-│   ├── config/
-│   │   └── tax.config.ts    # Polish tax rules configuration
-│   └── lib/
-│       └── calculations.ts  # Tax calculation engine
-├── public/
-│   └── exchange-rates.json  # Current exchange rates
-├── .github/
-│   └── workflows/
-│       └── update-exchange-rates.yml  # Daily rate update action
-└── index.html               # HTML shell
+src/
+├── App.tsx                 # Main UI component
+├── components/             # TaxProfileDisplay, modals
+├── lib/
+│   ├── taxCalculations.ts  # Annual-first calculation engine
+│   ├── useTaxProfile.ts    # localStorage persistence
+│   └── analytics.ts        # GA4 event tracking
+├── config/
+│   └── tax/2026.ts         # ← Polish tax rules (configurable)
+└── index.css               # Tailwind styles
 ```
 
-## Calculations
+## Tax Calculation Logic
 
-All calculations follow Polish tax law as of 2026:
+**Annual-first model** for accuracy:
+- Gross monthly → × 12 → annual
+- Apply annual thresholds (ZUS caps, PIT brackets)
+- ÷ 12 → display average monthly net
 
-### UoP (Employment Contract)
-- Employee ZUS contribution: 13.71%
-- Health insurance (Zdrowotna): 9% of (Brutto - ZUS)
-- Tax-free amount (KUP): PLN 250
-- Income tax brackets: 12% up to PLN 10k, 32% above
+Supports:
+- **B2B** — Configurable ryczałt (8.5%-17%), ZUS profiles, auto health tiers
+- **UoP** — Tax brackets (12%/32%), KUP deduction, PPK, annual caps
 
-### B2B (Self-Employment with Ryczałt)
-- Flat ryczałt tax: 12% of gross
-- Health insurance varies by annual income:
-  - ≤ PLN 60k/year: PLN 463/month
-  - ≤ PLN 300k/year: PLN 772/month
-  - > PLN 300k/year: PLN 1,389/month
+[📄 Full tax rules documentation](./TAX_RULES_POLAND.md)
 
-Results are **approximate estimates**, not official tax advice.
+## Tax Configuration
 
-## Multi-Language
+All Polish tax rules live in **`src/config/tax/2026.ts`**:
+- Official ZUS contribution values
+- Health thresholds
+- Tax brackets & caps
+- Source references included
 
-Strings are defined in `src/App.tsx` in the `T` object. Add new languages by:
+Update this file when legislation changes.
 
-1. Adding a language code (e.g., `de`)
-2. Adding translations to the `T` object
-3. Adding the language to the language selector buttons
+## Features
 
-## Deployment
+✨ **Two modes** — Net or gross input  
+💱 **3 currencies** — PLN, USD, EUR  
+⚙️ **Customizable** — B2B rate, ZUS profile, PPK, KUP  
+📱 **Responsive** — Works on mobile  
+🌍 **Multilingual** — EN, PL, UA  
+💾 **No backend** — Static site, localStorage only  
+📊 **Analytics** — Privacy-first GA4 tracking  
+🔄 **Exchange rates** — Auto-updated daily  
 
-This is a static site with no backend. Deploy to any static host:
-- Vercel
-- Netlify
-- GitHub Pages
-- Any CDN (S3, Cloudflare Pages, etc.)
+## Customization
 
-The app loads exchange rates from `public/exchange-rates.json` at startup.
+Click tax profile chips under the title to adjust:
+- B2B ryczałt rate (8.5%-17%)
+- ZUS profile (Full, Preferential, Ulga na start)
+- Sickness insurance
+- UoP KUP (250/300 PLN)
+- PPK (2% employee)
 
-## Exchange Rate Updates
+Settings persist in browser storage.
 
-The app loads exchange rates from `public/exchange-rates.json` when it initializes. If loading fails, it falls back to hardcoded defaults.
+## Tech Stack
 
-**Manual Update:**
-Edit `public/exchange-rates.json`:
+- **React 19** + TypeScript
+- **Vite** (fast builds)
+- **Tailwind CSS v4** (styling)
+- **Vitest** (57 unit tests, 100% passing)
+- **GA4** (analytics, no PII)
 
-```json
-{
-  "timestamp": "2026-08-19T00:00:00Z",
-  "source": "manual",
-  "rates": {
-    "PLN_PLN": 1.0,
-    "USD_PLN": 3.85,
-    "EUR_PLN": 4.25
-  }
-}
+Zero backend, zero databases.
+
+## Roadmap
+
+### v1.1 ✅
+- Configurable tax profiles
+- Advanced B2B/UoP settings
+- Annual-first calculations
+- 57 unit tests
+
+### v1.2 (Planned)
+- Salary history/comparison
+- Lump-sum tax option
+- Multiple employment scenarios
+
+### v2.0 (Vision)
+- **Multi-country support** — Extend tax config to other EU countries
+- Germany, UK, Netherlands, etc.
+- Unified calculator across markets
+
+## Future: Multi-Country
+
+Each country gets its own tax config file:
+```
+src/config/tax/
+├── 2026.ts          # Poland
+├── germany/2026.ts  # Germany (future)
+├── uk/2026.ts       # UK (future)
+└── index.ts         # Router
 ```
 
-**Automatic Updates (GitHub Actions):**
-The workflow runs daily at 8 AM UTC and fetches rates from NBP API. Requires:
-- Repository with GitHub Actions enabled
-- Workflow has write access to commit to main branch
+Same calculation engine, different tax rules.
 
-To trigger manually: Go to Actions → Update Exchange Rates → Run workflow.
+## Exchange Rates
+
+Stored in code (`src/config/tax/2026.ts`). Updated manually.
+
+Could be extended to fetch real-time from NBP or ECB API.
 
 ## Browser Support
 
-Modern browsers (Chrome, Firefox, Safari, Edge). Requires ES2020+ support.
+Modern browsers: Chrome, Firefox, Safari, Edge. Requires ES2020+.
+
+## Deployment
+
+Static site — deploy anywhere:
+- GitHub Pages (current)
+- Vercel, Netlify
+- AWS S3, Cloudflare Pages
+- Any CDN
+
+No server required.
+
+## Testing
+
+```bash
+npm test       # Run 57 unit tests
+npm run type-check  # TypeScript validation
+npm run build  # Production build
+```
+
+## Privacy
+
+✅ No user data stored on servers  
+✅ No salary amounts in analytics  
+✅ GA4 with IP anonymization  
+✅ Open source (audit-friendly)  
 
 ## License
 
 MIT
 
-## Contributing
+---
 
-Feedback and suggestions welcome at `si13n@yahoo.com`
+**Questions?** Open an issue or email `si13n@yahoo.com`
