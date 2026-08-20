@@ -7,26 +7,17 @@
     <title>Approxmate - Salary Calculator for Poland</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Google Analytics 4 -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-34V1FPP58R"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    </script>
-    <script async id="ga-script"></script>
-    <script>
-      (function() {
-        const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-        if (measurementId) {
-          const gaScript = document.getElementById('ga-script');
-          gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-          gtag('config', measurementId, {
-            'anonymize_ip': true,
-            'allow_google_signals': false,
-            'allow_ad_personalization_signals': false
-          });
-        }
-      })();
+      gtag('config', 'G-34V1FPP58R', {
+        'anonymize_ip': true,
+        'allow_google_signals': false,
+        'allow_ad_personalization_signals': false
+      });
     </script>
   </head>
   <body>
