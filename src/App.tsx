@@ -433,7 +433,7 @@ export default function App() {
             {(["USD", "EUR", "PLN"] as Currency[]).map((c, i) => (
               <button
                 key={c}
-                onClick={() => { setCurrency(c); setSliderValue(sliderCenter); trackCurrencyChanged(c); }}
+                onClick={() => { setCurrency(c); trackCurrencyChanged(c); }}
                 className="py-2 text-sm font-semibold transition-all duration-150"
                 style={{
                   background: currency === c ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
