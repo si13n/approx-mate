@@ -93,40 +93,8 @@ const RATES_UPDATED_AT = new Date().toLocaleDateString("en-US", { year: "numeric
 function toPLN(a: number, from: Currency) { return a * (RATES[`${from}_PLN`] ?? 1); }
 function fromPLN(a: number, to: Currency) { return a / (RATES[`${to}_PLN`] ?? 1); }
 
-// ── Tax calculations ───────────────────────────────────────────────────────
-function b2bGrossToNet(grossPLN: number): number {
-  const annual = grossPLN * 12;
-  const zdrowotna = annual <= 60000 ? 463 : annual <= 300000 ? 772 : 1389;
-  return grossPLN - 0.12 * grossPLN - zdrowotna;
-}
-
-function b2bNetToGross(netPLN: number): number {
-  let lo = netPLN * 0.9, hi = netPLN * 2.5;
-  for (let i = 0; i < 64; i++) {
-    const mid = (lo + hi) / 2;
-    b2bGrossToNet(mid) < netPLN ? (lo = mid) : (hi = mid);
-  }
-  return (lo + hi) / 2;
-}
-
-function uopGrossToNet(bruttoP: number): number {
-  const zusEmp = 0.1371 * bruttoP;
-  const zdrowotna = 0.09 * (bruttoP - zusEmp);
-  const taxBase = bruttoP - zusEmp - 250;
-  let tax = 0;
-  if (taxBase > 10000) tax = 7500 * 0.12 + (taxBase - 10000) * 0.32;
-  else if (taxBase > 2500) tax = (taxBase - 2500) * 0.12;
-  return bruttoP - zusEmp - zdrowotna - tax;
-}
-
-function uopNetToGross(netPLN: number): number {
-  let lo = netPLN * 0.9, hi = netPLN * 3;
-  for (let i = 0; i < 64; i++) {
-    const mid = (lo + hi) / 2;
-    uopGrossToNet(mid) < netPLN ? (lo = mid) : (hi = mid);
-  }
-  return (lo + hi) / 2;
-}
+// ── Tax calculations (delegated to configurable engine) ────────────────────
+import { calculateB2BFromGross, calculateB2BFromNet, calculateUoPFromGross, calculateUoPFromNet } from "./lib/taxCalculations";
 
 // ── Formatters ─────────────────────────────────────────────────────────────
 const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
@@ -277,26 +245,26 @@ export default function App() {
   }, [amount]);
 
   const results = useMemo(() => {
-    if (amount <= 0) return null;
+    if (amount <= 0 || !isLoaded) return null;
     const monthlyPLN = toPLN(amount, currency);
 
-    let b2bGrossPLN: number, b2bNetPLN: number;
-    let uopGrossPLN: number, uopNetPLN: number;
+    let b2bResult, uopResult;
 
     if (inputType === "gross") {
-      b2bGrossPLN = monthlyPLN;
-      b2bNetPLN = b2bGrossToNet(monthlyPLN);
-      uopGrossPLN = monthlyPLN;
-      uopNetPLN = uopGrossToNet(monthlyPLN);
+      b2bResult = calculateB2BFromGross(monthlyPLN, profile);
+      uopResult = calculateUoPFromGross(monthlyPLN, profile);
     } else {
-      b2bNetPLN = monthlyPLN;
-      b2bGrossPLN = b2bNetToGross(monthlyPLN);
-      uopNetPLN = monthlyPLN;
-      uopGrossPLN = uopNetToGross(monthlyPLN);
+      b2bResult = calculateB2BFromNet(monthlyPLN, profile);
+      uopResult = calculateUoPFromNet(monthlyPLN, profile);
     }
 
-    return { b2bGrossPLN, b2bNetPLN, uopGrossPLN, uopNetPLN };
-  }, [amount, currency, inputType]);
+    return {
+      b2bGrossPLN: b2bResult.monthlyGross,
+      b2bNetPLN: b2bResult.monthlyNet,
+      uopGrossPLN: uopResult.monthlyGross,
+      uopNetPLN: uopResult.monthlyNet,
+    };
+  }, [amount, currency, inputType, profile, isLoaded]);
 
   const recruiterMessage = useMemo(() => {
     if (!results || amount <= 0) return "";

@@ -21,6 +21,7 @@ export const TAX_2026 = {
       ulgaNaStart: {
         name: "Ulga na start",
         socialMonthly: 0,
+        socialWithSickness: 0,
         description: "Zero social contributions for first months",
       },
       preferential: {
