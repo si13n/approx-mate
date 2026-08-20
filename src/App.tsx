@@ -470,21 +470,6 @@ export default function App() {
         {/* ── RESULTS ── */}
         {results && amount > 0 && (
           <>
-            {/* Summary line */}
-            <div className="px-1 flex items-baseline gap-2">
-              <span style={{ fontSize: "0.8125rem", color: "var(--color-muted-foreground)" }}>
-                {inputType === "net" ? t.netDesc : t.grossDesc}:
-              </span>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "var(--color-foreground)", letterSpacing: "-0.02em" }}>
-                {fmt(amount, currency)} {inputType === "net" ? t.net.toLowerCase() : t.gross.toLowerCase()}{t.perMonth}
-              </span>
-              {currency !== "PLN" && (
-                <span style={{ fontSize: "0.8125rem", color: "var(--color-muted-foreground)" }}>
-                  ≈ {fmt(toPLN(amount, currency), "PLN")}
-                </span>
-              )}
-            </div>
-
             {/* Two cards */}
             <div className="grid grid-cols-2 gap-3">
               <SalaryCard
