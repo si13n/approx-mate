@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  base: '/approx-mate/',
+  base: '/',
   plugins: [
     react(),
     tailwindcss(),
