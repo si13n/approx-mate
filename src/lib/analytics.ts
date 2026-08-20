@@ -41,6 +41,34 @@ export function trackFeedbackClick(): void {
   gtag("event", "feedback_click");
 }
 
+export function trackTaxProfileOpen(): void {
+  gtag("event", "tax_profile_open");
+}
+
+export function trackB2BRateChanged(rate: number): void {
+  gtag("event", "b2b_rate_changed", { rate: Math.round(rate * 100) });
+}
+
+export function trackB2BZUSChanged(zus: string): void {
+  gtag("event", "b2b_zus_changed", { zus });
+}
+
+export function trackB2BSicknessChanged(enabled: boolean): void {
+  gtag("event", "b2b_sickness_changed", { enabled });
+}
+
+export function trackUoPKUPChanged(kupType: string): void {
+  gtag("event", "uop_kup_changed", { kup_type: kupType });
+}
+
+export function trackUoPPPKChanged(enabled: boolean): void {
+  gtag("event", "uop_ppk_changed", { enabled });
+}
+
+export function trackTaxProfileReset(): void {
+  gtag("event", "tax_profile_reset");
+}
+
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
