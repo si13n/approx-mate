@@ -63,12 +63,13 @@ export function calculateB2BFromGross(
   const monthlyTotalSocial = socialZUS + sicknesContribution;
 
   // Determine health contribution tier based on annual revenue
-  const annualRevenue = annualGross;
+  // (calculated as revenue minus paid social contributions)
+  const annualRevenueForHealthTier = annualGross - monthlyTotalSocial * 12;
   let healthMonthly: number;
 
-  if (annualRevenue <= TAX_2026.b2b.health.tier1.maxAnnual) {
+  if (annualRevenueForHealthTier <= TAX_2026.b2b.health.tier1.maxAnnual) {
     healthMonthly = TAX_2026.b2b.health.tier1.monthly;
-  } else if (annualRevenue <= TAX_2026.b2b.health.tier2.maxAnnual) {
+  } else if (annualRevenueForHealthTier <= TAX_2026.b2b.health.tier2.maxAnnual) {
     healthMonthly = TAX_2026.b2b.health.tier2.monthly;
   } else {
     healthMonthly = TAX_2026.b2b.health.tier3.monthly;
@@ -83,8 +84,8 @@ export function calculateB2BFromGross(
   // Calculate income tax
   const annualIncomeTax = Math.max(0, annualTaxableBase * profile.b2b.ryczaltRate);
 
-  // Calculate annual net
-  const annualNet = annualGross - monthlyTotalSocial * 12 - annualHealth - annualIncomeTax;
+  // Calculate annual net (ensure non-negative)
+  const annualNet = Math.max(0, annualGross - monthlyTotalSocial * 12 - annualHealth - annualIncomeTax);
   const monthlyNet = annualNet / 12;
 
   return {
