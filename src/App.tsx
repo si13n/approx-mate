@@ -290,7 +290,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
-      <div className="max-w-lg mx-auto px-4 py-8 flex flex-col gap-6">
+      <div className="max-w-lg mx-auto px-2 py-4 flex flex-col gap-3">
 
         {/* Brand + lang */}
         <div className="flex items-center justify-between">
@@ -327,7 +327,7 @@ export default function App() {
 
         {/* Main title */}
         <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.375rem", fontWeight: 400, color: "var(--color-foreground)", letterSpacing: "-0.02em", marginBottom: 2 }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.375rem", fontWeight: 400, color: "var(--color-foreground)", letterSpacing: "-0.02em", marginBottom: 0.5 }}>
             {t.title}
           </h1>
         </div>
@@ -343,7 +343,7 @@ export default function App() {
 
         {/* ── INPUT CARD ── */}
         <div
-          className="rounded-2xl p-5 flex flex-col gap-5"
+          className="rounded-2xl p-3 flex flex-col gap-3"
           style={{ background: "var(--color-card)", border: "1px solid var(--color-border)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
         >
           {/* 1. Gross / Net — primary toggle */}
