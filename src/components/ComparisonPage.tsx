@@ -157,8 +157,11 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
                 type="number"
                 min="0"
                 max="50000"
-                value={offer.amount}
-                onChange={(e) => handleUpdateOffer(offer.id, "amount", parseInt(e.target.value) || 0)}
+                value={offer.amount || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  handleUpdateOffer(offer.id, "amount", val === "" ? 0 : Math.min(50000, Math.max(0, parseInt(val) || 0)));
+                }}
                 className="w-full rounded-lg px-3 py-2 outline-none"
                 style={{
                   fontSize: "1.125rem",
