@@ -121,11 +121,11 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
         </div>
 
         {/* Offer cards */}
-        <div className="flex gap-3 flex-wrap">
+        <div className="grid grid-cols-3 gap-3">
           {offers.map((offer, idx) => (
             <div
               key={offer.id}
-              className="rounded-2xl p-4 flex flex-col gap-3 flex-1 min-w-sm"
+              className="rounded-2xl p-4 flex flex-col gap-3"
               style={{
                 background: "#fff",
                 border: bestTakeHome?.id === offer.id ? "2px solid #3B82F6" : "1px solid var(--color-border)",
@@ -213,7 +213,7 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
           {offers.length < 3 && (
             <button
               onClick={handleAddOffer}
-              className="rounded-2xl p-4 flex items-center justify-center flex-1 min-w-sm transition-all hover:opacity-80"
+              className="rounded-2xl p-4 flex items-center justify-center transition-all hover:opacity-80"
               style={{
                 background: "var(--color-muted)",
                 border: "1px dashed var(--color-border)",
