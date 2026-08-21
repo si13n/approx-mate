@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 
 type Currency = "PLN" | "USD" | "EUR";
 type ContractType = "B2B" | "UoP";
+type InputType = "gross" | "net";
 
 interface Offer {
   id: string;
@@ -9,6 +10,7 @@ interface Offer {
   amount: number;
   currency: Currency;
   contractType: ContractType;
+  inputType: InputType;
 }
 
 interface ComparisonPageProps {
@@ -28,8 +30,8 @@ function fmt(amount: number, currency: Currency, dec = 0): string {
 
 export function ComparisonPage({ onBack }: ComparisonPageProps) {
   const [offers, setOffers] = useState<Offer[]>([
-    { id: "1", name: "Offer A", amount: 25000, currency: "PLN", contractType: "B2B" },
-    { id: "2", name: "Offer B", amount: 22000, currency: "PLN", contractType: "UoP" },
+    { id: "1", name: "Offer A", amount: 25000, currency: "PLN", contractType: "B2B", inputType: "gross" },
+    { id: "2", name: "Offer B", amount: 22000, currency: "PLN", contractType: "UoP", inputType: "net" },
   ]);
 
   const hoursPerMonth = 160;
@@ -37,14 +39,28 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
   const calculations = useMemo(() => {
     return offers.map((offer) => {
       const monthlyPLN = toPLN(offer.amount, offer.currency);
-      // Simplified calculation - just use the amount as net for demo
-      const netPLN = monthlyPLN * 0.75; // Roughly 75% net for simplicity
+
+      // If inputType is "gross", use it as gross; if "net", treat it as net
+      let grossPLN: number;
+      let netPLN: number;
+
+      if (offer.inputType === "gross") {
+        grossPLN = monthlyPLN;
+        // Simplified: assume ~75% net for gross input
+        netPLN = monthlyPLN * 0.75;
+      } else {
+        netPLN = monthlyPLN;
+        // Simplified: assume ~133% gross for net input (inverse of 75%)
+        grossPLN = monthlyPLN / 0.75;
+      }
+
       const hourlyNet = netPLN / hoursPerMonth;
-      const hourlyGross = monthlyPLN / hoursPerMonth;
+      const hourlyGross = grossPLN / hoursPerMonth;
 
       return {
         ...offer,
         monthlyPLN,
+        grossPLN,
         netPLN,
         netPerYear: netPLN * 12,
         hourlyNet,
@@ -69,6 +85,7 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
         amount: 20000,
         currency: "PLN",
         contractType: "B2B",
+        inputType: "gross",
       }]);
     }
   };
@@ -105,16 +122,17 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
 
         {/* Offer cards */}
         <div className="flex gap-3 flex-wrap">
-          {calculations.map((offer, idx) => (
+          {offers.map((offer, idx) => (
             <div
               key={offer.id}
-              className="rounded-2xl p-4 flex flex-col gap-2 flex-1 min-w-xs"
+              className="rounded-2xl p-4 flex flex-col gap-3 flex-1 min-w-sm"
               style={{
                 background: "#fff",
                 border: bestTakeHome?.id === offer.id ? "2px solid #3B82F6" : "1px solid var(--color-border)",
                 boxShadow: bestTakeHome?.id === offer.id ? "0 0 0 4px rgba(59,130,246,0.1)" : "0 1px 4px rgba(0,0,0,0.06)",
               }}
             >
+              {/* Header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div
@@ -127,17 +145,67 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
                 </div>
                 <button
                   onClick={() => handleRemoveOffer(offer.id)}
-                  className="text-lg transition-opacity hover:opacity-50"
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-muted-foreground)" }}
+                  className="text-xl font-bold transition-opacity hover:opacity-50"
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#EF4444" }}
                 >
-                  ⋮
+                  ✕
                 </button>
               </div>
-              <div className="text-2xl font-bold" style={{ color: "var(--color-foreground)", fontFamily: "var(--font-display)" }}>
-                {fmt(offer.amount, offer.currency)}
+
+              {/* Amount input */}
+              <input
+                type="number"
+                min="0"
+                max="50000"
+                value={offer.amount}
+                onChange={(e) => handleUpdateOffer(offer.id, "amount", parseInt(e.target.value) || 0)}
+                className="w-full rounded-lg px-3 py-2 outline-none"
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: 600,
+                  fontFamily: "var(--font-display)",
+                  background: "var(--color-muted)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-foreground)",
+                }}
+              />
+
+              {/* Contract type toggle */}
+              <div className="grid grid-cols-2 gap-1 rounded-lg overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
+                {(["B2B", "UoP"] as ContractType[]).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleUpdateOffer(offer.id, "contractType", type)}
+                    className="py-2 text-xs font-medium transition-all"
+                    style={{
+                      background: offer.contractType === type ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
+                      color: offer.contractType === type ? "#fff" : "var(--color-muted-foreground)",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {type}
+                  </button>
+                ))}
               </div>
-              <div className="text-xs" style={{ color: "var(--color-muted-foreground)" }}>
-                {offer.contractType}
+
+              {/* Input type toggle */}
+              <div className="grid grid-cols-2 gap-1 rounded-lg overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
+                {(["gross", "net"] as InputType[]).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleUpdateOffer(offer.id, "inputType", type)}
+                    className="py-2 text-xs font-medium transition-all capitalize"
+                    style={{
+                      background: offer.inputType === type ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
+                      color: offer.inputType === type ? "#fff" : "var(--color-muted-foreground)",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {type}
+                  </button>
+                ))}
               </div>
             </div>
           ))}
@@ -145,7 +213,7 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
           {offers.length < 3 && (
             <button
               onClick={handleAddOffer}
-              className="rounded-2xl p-4 flex items-center justify-center flex-1 min-w-xs transition-all hover:opacity-80"
+              className="rounded-2xl p-4 flex items-center justify-center flex-1 min-w-sm transition-all hover:opacity-80"
               style={{
                 background: "var(--color-muted)",
                 border: "1px dashed var(--color-border)",
@@ -243,7 +311,7 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
               <tbody>
                 {[
                   { label: "Contract type", render: (o: any) => o.contractType },
-                  { label: "Gross / invoice per month", render: (o: any) => fmt(o.amount, o.currency) },
+                  { label: "Gross / invoice per month", render: (o: any) => fmt(o.grossPLN, "PLN", 0) },
                   {
                     label: "Net per month",
                     render: (o: any) => (
