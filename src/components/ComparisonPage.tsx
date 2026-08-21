@@ -227,48 +227,47 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
           )}
         </div>
 
-        {/* Best take-home section */}
-        {bestTakeHome && (
-          <div
-            className="rounded-2xl p-6"
-            style={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }}
-          >
-            <div className="flex items-start gap-4">
-              <div className="text-3xl">🏆</div>
-              <div className="flex-1">
-                <div className="text-xs font-medium mb-1" style={{ color: "var(--color-muted-foreground)" }}>
-                  Best take-home
-                </div>
-                <div className="text-2xl font-bold mb-1" style={{ color: "#3B82F6", fontFamily: "var(--font-display)" }}>
-                  {bestTakeHome.name}
-                </div>
-                <div className="text-sm" style={{ color: "var(--color-muted-foreground)" }}>
-                  Highest net per month
-                </div>
-              </div>
-              {calculations.map((offer, idx) => {
-                if (offer.id === bestTakeHome.id) return null;
-                const diff = bestTakeHome.netPLN - offer.netPLN;
-                return (
-                  <div key={offer.id} className="text-right">
-                    <div className="text-sm font-semibold" style={{ color: "#10B981" }}>
-                      ↑ {fmt(diff, "PLN", 0)}/mo
-                    </div>
-                    <div className="text-xs" style={{ color: "var(--color-muted-foreground)" }}>
-                      vs {offer.name}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {/* Comparison table */}
         <div
           className="rounded-2xl overflow-hidden"
           style={{ background: "var(--color-card)", border: "1px solid var(--color-border)" }}
         >
+          {/* Best take-home section - inside table */}
+          {bestTakeHome && (
+            <div
+              className="p-6 border-b"
+              style={{ borderColor: "var(--color-border)" }}
+            >
+              <div className="flex items-start gap-4">
+                <div className="text-3xl">🏆</div>
+                <div className="flex-1">
+                  <div className="text-xs font-medium mb-1" style={{ color: "var(--color-muted-foreground)" }}>
+                    Best take-home
+                  </div>
+                  <div className="text-2xl font-bold mb-1" style={{ color: "#3B82F6", fontFamily: "var(--font-display)" }}>
+                    {bestTakeHome.name}
+                  </div>
+                  <div className="text-sm" style={{ color: "var(--color-muted-foreground)" }}>
+                    Highest net per month
+                  </div>
+                </div>
+                {calculations.map((offer, idx) => {
+                  if (offer.id === bestTakeHome.id) return null;
+                  const diff = bestTakeHome.netPLN - offer.netPLN;
+                  return (
+                    <div key={offer.id} className="text-right">
+                      <div className="text-sm font-semibold" style={{ color: "#10B981" }}>
+                        ↑ {fmt(diff, "PLN", 0)}/mo
+                      </div>
+                      <div className="text-xs" style={{ color: "var(--color-muted-foreground)" }}>
+                        vs {offer.name}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="overflow-x-auto">
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
