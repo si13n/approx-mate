@@ -308,19 +308,26 @@ export default function App() {
               approxmate
             </span>
           </div>
-          <div className="flex gap-0.5 rounded-lg overflow-hidden" style={{ border: "1px solid var(--color-border)", background: "var(--color-card)" }}>
-            {(["en", "pl", "ua"] as Lang[]).map((l) => (
-              <button
-                key={l}
-                onClick={() => { setLang(l); trackLanguageChanged(l); }}
-                className="px-2.5 py-1.5 text-xs font-semibold uppercase transition-all"
-                style={{
-                  background: lang === l ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "transparent",
-                  color: lang === l ? "#fff" : "var(--color-muted-foreground)",
-                }}
-              >
-                {l}
-              </button>
+          <div className="flex items-center gap-2" style={{ fontSize: "0.75rem" }}>
+            {(["en", "pl", "ua"] as Lang[]).map((l, i) => (
+              <span key={l}>
+                {i > 0 && <span style={{ color: "var(--color-muted-foreground)", margin: "0 0.5rem" }}>|</span>}
+                <button
+                  onClick={() => { setLang(l); trackLanguageChanged(l); }}
+                  className="uppercase transition-opacity hover:opacity-100"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: lang === l ? "var(--color-foreground)" : "var(--color-muted-foreground)",
+                    cursor: "pointer",
+                    padding: 0,
+                    fontWeight: lang === l ? 500 : 400,
+                    opacity: lang === l ? 1 : 0.6,
+                  }}
+                >
+                  {l}
+                </button>
+              </span>
             ))}
           </div>
         </div>
