@@ -44,7 +44,7 @@ export function TaxProfileDisplay({
         Poland 2026
       </p>
 
-      <div className="flex gap-2 items-center flex-wrap">
+      <div className="flex gap-2 items-center flex-wrap w-full">
         <button
           onClick={onB2BClick}
           className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
@@ -74,9 +74,9 @@ export function TaxProfileDisplay({
         {onCompareClick && (
           <button
             onClick={onCompareClick}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
+            className="flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
             style={{
-              background: "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)",
+              background: "linear-gradient(135deg, #F97316 0%, #FB923C 100%)",
               color: "#fff",
               border: "none",
               cursor: "pointer",
