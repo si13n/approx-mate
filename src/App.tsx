@@ -4,6 +4,7 @@ import { useTaxProfile } from "./lib/useTaxProfile";
 import { TaxProfileDisplay } from "./components/TaxProfileDisplay";
 import { B2BSettingsModal } from "./components/B2BSettingsModal";
 import { UoPSettingsModal } from "./components/UoPSettingsModal";
+import { ComparisonPage } from "./components/ComparisonPage";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
 type Lang = "en" | "pl" | "ua";
@@ -227,6 +228,7 @@ export default function App() {
   const { profile, updateProfile, resetToDefaults, isLoaded } = useTaxProfile();
   const [showB2BSettings, setShowB2BSettings] = useState(false);
   const [showUoPSettings, setShowUoPSettings] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
 
   const t = T[lang];
   const amount = parseFloat(rawAmount) || 0;
@@ -288,6 +290,10 @@ export default function App() {
   const sliderMax = currency === "PLN" ? 50000 : 10000;
   const sliderCenter = (1000 + sliderMax) / 2;
 
+  if (showComparison) {
+    return <ComparisonPage onBack={() => setShowComparison(false)} />;
+  }
+
   return (
     <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
       <div className="max-w-lg mx-auto px-2 py-4 flex flex-col gap-3">
@@ -345,6 +351,7 @@ export default function App() {
             profile={profile}
             onB2BClick={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
             onUoPClick={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
+            onCompareClick={() => setShowComparison(true)}
           />
         )}
 
