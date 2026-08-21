@@ -371,7 +371,7 @@ export default function App() {
 
           {/* 2. Amount */}
           <div>
-            <div className="relative flex justify-center">
+            <div className="relative">
               {!showPLNLabel && (
                 <span
                   className="absolute left-4 top-1/2 -translate-y-1/2 select-none"
@@ -385,10 +385,8 @@ export default function App() {
                 value={rawAmount}
                 onChange={(e) => { setRawAmount(e.target.value); setSliderValue(sliderCenter); }}
                 placeholder="0"
-                className="rounded-xl outline-none transition-all tabular-nums"
+                className="w-full rounded-xl outline-none transition-all tabular-nums"
                 style={{
-                  width: "fit-content",
-                  maxWidth: "100%",
                   paddingLeft: showPLNLabel ? "1.125rem" : "2.75rem",
                   paddingRight: showPLNLabel ? "4rem" : "1.125rem",
                   paddingTop: "0.875rem",
