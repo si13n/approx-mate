@@ -29,19 +29,20 @@ export function TaxProfileDisplay({
   const uoPLabel = getUoPLabel();
 
   return (
-    <div className="flex flex-col gap-2 px-1 mb-2">
+    <div className="flex items-center gap-2 px-1 mb-2">
       <p
         style={{
           fontSize: "0.75rem",
           color: "var(--color-muted-foreground)",
           fontWeight: 500,
           opacity: 0.7,
+          whiteSpace: "nowrap",
         }}
       >
         Poland 2026
       </p>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2">
         <button
           onClick={onB2BClick}
           className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:opacity-80"
