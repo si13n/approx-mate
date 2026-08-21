@@ -238,45 +238,49 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
               className="p-6 border-b"
               style={{ borderColor: "var(--color-border)" }}
             >
-              {/* Header with trophy */}
-              <div className="flex items-start gap-4 mb-6">
-                <div className="text-3xl">🏆</div>
-                <div>
-                  <div className="text-xs font-medium mb-1" style={{ color: "var(--color-muted-foreground)" }}>
-                    Best take-home
-                  </div>
-                  <div className="text-2xl font-bold" style={{ color: "#3B82F6", fontFamily: "var(--font-display)" }}>
-                    {bestTakeHome.name}
-                  </div>
-                  <div className="text-sm" style={{ color: "var(--color-muted-foreground)" }}>
-                    Highest net per month
+              {/* Header with trophy and comparison cards in same row */}
+              <div className="flex items-stretch gap-4">
+                {/* Best take-home info */}
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="text-3xl shrink-0">🏆</div>
+                  <div>
+                    <div className="text-xs font-medium mb-1" style={{ color: "var(--color-muted-foreground)" }}>
+                      Best take-home
+                    </div>
+                    <div className="text-2xl font-bold" style={{ color: "#3B82F6", fontFamily: "var(--font-display)" }}>
+                      {bestTakeHome.name}
+                    </div>
+                    <div className="text-sm" style={{ color: "var(--color-muted-foreground)" }}>
+                      Highest net per month
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Comparison cards */}
-              <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${calculations.length - 1}, 1fr)` }}>
-                {calculations.map((offer, idx) => {
-                  if (offer.id === bestTakeHome.id) return null;
-                  const diff = bestTakeHome.netPLN - offer.netPLN;
-                  return (
-                    <div
-                      key={offer.id}
-                      className="rounded-lg p-4"
-                      style={{
-                        background: "var(--color-muted)",
-                        border: "1px solid var(--color-border)",
-                      }}
-                    >
-                      <div className="text-lg font-bold" style={{ color: "#10B981", fontFamily: "var(--font-display)" }}>
-                        ↑ {fmt(diff, "PLN", 0)}/mo
+                {/* Comparison cards */}
+                <div className="flex gap-3">
+                  {calculations.map((offer, idx) => {
+                    if (offer.id === bestTakeHome.id) return null;
+                    const diff = bestTakeHome.netPLN - offer.netPLN;
+                    return (
+                      <div
+                        key={offer.id}
+                        className="rounded-lg p-4 shrink-0"
+                        style={{
+                          background: "var(--color-muted)",
+                          border: "1px solid var(--color-border)",
+                          minWidth: "140px",
+                        }}
+                      >
+                        <div className="text-lg font-bold" style={{ color: "#10B981", fontFamily: "var(--font-display)" }}>
+                          ↑ {fmt(diff, "PLN", 0)}/mo
+                        </div>
+                        <div className="text-xs mt-1" style={{ color: "var(--color-muted-foreground)" }}>
+                          vs {offer.name}
+                        </div>
                       </div>
-                      <div className="text-xs mt-1" style={{ color: "var(--color-muted-foreground)" }}>
-                        vs {offer.name}
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           )}
