@@ -5,7 +5,8 @@ interface HeaderProps {
   onLanguageChange: (lang: Lang) => void;
   b2bLabel?: string;
   uopLabel?: string;
-  onEditTaxProfile: () => void;
+  onEditB2B: () => void;
+  onEditUoP: () => void;
   onCompare: () => void;
 }
 
@@ -14,7 +15,8 @@ export function Header({
   onLanguageChange,
   b2bLabel,
   uopLabel,
-  onEditTaxProfile,
+  onEditB2B,
+  onEditUoP,
   onCompare,
 }: HeaderProps) {
   return (
@@ -80,7 +82,7 @@ export function Header({
             {b2bLabel && (
               <span
                 className="text-xs font-semibold px-2 py-1 rounded-full cursor-pointer hover:opacity-75"
-                onClick={onEditTaxProfile}
+                onClick={onEditB2B}
                 style={{
                   background: "rgba(59,130,246,0.1)",
                   color: "#2563EB",
@@ -92,7 +94,7 @@ export function Header({
             {uopLabel && (
               <span
                 className="text-xs font-semibold px-2 py-1 rounded-full cursor-pointer hover:opacity-75"
-                onClick={onEditTaxProfile}
+                onClick={onEditUoP}
                 style={{
                   background: "rgba(6,182,212,0.1)",
                   color: "#0891B2",

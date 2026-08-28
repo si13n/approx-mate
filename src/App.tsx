@@ -180,7 +180,8 @@ export default function App() {
             onLanguageChange={(l) => { setLang(l); trackLanguageChanged(l); }}
             b2bLabel={`${profile.b2b.ryczaltRate}% ryczałt`}
             uopLabel="Standard UoP"
-            onEditTaxProfile={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
+            onEditB2B={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
+            onEditUoP={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
             onCompare={() => setShowComparison(true)}
           />
         )}
