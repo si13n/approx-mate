@@ -2,7 +2,7 @@
 
 A lightweight salary calculator for comparing employment contracts in Poland. One number in → all equivalents out.
 
-**[🌐 Live Demo](https://approxmate.me/)** · **[📊 Tax Rules](./TAX_RULES_POLAND.md)** · **[📈 v1.1 Changelog](./V1.1_IMPLEMENTATION_SUMMARY.md)**
+**[🌐 Live Demo](https://approxmate.me/)** · **[📊 Tax Rules](./TAX_RULES_POLAND.md)** · **[📈 v1.1 Changelog](./V1.1_IMPLEMENTATION_SUMMARY.md)** · **[📚 Project docs](./docs/GA_EVENTS.md)**
 
 ---
 
@@ -33,20 +33,23 @@ pnpm cf:dev
 
 Open `http://localhost:8787/`. The Vite dev server uses the built-in emergency rates; the Wrangler server exercises `/api/exchange-rates` and the static-asset SPA fallback.
 
-## Architecture
+## Project Structure
 
 ```
-src/
-├── App.tsx                 # Main UI component
-├── components/             # TaxProfileDisplay, modals
-├── lib/
-│   ├── taxCalculations.ts  # Annual-first calculation engine
-│   ├── useTaxProfile.ts    # localStorage persistence
-│   └── analytics.ts        # GA4 event tracking
-├── config/
-│   └── tax/2026.ts         # ← Polish tax rules (configurable)
-└── index.css               # Tailwind styles
+src/                         # React application
+├── App.tsx                  # Main UI and application state
+├── components/              # Reusable UI and modal components
+├── lib/                     # Calculations, persistence, analytics, i18n
+└── config/tax/2026.ts       # Polish tax rules (versioned by year)
+worker/                      # Cloudflare Worker entrypoint and API logic
+├── index.ts                 # SPA assets, redirects, and API routing
+└── exchangeRates.ts         # NBP fetch, cache, and fallback handling
+public/                      # Static files copied into the Vite build
+docs/                        # Supporting project references
+wrangler.jsonc               # Worker, assets, and local-dev configuration
 ```
+
+`worker-configuration.d.ts` is generated from the Wrangler configuration; refresh it with `pnpm cf:types` after changing Worker bindings.
 
 ## Tax Calculation Logic
 
@@ -73,14 +76,14 @@ Update this file when legislation changes.
 
 ## Features
 
-✨ **Two modes** — Net or gross input  
-💱 **3 currencies** — PLN, USD, EUR  
-⚙️ **Customizable** — B2B rate, ZUS profile, PPK, KUP  
-📱 **Responsive** — Works on mobile  
-🌍 **Multilingual** — EN, PL, UA  
-💾 **Edge API** — Cloudflare Worker, localStorage only
-📊 **Analytics** — Privacy-first GA4 tracking  
-🔄 **Exchange rates** — Auto-updated daily  
+- ✨ **Two modes** — Net or gross input
+- 💱 **3 currencies** — PLN, USD, EUR
+- ⚙️ **Customizable** — B2B rate, ZUS profile, PPK, KUP
+- 📱 **Responsive** — Works on mobile
+- 🌍 **Multilingual** — EN, PL, UA
+- 💾 **Edge API** — Cloudflare Worker, localStorage only
+- 📊 **Analytics** — Privacy-first GA4 tracking
+- 🔄 **Exchange rates** — Auto-updated daily
 
 ## Customization
 
@@ -98,10 +101,10 @@ Settings persist in browser storage.
 - **React 19** + TypeScript
 - **Vite** (fast builds)
 - **Tailwind CSS v4** (styling)
-- **Vitest** (57 unit tests, 100% passing)
+- **Vitest** (automated unit tests)
 - **GA4** (analytics, no PII)
 
-Zero backend, zero databases.
+No database is required; the exchange-rate API runs at the Cloudflare edge.
 
 ## Roadmap
 
@@ -109,7 +112,7 @@ Zero backend, zero databases.
 - Configurable tax profiles
 - Advanced B2B/UoP settings
 - Annual-first calculations
-- 57 unit tests
+- Automated regression coverage
 
 ### v1.2 (Planned)
 - Salary history/comparison
@@ -156,17 +159,18 @@ The target production custom domain is `https://approxmate.me`; after the domain
 ## Testing
 
 ```bash
-npm test       # Run 57 unit tests
-npm run type-check  # TypeScript validation
-npm run build  # Production build
+pnpm test:run            # Run the test suite once
+pnpm type-check         # TypeScript validation
+pnpm build              # Production asset build
+pnpm cf:dry-run         # Build and validate the Worker deployment
 ```
 
 ## Privacy
 
-✅ No user data stored on servers  
-✅ No salary amounts in analytics  
-✅ GA4 with IP anonymization  
-✅ Open source (audit-friendly)  
+- ✅ No user data stored on servers
+- ✅ No salary amounts in analytics
+- ✅ GA4 with IP anonymization
+- ✅ Salary calculations run locally in the browser
 
 ## License
 

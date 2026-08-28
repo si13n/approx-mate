@@ -9,6 +9,7 @@ build
 dist-ssr
 *.local
 .vite
+.wrangler
 .idea
 *.swp
 *.swo
