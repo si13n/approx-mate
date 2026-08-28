@@ -2,7 +2,7 @@
 
 A lightweight salary calculator for comparing employment contracts in Poland. One number in → all equivalents out.
 
-**[🌐 Live Demo](https://approxmate.me/)** · **[📊 Tax Rules](./TAX_RULES_POLAND.md)** · **[📈 v1.1 Changelog](./V1.1_IMPLEMENTATION_SUMMARY.md)** · **[📚 Project docs](./docs/GA_EVENTS.md)**
+**[📊 Tax Rules](./docs/TAX_RULES_POLAND.md)** · **[📚 Project docs](./docs/GA_EVENTS.md)**
 
 ---
 
