@@ -171,7 +171,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
-      <div className="max-w-lg mx-auto px-2 py-4 flex flex-col gap-3">
+      <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-8">
 
         {/* Header */}
         {isLoaded && (
