@@ -4,6 +4,7 @@ import { CalculatorResults } from "./CalculatorResults";
 import { HeroSection } from "./HeroSection";
 
 interface CalculatorWorkspaceProps {
+  rates: Record<string, number>;
   // InputPanel props
   amount: number;
   rawAmount: string;
@@ -88,6 +89,7 @@ export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
             onCopyMessage={props.onCopyMessage}
             copied={props.copied}
             t={props.t}
+            rates={props.rates}
           />
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 A lightweight salary calculator for comparing employment contracts in Poland. One number in → all equivalents out.
 
-**[🌐 Live Demo](https://si13n.github.io/approx-mate/)** · **[📊 Tax Rules](./TAX_RULES_POLAND.md)** · **[📈 v1.1 Changelog](./V1.1_IMPLEMENTATION_SUMMARY.md)**
+**[🌐 Live Demo](https://approxmate.me/)** · **[📊 Tax Rules](./TAX_RULES_POLAND.md)** · **[📈 v1.1 Changelog](./V1.1_IMPLEMENTATION_SUMMARY.md)**
 
 ---
 
@@ -23,7 +23,15 @@ pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:5173/approx-mate/`
+Open `http://localhost:5173/`.
+
+For a production-like local Worker, build the app and run Wrangler instead:
+
+```bash
+pnpm cf:dev
+```
+
+Open `http://localhost:8787/`. The Vite dev server uses the built-in emergency rates; the Wrangler server exercises `/api/exchange-rates` and the static-asset SPA fallback.
 
 ## Architecture
 
@@ -70,7 +78,7 @@ Update this file when legislation changes.
 ⚙️ **Customizable** — B2B rate, ZUS profile, PPK, KUP  
 📱 **Responsive** — Works on mobile  
 🌍 **Multilingual** — EN, PL, UA  
-💾 **No backend** — Static site, localStorage only  
+💾 **Edge API** — Cloudflare Worker, localStorage only
 📊 **Analytics** — Privacy-first GA4 tracking  
 🔄 **Exchange rates** — Auto-updated daily  
 
@@ -128,9 +136,7 @@ Same calculation engine, different tax rules.
 
 ## Exchange Rates
 
-Stored in code (`src/config/tax/2026.ts`). Updated manually.
-
-Could be extended to fetch real-time from NBP or ECB API.
+The Cloudflare Worker fetches USD and EUR from the NBP Table A endpoint in one request at `/api/exchange-rates`. Successful responses are cached for 12 hours, with a separately cached copy available for up to 7 days when NBP is unavailable. The frontend displays the NBP effective date and falls back to the built-in emergency rates only when the API has no cached response.
 
 ## Browser Support
 
@@ -138,13 +144,14 @@ Modern browsers: Chrome, Firefox, Safari, Edge. Requires ES2020+.
 
 ## Deployment
 
-Static site — deploy anywhere:
-- GitHub Pages (current)
-- Vercel, Netlify
-- AWS S3, Cloudflare Pages
-- Any CDN
+Cloudflare Workers serves both the Vite static assets and the exchange-rate API. Production deploys are configured for Cloudflare Workers Builds from `main`, with branch previews enabled in the Cloudflare dashboard.
 
-No server required.
+```bash
+pnpm build
+pnpm deploy
+```
+
+The production custom domain is `https://approxmate.me`; `www.approxmate.me` redirects to the canonical hostname.
 
 ## Testing
 

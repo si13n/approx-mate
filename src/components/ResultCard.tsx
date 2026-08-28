@@ -2,6 +2,7 @@ import { Currency, InputType } from "../types";
 import { fmt, fromPLN } from "../lib/formatting";
 
 interface ResultCardProps {
+  rates: Record<string, number>;
   label: string;
   grossPLN: number;
   netPLN: number;
@@ -14,7 +15,7 @@ interface ResultCardProps {
   t: Record<string, string>;
 }
 
-export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hoursPerMonth, isB2B, badge, badgeColor = "blue", t }: ResultCardProps) {
+export function ResultCard({ rates, label, grossPLN, netPLN, currency, inputType, hoursPerMonth, isB2B, badge, badgeColor = "blue", t }: ResultCardProps) {
   const primaryPLN = inputType === "net" ? grossPLN : netPLN;
   const secondaryPLN = inputType === "net" ? netPLN : grossPLN;
   const primaryLabel = inputType === "net" ? (isB2B ? t.invoice : t.brutto) : t.takeHome;
@@ -26,7 +27,7 @@ export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hours
   const others = ALL.filter((c) => c !== currency);
 
   function allCurrencies(plnVal: number, dec = 0) {
-    return others.map((c) => fmt(fromPLN(plnVal, c), c, dec)).join(" · ");
+    return others.map((c) => fmt(fromPLN(plnVal, c, rates), c, dec)).join(" · ");
   }
 
   return (
@@ -67,7 +68,7 @@ export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hours
           className="font-bold tabular-nums leading-none"
           style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", color: "var(--color-foreground)", letterSpacing: "-0.03em" }}
         >
-          {fmt(fromPLN(primaryPLN, currency), currency)}
+          {fmt(fromPLN(primaryPLN, currency, rates), currency)}
           <span className="text-sm font-medium ml-1" style={{ color: "var(--color-muted-foreground)" }}>
             {t.perMonth}
           </span>
@@ -89,7 +90,7 @@ export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hours
           className="font-semibold tabular-nums"
           style={{ fontFamily: "var(--font-display)", fontSize: "1rem", color: "var(--color-foreground)" }}
         >
-          {fmt(fromPLN(secondaryPLN, currency), currency)}
+          {fmt(fromPLN(secondaryPLN, currency, rates), currency)}
         </div>
         <div className="text-xs tabular-nums mt-0.5" style={{ color: "var(--color-muted-foreground)" }}>
           {allCurrencies(secondaryPLN)}
@@ -108,13 +109,13 @@ export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hours
                 {label}
               </div>
               <div className="text-sm font-semibold tabular-nums" style={{ fontFamily: "var(--font-display)", color: "var(--color-foreground)" }}>
-                {fmt(fromPLN(plnVal, currency), currency, 2)}
+                {fmt(fromPLN(plnVal, currency, rates), currency, 2)}
               </div>
               {/* All currencies for this rate */}
               <div className="text-xs tabular-nums space-y-0.5">
                 {["USD", "EUR", "PLN"].map((c) => (
                   <div key={c} style={{ color: "var(--color-muted-foreground)" }}>
-                    {fmt(fromPLN(plnVal, c as Currency), c as Currency, 2)}
+                    {fmt(fromPLN(plnVal, c as Currency, rates), c as Currency, 2)}
                   </div>
                 ))}
               </div>

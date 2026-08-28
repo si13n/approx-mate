@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick, trackTaxProfileOpen } from "./lib/analytics";
 import { useTaxProfile } from "./lib/useTaxProfile";
-import { RATES, fmt, toPLN, fromPLN, RATES_UPDATED_AT } from "./lib/formatting";
+import { fmt, toPLN, fromPLN } from "./lib/formatting";
+import { formatRateDate, useExchangeRates } from "./lib/exchangeRates";
 import { TaxProfileDisplay } from "./components/TaxProfileDisplay";
 import { B2BSettingsModal } from "./components/B2BSettingsModal";
 import { UoPSettingsModal } from "./components/UoPSettingsModal";
@@ -103,6 +104,7 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [sliderValue, setSliderValue] = useState<number>(5000);
   const hoursPerMonth = 160;
+  const { rates, effectiveDate, isFallback } = useExchangeRates();
 
   // Tax profile management
   const { profile, updateProfile, resetToDefaults, isLoaded } = useTaxProfile();
@@ -125,7 +127,7 @@ export default function App() {
 
   const results = useMemo(() => {
     if (amount <= 0 || !isLoaded) return null;
-    const monthlyPLN = toPLN(amount, currency);
+    const monthlyPLN = toPLN(amount, currency, rates);
 
     let b2bResult, uopResult;
 
@@ -143,7 +145,7 @@ export default function App() {
       uopGrossPLN: uopResult.monthlyGross,
       uopNetPLN: uopResult.monthlyNet,
     };
-  }, [amount, currency, inputType, profile, isLoaded]);
+  }, [amount, currency, inputType, profile, isLoaded, rates]);
 
   const recruiterMessage = useMemo(() => {
     if (!results || amount <= 0) return "";
@@ -166,7 +168,7 @@ export default function App() {
   ];
 
   if (showComparison) {
-    return <ComparisonPage onBack={() => setShowComparison(false)} />;
+    return <ComparisonPage onBack={() => setShowComparison(false)} rates={rates} />;
   }
 
   return (
@@ -208,6 +210,7 @@ export default function App() {
           onCopyMessage={() => { navigator.clipboard.writeText(recruiterMessage); setCopied(true); setTimeout(() => setCopied(false), 2000); trackRecruiterMessageCopy(); }}
           copied={copied}
           t={t}
+          rates={rates}
         />
 
         {/* Footer */}
@@ -226,7 +229,7 @@ export default function App() {
             {t.feedback}
           </a>
           <p className="text-xs" style={{ color: "var(--color-muted-foreground)", opacity: 0.3 }}>
-            Rates updated {RATES_UPDATED_AT}
+            Rates updated {formatRateDate(effectiveDate)}{isFallback ? " · fallback" : ""}
           </p>
         </div>
 

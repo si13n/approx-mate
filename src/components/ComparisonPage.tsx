@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { fmt, toPLN } from "../lib/formatting";
 
 type Currency = "PLN" | "USD" | "EUR";
 type ContractType = "B2B" | "UoP";
@@ -15,20 +16,10 @@ interface Offer {
 
 interface ComparisonPageProps {
   onBack: () => void;
+  rates: Record<string, number>;
 }
 
-const RATES: Record<string, number> = { PLN_PLN: 1, USD_PLN: 3.85, EUR_PLN: 4.25 };
-function toPLN(a: number, from: Currency) { return a * (RATES[`${from}_PLN`] ?? 1); }
-function fromPLN(a: number, to: Currency) { return a / (RATES[`${to}_PLN`] ?? 1); }
-
-const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
-const SUF: Record<Currency, string> = { USD: "", EUR: "", PLN: " PLN" };
-function fmt(amount: number, currency: Currency, dec = 0): string {
-  const n = Math.round(amount * 10 ** dec) / 10 ** dec;
-  return `${SYM[currency]}${n.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec })}${SUF[currency]}`;
-}
-
-export function ComparisonPage({ onBack }: ComparisonPageProps) {
+export function ComparisonPage({ onBack, rates }: ComparisonPageProps) {
   const [offers, setOffers] = useState<Offer[]>([
     { id: "1", name: "Offer A", amount: 25000, currency: "PLN", contractType: "B2B", inputType: "gross" },
     { id: "2", name: "Offer B", amount: 22000, currency: "PLN", contractType: "UoP", inputType: "net" },
@@ -38,7 +29,7 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
 
   const calculations = useMemo(() => {
     return offers.map((offer) => {
-      const monthlyPLN = toPLN(offer.amount, offer.currency);
+      const monthlyPLN = toPLN(offer.amount, offer.currency, rates);
 
       // If inputType is "gross", use it as gross; if "net", treat it as net
       let grossPLN: number;
@@ -67,7 +58,7 @@ export function ComparisonPage({ onBack }: ComparisonPageProps) {
         hourlyGross,
       };
     });
-  }, [offers]);
+  }, [offers, rates]);
 
   const bestTakeHome = useMemo(() => {
     if (calculations.length === 0) return null;

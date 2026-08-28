@@ -5,6 +5,7 @@ import { BreakdownSection } from "./BreakdownSection";
 import { fmt, fromPLN } from "../lib/formatting";
 
 interface CalculatorResultsProps {
+  rates: Record<string, number>;
   results: {
     b2bGrossPLN: number;
     b2bNetPLN: number;
@@ -28,7 +29,7 @@ export function CalculatorResults(props: CalculatorResultsProps) {
   }
 
   const primaryPLN = props.inputType === "net" ? props.results.b2bGrossPLN : props.results.b2bNetPLN;
-  const decisionText = `To take home ${fmt(fromPLN(primaryPLN, props.currency), props.currency)} / month`;
+  const decisionText = `To take home ${fmt(fromPLN(primaryPLN, props.currency, props.rates), props.currency)} / month`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -55,6 +56,7 @@ export function CalculatorResults(props: CalculatorResultsProps) {
           badge="Higher cash"
           badgeColor="blue"
           t={props.t}
+          rates={props.rates}
         />
         <ResultCard
           label={props.inputType === "gross" ? props.t.ifUoP : "UoP"}
@@ -67,6 +69,7 @@ export function CalculatorResults(props: CalculatorResultsProps) {
           badge="More protection"
           badgeColor="teal"
           t={props.t}
+          rates={props.rates}
         />
       </div>
 
