@@ -96,24 +96,31 @@ export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hours
         </div>
       </div>
 
-      {/* Hourly — 2×2 grid */}
-      <div className="rounded-xl px-3 py-2.5 grid grid-cols-2 gap-x-3 gap-y-1 text-center" style={{ background: "var(--color-muted)" }}>
-        {[
-          { label: `Gross${t.perHour}`, plnVal: hourlyPrimaryPLN },
-          { label: `Net${t.perHour}`, plnVal: hourlySecPLN },
-        ].map(({ label, plnVal }) => (
-          <div key={label}>
-            <div className="text-xs mb-0.5" style={{ color: "var(--color-muted-foreground)" }}>{label}</div>
-            <div className="text-sm font-semibold tabular-nums" style={{ fontFamily: "var(--font-display)", color: "var(--color-foreground)" }}>
-              {fmt(fromPLN(plnVal, currency), currency, 2)}
-            </div>
-            {currency !== "PLN" && (
-              <div className="text-xs tabular-nums" style={{ color: "var(--color-muted-foreground)" }}>
-                {fmt(plnVal, "PLN")}
+      {/* Hourly rates — all currencies */}
+      <div className="rounded-xl px-3 py-3 flex flex-col gap-3" style={{ background: "var(--color-muted)" }}>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: `Gross${t.perHour}`, plnVal: hourlyPrimaryPLN },
+            { label: `Net${t.perHour}`, plnVal: hourlySecPLN },
+          ].map(({ label, plnVal }) => (
+            <div key={label} className="flex flex-col gap-1">
+              <div className="text-xs font-semibold" style={{ color: "var(--color-muted-foreground)" }}>
+                {label}
               </div>
-            )}
-          </div>
-        ))}
+              <div className="text-sm font-semibold tabular-nums" style={{ fontFamily: "var(--font-display)", color: "var(--color-foreground)" }}>
+                {fmt(fromPLN(plnVal, currency), currency, 2)}
+              </div>
+              {/* All currencies for this rate */}
+              <div className="text-xs tabular-nums space-y-0.5">
+                {["USD", "EUR", "PLN"].map((c) => (
+                  <div key={c} style={{ color: "var(--color-muted-foreground)" }}>
+                    {fmt(fromPLN(plnVal, c as Currency), c as Currency, 2)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
