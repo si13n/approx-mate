@@ -1,4 +1,5 @@
 import { Currency, InputType } from "../types";
+import { SYM } from "../lib/formatting";
 
 interface CalculatorInputPanelProps {
   amount: number;
@@ -16,8 +17,6 @@ interface CalculatorInputPanelProps {
   quickScenarios: Array<{ label: string; amount: number; currency: Currency; type: InputType }>;
   t: Record<string, string>;
 }
-
-const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
 
 function InputModeToggle({ inputType, onInputTypeChange, t }: { inputType: InputType; onInputTypeChange: (type: InputType) => void; t: Record<string, string> }) {
   return (

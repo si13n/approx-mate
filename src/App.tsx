@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick, trackTaxProfileOpen } from "./lib/analytics";
 import { useTaxProfile } from "./lib/useTaxProfile";
+import { RATES, fmt, toPLN, fromPLN, RATES_UPDATED_AT } from "./lib/formatting";
 import { TaxProfileDisplay } from "./components/TaxProfileDisplay";
 import { B2BSettingsModal } from "./components/B2BSettingsModal";
 import { UoPSettingsModal } from "./components/UoPSettingsModal";
 import { ComparisonPage } from "./components/ComparisonPage";
-import { CalculatorInputPanel } from "./components/CalculatorInputPanel";
-import { CalculatorResults } from "./components/CalculatorResults";
+import { CalculatorWorkspace } from "./components/CalculatorWorkspace";
 import { Currency, InputType, Lang } from "./types";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
@@ -85,23 +85,12 @@ const T = {
 
 // ── Types (imported from types.ts) ────────────────────────────────────────
 
-// ── Exchange rates ─────────────────────────────────────────────────────────
-const RATES: Record<string, number> = { PLN_PLN: 1, USD_PLN: 3.85, EUR_PLN: 4.25 };
-const RATES_UPDATED_AT = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-function toPLN(a: number, from: Currency) { return a * (RATES[`${from}_PLN`] ?? 1); }
-function fromPLN(a: number, to: Currency) { return a / (RATES[`${to}_PLN`] ?? 1); }
+// ── Exchange rates (imported from lib/formatting) ──────────────────────────
 
 // ── Tax calculations (delegated to configurable engine) ────────────────────
 import { calculateB2BFromGross, calculateB2BFromNet, calculateUoPFromGross, calculateUoPFromNet } from "./lib/taxCalculations";
 
-// ── Formatters ─────────────────────────────────────────────────────────────
-const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
-const SUF: Record<Currency, string> = { USD: "", EUR: "", PLN: " PLN" };
-
-function fmt(amount: number, currency: Currency, dec = 0): string {
-  const n = Math.round(amount * 10 ** dec) / 10 ** dec;
-  return `${SYM[currency]}${n.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec })}${SUF[currency]}`;
-}
+// ── Formatters (imported from lib/formatting) ──────────────────────────────
 
 
 // ── App ────────────────────────────────────────────────────────────────────
@@ -175,11 +164,6 @@ export default function App() {
     { label: "20k PLN gross", amount: 20000, currency: "PLN" as Currency, type: "gross" as InputType },
   ];
 
-  const currSymbol = SYM[currency];
-  const showPLNLabel = currency === "PLN";
-  const sliderMax = currency === "PLN" ? 50000 : 10000;
-  const sliderCenter = (1000 + sliderMax) / 2;
-
   if (showComparison) {
     return <ComparisonPage onBack={() => setShowComparison(false)} />;
   }
@@ -245,14 +229,14 @@ export default function App() {
           />
         )}
 
-        {/* ── INPUT PANEL ── */}
-        <CalculatorInputPanel
+        {/* ── WORKSPACE (2-column on desktop, 1-column on mobile) ── */}
+        <CalculatorWorkspace
           amount={amount}
           rawAmount={rawAmount}
           currency={currency}
           inputType={inputType}
           sliderValue={sliderValue}
-          onAmountChange={(val) => { setRawAmount(val); trackCalculatorUsed(); }}
+          onAmountChange={(val) => setRawAmount(val)}
           onSliderChange={(val) => setSliderValue(val)}
           onCurrencyChange={(c) => { setCurrency(c); trackCurrencyChanged(c); }}
           onInputTypeChange={(type) => { setInputType(type); trackModeChanged(type); }}
@@ -260,15 +244,7 @@ export default function App() {
           onOpenUoPSettings={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
           onQuickScenarioClick={(label) => trackQuickScenarioClick(label)}
           quickScenarios={quickScenarios}
-          t={t}
-        />
-
-        {/* ── RESULTS ── */}
-        <CalculatorResults
           results={results}
-          amount={amount}
-          currency={currency}
-          inputType={inputType}
           hoursPerMonth={hoursPerMonth}
           onCompareClick={() => setShowComparison(true)}
           recruiterMessage={recruiterMessage}
