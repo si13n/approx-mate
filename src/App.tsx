@@ -7,6 +7,7 @@ import { B2BSettingsModal } from "./components/B2BSettingsModal";
 import { UoPSettingsModal } from "./components/UoPSettingsModal";
 import { ComparisonPage } from "./components/ComparisonPage";
 import { CalculatorWorkspace } from "./components/CalculatorWorkspace";
+import { Header } from "./components/Header";
 import { Currency, InputType, Lang } from "./types";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
@@ -172,60 +173,15 @@ export default function App() {
     <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
       <div className="max-w-lg mx-auto px-2 py-4 flex flex-col gap-3">
 
-        {/* Brand + lang */}
-        <div className="flex items-center justify-between">
-          <div
-            className="flex items-center gap-2.5 cursor-pointer transition-opacity hover:opacity-75"
-            onClick={() => { setLang("en"); setInputType("net"); setRawAmount("5000"); setCurrency("USD"); setSliderValue(5000); setCopied(false); }}
-          >
-            <div
-              className="flex items-center justify-center rounded-xl shrink-0"
-              style={{ width: 38, height: 38, background: "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)", boxShadow: "0 2px 8px rgba(59,130,246,0.3)" }}
-            >
-              <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "#fff", fontFamily: "var(--font-display)" }}>≈</span>
-            </div>
-            <span style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 700, color: "var(--color-foreground)", letterSpacing: "-0.02em" }}>
-              approxmate
-            </span>
-          </div>
-          <div className="flex items-center gap-2" style={{ fontSize: "0.75rem" }}>
-            {(["en", "pl", "ua"] as Lang[]).map((l, i) => (
-              <span key={l}>
-                {i > 0 && <span style={{ color: "var(--color-muted-foreground)", margin: "0 0.5rem" }}>|</span>}
-                <button
-                  onClick={() => { setLang(l); trackLanguageChanged(l); }}
-                  className="uppercase transition-opacity hover:opacity-100"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: lang === l ? "var(--color-foreground)" : "var(--color-muted-foreground)",
-                    cursor: "pointer",
-                    padding: 0,
-                    fontWeight: lang === l ? 500 : 400,
-                    opacity: lang === l ? 1 : 0.6,
-                  }}
-                >
-                  {l}
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Main title */}
-        <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.375rem", fontWeight: 400, color: "var(--color-foreground)", letterSpacing: "-0.02em", marginBottom: 0.5 }}>
-            {t.title}
-          </h1>
-        </div>
-
-        {/* Tax Profile Display */}
+        {/* Header */}
         {isLoaded && (
-          <TaxProfileDisplay
-            profile={profile}
-            onB2BClick={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
-            onUoPClick={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
-            onCompareClick={() => setShowComparison(true)}
+          <Header
+            lang={lang}
+            onLanguageChange={(l) => { setLang(l); trackLanguageChanged(l); }}
+            b2bLabel={`${profile.b2b.ryczaltRate}% ryczałt`}
+            uopLabel="Standard UoP"
+            onEditTaxProfile={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
+            onCompare={() => setShowComparison(true)}
           />
         )}
 
