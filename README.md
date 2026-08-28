@@ -151,7 +151,7 @@ pnpm build
 pnpm deploy
 ```
 
-The production custom domain is `https://approxmate.me`; `www.approxmate.me` redirects to the canonical hostname.
+The target production custom domain is `https://approxmate.me`; after the domain is moved to Cloudflare, `www.approxmate.me` will redirect to the canonical hostname.
 
 ## Testing
 
