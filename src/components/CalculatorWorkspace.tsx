@@ -43,14 +43,14 @@ export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
       <HeroSection t={props.t} />
 
       {/* Two-column workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Input Panel */}
         <div className="flex flex-col gap-6">
           <div>
             <span className="text-xs font-semibold uppercase" style={{ color: "var(--color-muted-foreground)" }}>
               YOUR TARGET
             </span>
-            <h2 className="text-2xl font-bold mt-2" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 className="text-2xl font-bold mt-1" style={{ fontFamily: "var(--font-display)", lineHeight: "1.2" }}>
               What do you want to know?
             </h2>
           </div>
