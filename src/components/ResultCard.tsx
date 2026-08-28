@@ -9,10 +9,12 @@ interface ResultCardProps {
   inputType: InputType;
   hoursPerMonth: number;
   isB2B: boolean;
+  badge?: string;
+  badgeColor?: "blue" | "teal";
   t: Record<string, string>;
 }
 
-export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hoursPerMonth, isB2B, t }: ResultCardProps) {
+export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hoursPerMonth, isB2B, badge, badgeColor = "blue", t }: ResultCardProps) {
   const primaryPLN = inputType === "net" ? grossPLN : netPLN;
   const secondaryPLN = inputType === "net" ? netPLN : grossPLN;
   const primaryLabel = inputType === "net" ? (isB2B ? t.invoice : t.brutto) : t.takeHome;
@@ -32,16 +34,29 @@ export function ResultCard({ label, grossPLN, netPLN, currency, inputType, hours
       className="rounded-2xl p-4 flex flex-col gap-3 text-center"
       style={{ background: "#fff", border: "1px solid var(--color-border)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
     >
-      {/* Header */}
-      <span
-        className="text-xs font-semibold px-2 py-0.5 rounded-full self-center"
-        style={{
-          background: isB2B ? "rgba(59,130,246,0.1)" : "rgba(6,182,212,0.1)",
-          color: isB2B ? "#2563EB" : "#0891B2",
-        }}
-      >
-        {label}
-      </span>
+      {/* Header with badge */}
+      <div className="flex items-center justify-between gap-2">
+        <span
+          className="text-xs font-semibold px-2 py-0.5 rounded-full"
+          style={{
+            background: isB2B ? "rgba(59,130,246,0.1)" : "rgba(6,182,212,0.1)",
+            color: isB2B ? "#2563EB" : "#0891B2",
+          }}
+        >
+          {label}
+        </span>
+        {badge && (
+          <span
+            className="text-xs font-semibold px-2 py-0.5 rounded-full"
+            style={{
+              background: badgeColor === "blue" ? "rgba(59,130,246,0.1)" : "rgba(6,182,212,0.1)",
+              color: badgeColor === "blue" ? "#2563EB" : "#0891B2",
+            }}
+          >
+            {badge}
+          </span>
+        )}
+      </div>
 
       {/* Primary value */}
       <div>

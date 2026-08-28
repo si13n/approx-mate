@@ -1,5 +1,6 @@
 import { Currency, InputType } from "../types";
 import { SYM } from "../lib/formatting";
+import { TaxProfilePills } from "./TaxProfilePills";
 
 interface CalculatorInputPanelProps {
   amount: number;
@@ -15,6 +16,8 @@ interface CalculatorInputPanelProps {
   onOpenUoPSettings: () => void;
   onQuickScenarioClick?: (label: string) => void;
   quickScenarios: Array<{ label: string; amount: number; currency: Currency; type: InputType }>;
+  b2bLabel?: string;
+  uopLabel?: string;
   t: Record<string, string>;
 }
 
@@ -202,6 +205,14 @@ export function CalculatorInputPanel(props: CalculatorInputPanelProps) {
       <CurrencySwitcher currency={props.currency} onCurrencyChange={props.onCurrencyChange} />
 
       <QuickAmountSlider sliderValue={props.sliderValue} sliderMax={sliderMax} onSliderChange={handleSliderChange} />
+
+      {(props.b2bLabel || props.uopLabel) && (
+        <TaxProfilePills
+          b2bLabel={props.b2bLabel || "B2B"}
+          uopLabel={props.uopLabel || "UoP"}
+          onEdit={props.onOpenB2BSettings}
+        />
+      )}
 
       <QuickScenarios scenarios={props.quickScenarios} onSelectScenario={handleQuickScenario} t={props.t} />
     </div>
