@@ -1,13 +1,16 @@
 import { useState, useMemo, useEffect } from "react";
 import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick, trackTaxProfileOpen } from "./lib/analytics";
 import { useTaxProfile } from "./lib/useTaxProfile";
+import { RATES, fmt, toPLN, fromPLN, RATES_UPDATED_AT } from "./lib/formatting";
 import { TaxProfileDisplay } from "./components/TaxProfileDisplay";
 import { B2BSettingsModal } from "./components/B2BSettingsModal";
 import { UoPSettingsModal } from "./components/UoPSettingsModal";
 import { ComparisonPage } from "./components/ComparisonPage";
+import { CalculatorWorkspace } from "./components/CalculatorWorkspace";
+import { Header } from "./components/Header";
+import { Currency, InputType, Lang } from "./types";
 
 // ── i18n ───────────────────────────────────────────────────────────────────
-type Lang = "en" | "pl" | "ua";
 
 const T = {
   en: {
@@ -81,138 +84,15 @@ const T = {
   },
 };
 
-// ── Types ──────────────────────────────────────────────────────────────────
-type Currency = "PLN" | "USD" | "EUR";
-type InputType = "gross" | "net";
+// ── Types (imported from types.ts) ────────────────────────────────────────
 
-// ── Exchange rates ─────────────────────────────────────────────────────────
-const RATES: Record<string, number> = { PLN_PLN: 1, USD_PLN: 3.85, EUR_PLN: 4.25 };
-const RATES_UPDATED_AT = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-function toPLN(a: number, from: Currency) { return a * (RATES[`${from}_PLN`] ?? 1); }
-function fromPLN(a: number, to: Currency) { return a / (RATES[`${to}_PLN`] ?? 1); }
+// ── Exchange rates (imported from lib/formatting) ──────────────────────────
 
 // ── Tax calculations (delegated to configurable engine) ────────────────────
 import { calculateB2BFromGross, calculateB2BFromNet, calculateUoPFromGross, calculateUoPFromNet } from "./lib/taxCalculations";
 
-// ── Formatters ─────────────────────────────────────────────────────────────
-const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
-const SUF: Record<Currency, string> = { USD: "", EUR: "", PLN: " PLN" };
+// ── Formatters (imported from lib/formatting) ──────────────────────────────
 
-function fmt(amount: number, currency: Currency, dec = 0): string {
-  const n = Math.round(amount * 10 ** dec) / 10 ** dec;
-  return `${SYM[currency]}${n.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec })}${SUF[currency]}`;
-}
-
-// ── SalaryCard ─────────────────────────────────────────────────────────────
-function SalaryCard({
-  label,
-  grossPLN,
-  netPLN,
-  currency,
-  inputType,
-  hoursPerMonth,
-  isB2B,
-  t,
-}: {
-  label: string;
-  grossPLN: number;
-  netPLN: number;
-  currency: Currency;
-  inputType: InputType;
-  hoursPerMonth: number;
-  isB2B: boolean;
-  t: typeof T["en"];
-}) {
-  const primaryPLN = inputType === "net" ? grossPLN : netPLN;
-  const secondaryPLN = inputType === "net" ? netPLN : grossPLN;
-  const primaryLabel = inputType === "net" ? (isB2B ? t.invoice : t.brutto) : t.takeHome;
-  const secondaryLabel = inputType === "net" ? t.takeHome : (isB2B ? t.invoice : t.brutto);
-  const hourlyPrimaryPLN = primaryPLN / hoursPerMonth;
-  const hourlySecPLN = secondaryPLN / hoursPerMonth;
-
-  const ALL: Currency[] = ["USD", "EUR", "PLN"];
-  const others = ALL.filter((c) => c !== currency);
-
-  function allCurrencies(plnVal: number, dec = 0) {
-    return others.map((c) => fmt(fromPLN(plnVal, c), c, dec)).join(" · ");
-  }
-
-  return (
-    <div
-      className="rounded-2xl p-4 flex flex-col gap-3 text-center"
-      style={{ background: "#fff", border: "1px solid var(--color-border)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-    >
-      {/* Header */}
-      <span
-        className="text-xs font-semibold px-2 py-0.5 rounded-full self-center"
-        style={{
-          background: isB2B ? "rgba(59,130,246,0.1)" : "rgba(6,182,212,0.1)",
-          color: isB2B ? "#2563EB" : "#0891B2",
-        }}
-      >
-        {label}
-      </span>
-
-      {/* Primary value */}
-      <div>
-        <div className="text-xs font-medium mb-1" style={{ color: "var(--color-muted-foreground)" }}>
-          {primaryLabel}
-        </div>
-        <div
-          className="font-bold tabular-nums leading-none"
-          style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", color: "var(--color-foreground)", letterSpacing: "-0.03em" }}
-        >
-          {fmt(fromPLN(primaryPLN, currency), currency)}
-          <span className="text-sm font-medium ml-1" style={{ color: "var(--color-muted-foreground)" }}>
-            {t.perMonth}
-          </span>
-        </div>
-        <div className="text-xs tabular-nums mt-1 leading-relaxed" style={{ color: "var(--color-muted-foreground)" }}>
-          {allCurrencies(primaryPLN)}
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div style={{ height: 1, background: "var(--color-border)" }} />
-
-      {/* Secondary value */}
-      <div>
-        <div className="text-xs font-medium mb-0.5" style={{ color: "var(--color-muted-foreground)" }}>
-          {secondaryLabel}
-        </div>
-        <div
-          className="font-semibold tabular-nums"
-          style={{ fontFamily: "var(--font-display)", fontSize: "1rem", color: "var(--color-foreground)" }}
-        >
-          {fmt(fromPLN(secondaryPLN, currency), currency)}
-        </div>
-        <div className="text-xs tabular-nums mt-0.5" style={{ color: "var(--color-muted-foreground)" }}>
-          {allCurrencies(secondaryPLN)}
-        </div>
-      </div>
-
-      {/* Hourly — 2×2 grid */}
-      <div className="rounded-xl px-3 py-2.5 grid grid-cols-2 gap-x-3 gap-y-1 text-center" style={{ background: "var(--color-muted)" }}>
-        {[
-          { label: `Gross${t.perHour}`, plnVal: hourlyPrimaryPLN },
-          { label: `Net${t.perHour}`, plnVal: hourlySecPLN },
-        ].map(({ label, plnVal }) => (
-          <div key={label}>
-            <div className="text-xs mb-0.5" style={{ color: "var(--color-muted-foreground)" }}>{label}</div>
-            <div className="text-sm font-semibold tabular-nums" style={{ fontFamily: "var(--font-display)", color: "var(--color-foreground)" }}>
-              {fmt(fromPLN(plnVal, currency), currency, 2)}
-            </div>
-            {currency !== "PLN" && (
-              <div className="text-xs tabular-nums" style={{ color: "var(--color-muted-foreground)" }}>
-                {fmt(plnVal, "PLN")}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ── App ────────────────────────────────────────────────────────────────────
 export default function App() {
@@ -285,263 +165,49 @@ export default function App() {
     { label: "20k PLN gross", amount: 20000, currency: "PLN" as Currency, type: "gross" as InputType },
   ];
 
-  const currSymbol = SYM[currency];
-  const showPLNLabel = currency === "PLN";
-  const sliderMax = currency === "PLN" ? 50000 : 10000;
-  const sliderCenter = (1000 + sliderMax) / 2;
-
   if (showComparison) {
     return <ComparisonPage onBack={() => setShowComparison(false)} />;
   }
 
   return (
     <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
-      <div className="max-w-lg mx-auto px-2 py-4 flex flex-col gap-3">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-6">
 
-        {/* Brand + lang */}
-        <div className="flex items-center justify-between">
-          <div
-            className="flex items-center gap-2.5 cursor-pointer transition-opacity hover:opacity-75"
-            onClick={() => { setLang("en"); setInputType("net"); setRawAmount("5000"); setCurrency("USD"); setSliderValue(5000); setCopied(false); }}
-          >
-            <div
-              className="flex items-center justify-center rounded-xl shrink-0"
-              style={{ width: 38, height: 38, background: "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)", boxShadow: "0 2px 8px rgba(59,130,246,0.3)" }}
-            >
-              <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "#fff", fontFamily: "var(--font-display)" }}>≈</span>
-            </div>
-            <span style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontWeight: 700, color: "var(--color-foreground)", letterSpacing: "-0.02em" }}>
-              approxmate
-            </span>
-          </div>
-          <div className="flex items-center gap-2" style={{ fontSize: "0.75rem" }}>
-            {(["en", "pl", "ua"] as Lang[]).map((l, i) => (
-              <span key={l}>
-                {i > 0 && <span style={{ color: "var(--color-muted-foreground)", margin: "0 0.5rem" }}>|</span>}
-                <button
-                  onClick={() => { setLang(l); trackLanguageChanged(l); }}
-                  className="uppercase transition-opacity hover:opacity-100"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: lang === l ? "var(--color-foreground)" : "var(--color-muted-foreground)",
-                    cursor: "pointer",
-                    padding: 0,
-                    fontWeight: lang === l ? 500 : 400,
-                    opacity: lang === l ? 1 : 0.6,
-                  }}
-                >
-                  {l}
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Main title */}
-        <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.375rem", fontWeight: 400, color: "var(--color-foreground)", letterSpacing: "-0.02em", marginBottom: 0.5 }}>
-            {t.title}
-          </h1>
-        </div>
-
-        {/* Tax Profile Display */}
+        {/* Header */}
         {isLoaded && (
-          <TaxProfileDisplay
-            profile={profile}
-            onB2BClick={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
-            onUoPClick={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
-            onCompareClick={() => setShowComparison(true)}
+          <Header
+            lang={lang}
+            onLanguageChange={(l) => { setLang(l); trackLanguageChanged(l); }}
+            b2bLabel={`${profile.b2b.ryczaltRate}% ryczałt`}
+            uopLabel="Standard UoP"
+            onEditTaxProfile={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
+            onCompare={() => setShowComparison(true)}
           />
         )}
 
-        {/* ── INPUT CARD ── */}
-        <div
-          className="rounded-2xl p-3 flex flex-col gap-3"
-          style={{ background: "var(--color-card)", border: "1px solid var(--color-border)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
-        >
-          {/* 1. Gross / Net — primary toggle */}
-          <div className="grid grid-cols-2 rounded-xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
-            {(["net", "gross"] as InputType[]).map((v, i) => (
-              <button
-                key={v}
-                onClick={() => { setInputType(v); trackModeChanged(v); }}
-                className="py-3 flex flex-col items-center gap-0.5 transition-all duration-200"
-                style={{
-                  background: inputType === v ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
-                  color: inputType === v ? "#fff" : "var(--color-muted-foreground)",
-                  borderLeft: i > 0 ? "1px solid var(--color-border)" : "none",
-                }}
-              >
-                <span style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: 600 }}>
-                  {v === "net" ? t.net : t.gross}
-                </span>
-                <span style={{ fontSize: "0.6875rem", opacity: inputType === v ? 0.8 : 0.6 }}>
-                  {v === "net" ? t.netDesc : t.grossDesc}
-                </span>
-              </button>
-            ))}
-          </div>
-
-          {/* 2. Amount */}
-          <div>
-            <div className="relative">
-              {!showPLNLabel && (
-                <span
-                  className="absolute left-4 top-1/2 -translate-y-1/2 select-none"
-                  style={{ fontSize: "1.5rem", fontWeight: 500, color: "var(--color-muted-foreground)", fontFamily: "var(--font-display)" }}
-                >
-                  {currSymbol}
-                </span>
-              )}
-              <input
-                type="number"
-                value={rawAmount}
-                onChange={(e) => { setRawAmount(e.target.value); setSliderValue(sliderCenter); }}
-                placeholder="0"
-                className="w-full rounded-xl outline-none transition-all tabular-nums"
-                style={{
-                  paddingLeft: showPLNLabel ? "1.125rem" : "2.75rem",
-                  paddingRight: showPLNLabel ? "4rem" : "1.125rem",
-                  paddingTop: "0.875rem",
-                  paddingBottom: "0.875rem",
-                  fontSize: "2rem",
-                  fontWeight: 700,
-                  fontFamily: "var(--font-display)",
-                  letterSpacing: "-0.03em",
-                  background: "var(--color-muted)",
-                  border: "2px solid transparent",
-                  color: "var(--color-foreground)",
-                  textAlign: "center",
-                }}
-                onFocus={(e) => { e.target.style.borderColor = "#3B82F6"; e.target.style.background = "#fff"; }}
-                onBlur={(e) => { e.target.style.borderColor = "transparent"; e.target.style.background = "var(--color-muted)"; }}
-              />
-              {showPLNLabel && (
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base font-semibold select-none" style={{ color: "var(--color-muted-foreground)" }}>
-                  PLN
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* 3. Currency */}
-          <div className="grid grid-cols-3 rounded-xl overflow-hidden" style={{ border: "1px solid var(--color-border)" }}>
-            {(["USD", "EUR", "PLN"] as Currency[]).map((c, i) => (
-              <button
-                key={c}
-                onClick={() => { setCurrency(c); trackCurrencyChanged(c); }}
-                className="py-2 text-sm font-semibold transition-all duration-150"
-                style={{
-                  background: currency === c ? "linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)" : "var(--color-muted)",
-                  color: currency === c ? "#fff" : "var(--color-muted-foreground)",
-                  borderLeft: i > 0 ? "1px solid var(--color-border)" : "none",
-                  fontFamily: "var(--font-display)",
-                }}
-              >
-                {c === "USD" ? "$ USD" : c === "EUR" ? "€ EUR" : "PLN"}
-              </button>
-            ))}
-          </div>
-
-          {/* 4. Salary slider */}
-          <div className="flex flex-col gap-2">
-            <input
-              type="range" min={1000} max={sliderMax} step={100} value={sliderValue}
-              onChange={(e) => { const val = e.target.value; setSliderValue(Number(val)); setRawAmount(val); }}
-              className="w-full accent-blue-500"
-              style={{ height: 4 }}
-            />
-          </div>
-        </div>
-
-        {/* ── RESULTS ── */}
-        {results && amount > 0 && (
-          <>
-            {/* Two cards */}
-            <div className="grid grid-cols-2 gap-3">
-              <SalaryCard
-                label={inputType === "gross" ? t.ifB2B : "B2B"}
-                grossPLN={results.b2bGrossPLN}
-                netPLN={results.b2bNetPLN}
-                currency={currency}
-                inputType={inputType}
-                hoursPerMonth={hoursPerMonth}
-                isB2B={true}
-                t={t}
-              />
-              <SalaryCard
-                label={inputType === "gross" ? t.ifUoP : "UoP"}
-                grossPLN={results.uopGrossPLN}
-                netPLN={results.uopNetPLN}
-                currency={currency}
-                inputType={inputType}
-                hoursPerMonth={hoursPerMonth}
-                isB2B={false}
-                t={t}
-              />
-            </div>
-          </>
-        )}
-
-        {/* Recruiter message */}
-        {recruiterMessage && (
-          <div
-            className="rounded-2xl p-5 flex flex-col gap-3"
-            style={{ background: "var(--color-card)", border: "1px solid var(--color-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-muted-foreground)" }}>
-                {t.recruiterTitle}
-              </span>
-              <button
-                onClick={() => { navigator.clipboard.writeText(recruiterMessage); setCopied(true); setTimeout(() => setCopied(false), 2000); trackRecruiterMessageCopy(); }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-                style={{
-                  background: copied ? "#DBEAFE" : "var(--color-muted)",
-                  color: copied ? "#2563EB" : "var(--color-muted-foreground)",
-                  border: "1px solid var(--color-border)",
-                }}
-              >
-                {copied ? (
-                  <><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>{t.recruiterCopied}</>
-                ) : (
-                  <><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="4" y="1" width="7" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M1 4.5V10a1 1 0 001 1h5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>{t.recruiterCopy}</>
-                )}
-              </button>
-            </div>
-            <p className="text-sm" style={{ color: "var(--color-foreground)", lineHeight: "1.65" }}>
-              {recruiterMessage}
-            </p>
-          </div>
-        )}
-
-        {/* Quick scenarios */}
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-muted-foreground)" }}>
-            {t.quickScenarios}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {quickScenarios.map((s) => (
-              <button
-                key={s.label}
-                onClick={() => { setRawAmount(String(s.amount)); setCurrency(s.currency); setInputType(s.type); trackQuickScenarioClick(s.label); }}
-                className="px-3.5 py-2 rounded-full text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98]"
-                style={{
-                  background: "var(--color-card)",
-                  border: "1px solid var(--color-border)",
-                  color: "var(--color-foreground)",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                  fontFamily: "var(--font-display)",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#3B82F6"; (e.currentTarget as HTMLElement).style.color = "#3B82F6"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--color-border)"; (e.currentTarget as HTMLElement).style.color = "var(--color-foreground)"; }}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* ── WORKSPACE (2-column on desktop, 1-column on mobile) ── */}
+        <CalculatorWorkspace
+          amount={amount}
+          rawAmount={rawAmount}
+          currency={currency}
+          inputType={inputType}
+          sliderValue={sliderValue}
+          onAmountChange={(val) => setRawAmount(val)}
+          onSliderChange={(val) => setSliderValue(val)}
+          onCurrencyChange={(c) => { setCurrency(c); trackCurrencyChanged(c); }}
+          onInputTypeChange={(type) => { setInputType(type); trackModeChanged(type); }}
+          onOpenB2BSettings={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
+          onOpenUoPSettings={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
+          onQuickScenarioClick={(label) => trackQuickScenarioClick(label)}
+          quickScenarios={quickScenarios}
+          results={results}
+          hoursPerMonth={hoursPerMonth}
+          onCompareClick={() => setShowComparison(true)}
+          recruiterMessage={recruiterMessage}
+          onCopyMessage={() => { navigator.clipboard.writeText(recruiterMessage); setCopied(true); setTimeout(() => setCopied(false), 2000); trackRecruiterMessageCopy(); }}
+          copied={copied}
+          t={t}
+        />
 
         {/* Footer */}
         <div className="flex flex-col items-center gap-1.5 pb-4">
