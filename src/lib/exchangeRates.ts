@@ -66,9 +66,12 @@ export async function fetchExchangeRatesOrFallback(fetcher: typeof fetch = fetch
   }
 }
 
-export function formatRateDate(effectiveDate: string): string {
+export function formatRateDate(
+  effectiveDate: string,
+  locale = "en-US",
+): string {
   if (!effectiveDate) return "built-in fallback";
-  return new Date(`${effectiveDate}T00:00:00Z`).toLocaleDateString("en-US", {
+  return new Date(`${effectiveDate}T00:00:00Z`).toLocaleDateString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
