@@ -161,8 +161,8 @@ describe('createCalculationEngine', () => {
     });
   });
 
-  it('should use fallback rate of 1 for missing currency', () => {
-    const result = engine.toPLN(100, 'USD' as any);
+  it('should use the configured USD rate', () => {
+    const result = engine.toPLN(100, 'USD');
     expect(result).toBe(400);
   });
 });

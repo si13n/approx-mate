@@ -1,4 +1,4 @@
-function gtag(...args: any[]): void {
+function gtag(...args: unknown[]): void {
   if (typeof window.gtag === "function") {
     window.gtag(...args);
   }
@@ -71,7 +71,7 @@ export function trackTaxProfileReset(): void {
 
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
-    dataLayer?: any[];
+    gtag?: (...args: unknown[]) => void;
+    dataLayer?: unknown[];
   }
 }

@@ -1,258 +1,236 @@
-import { useState, useMemo, useEffect } from "react";
-import { trackPageView, trackCalculatorUsed, trackModeChanged, trackCurrencyChanged, trackLanguageChanged, trackRecruiterMessageCopy, trackQuickScenarioClick, trackFeedbackClick, trackTaxProfileOpen } from "./lib/analytics";
-import { useTaxProfile } from "./lib/useTaxProfile";
-import { fmt, toPLN, fromPLN } from "./lib/formatting";
-import { formatRateDate, useExchangeRates } from "./lib/exchangeRates";
-import { TaxProfileDisplay } from "./components/TaxProfileDisplay";
-import { B2BSettingsModal } from "./components/B2BSettingsModal";
-import { UoPSettingsModal } from "./components/UoPSettingsModal";
-import { ComparisonPage } from "./components/ComparisonPage";
-import { CalculatorWorkspace } from "./components/CalculatorWorkspace";
-import { Header } from "./components/Header";
-import { Currency, InputType, Lang } from "./types";
+import { useEffect, useMemo, useState } from "react"
+import { AppShell } from "./components/AppShell"
+import { Footer } from "./components/Footer"
+import { Header } from "./components/Header"
+import { TrustStrip } from "./components/TrustStrip"
+import { CalculatorWorkspace } from "./components/calculator/CalculatorWorkspace"
+import type { QuickScenario } from "./components/calculator/TargetPanel"
+import { ComparisonPage } from "./components/comparison/ComparisonPage"
+import { TaxProfileModal } from "./components/tax-profile/TaxProfileModal"
+import { translations } from "./i18n/translations"
+import {
+  trackCalculatorUsed,
+  trackCurrencyChanged,
+  trackLanguageChanged,
+  trackModeChanged,
+  trackPageView,
+  trackQuickScenarioClick,
+  trackRecruiterMessageCopy,
+  trackTaxProfileOpen,
+} from "./lib/analytics"
+import { formatRateDate, useExchangeRates } from "./lib/exchangeRates"
+import { fmt, toPLN } from "./lib/formatting"
+import {
+  calculateB2BFromGross,
+  calculateB2BFromNet,
+  calculateUoPFromGross,
+  calculateUoPFromNet,
+} from "./lib/taxCalculations"
+import { useTaxProfile } from "./lib/useTaxProfile"
+import type { Currency, InputType, Lang } from "./types"
 
-// ── i18n ───────────────────────────────────────────────────────────────────
-
-const T = {
-  en: {
-    title: "Salary Calculator",
-    gross: "Gross",
-    net: "Net",
-    grossDesc: "I know the offered gross",
-    netDesc: "I know my desired take-home",
-    invoice: "Invoice (gross)",
-    brutto: "Gross (brutto)",
-    takeHome: "Take-home",
-    perMonth: "/mo",
-    perHour: "/h",
-    hoursPerMonth: "h / month",
-    ifB2B: "If B2B",
-    ifUoP: "If UoP",
-    needToInvoice: "Need to invoice",
-    needGross: "Need gross",
-    quickScenarios: "Quick scenarios",
-    recruiterTitle: "Message for recruiter",
-    recruiterCopy: "Copy",
-    recruiterCopied: "Copied!",
-    feedback: "Send feedback",
-    disclaimer: "ApproxMate · Poland 2026",
-  },
-  pl: {
-    title: "Kalkulator wynagrodzeń",
-    gross: "Brutto",
-    net: "Netto",
-    grossDesc: "Znam oferowane brutto",
-    netDesc: "Znam oczekiwane netto",
-    invoice: "Faktura (brutto)",
-    brutto: "Brutto",
-    takeHome: "Na rękę",
-    perMonth: "/mies",
-    perHour: "/h",
-    hoursPerMonth: "godz / miesiąc",
-    ifB2B: "Jeśli B2B",
-    ifUoP: "Jeśli UoP",
-    needToInvoice: "Musisz fakturować",
-    needGross: "Potrzebujesz brutto",
-    quickScenarios: "Szybkie scenariusze",
-    recruiterTitle: "Wiadomość dla rekrutera",
-    recruiterCopy: "Kopiuj",
-    recruiterCopied: "Skopiowano!",
-    feedback: "Prześlij opinię",
-    disclaimer: "ApproxMate · Poland 2026",
-  },
-  ua: {
-    title: "Калькулятор зарплати",
-    gross: "Брутто",
-    net: "Нетто",
-    grossDesc: "Знаю запропоноване брутто",
-    netDesc: "Знаю бажане нетто",
-    invoice: "Рахунок (брутто)",
-    brutto: "Брутто",
-    takeHome: "На руки",
-    perMonth: "/міс",
-    perHour: "/год",
-    hoursPerMonth: "год / місяць",
-    ifB2B: "Якщо B2B",
-    ifUoP: "Якщо UoP",
-    needToInvoice: "Треба виставити",
-    needGross: "Треба брутто",
-    quickScenarios: "Швидкі сценарії",
-    recruiterTitle: "Повідомлення для рекрутера",
-    recruiterCopy: "Копіювати",
-    recruiterCopied: "Скопійовано!",
-    feedback: "Зворотній зв'язок",
-    disclaimer: "ApproxMate · Poland 2026",
-  },
-};
-
-// ── Types (imported from types.ts) ────────────────────────────────────────
-
-// ── Exchange rates (imported from lib/formatting) ──────────────────────────
-
-// ── Tax calculations (delegated to configurable engine) ────────────────────
-import { calculateB2BFromGross, calculateB2BFromNet, calculateUoPFromGross, calculateUoPFromNet } from "./lib/taxCalculations";
-
-// ── Formatters (imported from lib/formatting) ──────────────────────────────
-
-
-// ── App ────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [lang, setLang] = useState<Lang>("en");
-  const [inputType, setInputType] = useState<InputType>("net");
-  const [rawAmount, setRawAmount] = useState<string>("5000");
-  const [currency, setCurrency] = useState<Currency>("USD");
-  const [copied, setCopied] = useState(false);
-  const [sliderValue, setSliderValue] = useState<number>(5000);
-  const hoursPerMonth = 160;
-  const { rates, effectiveDate, isFallback } = useExchangeRates();
-
-  // Tax profile management
-  const { profile, updateProfile, resetToDefaults, isLoaded } = useTaxProfile();
-  const [showB2BSettings, setShowB2BSettings] = useState(false);
-  const [showUoPSettings, setShowUoPSettings] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
-
-  const t = T[lang];
-  const amount = parseFloat(rawAmount) || 0;
+  const [lang, setLang] = useState<Lang>("en")
+  const [inputType, setInputType] = useState<InputType>("net")
+  const [rawAmount, setRawAmount] = useState("5000")
+  const [currency, setCurrency] = useState<Currency>("USD")
+  const [sliderValue, setSliderValue] = useState(5000)
+  const [copied, setCopied] = useState(false)
+  const [taxProfileOpen, setTaxProfileOpen] = useState(false)
+  const [showComparison, setShowComparison] = useState(false)
+  const { rates, effectiveDate, isFallback } = useExchangeRates()
+  const { profile, updateProfile, isLoaded } = useTaxProfile()
+  const t = translations[lang]
+  const amount = Number.parseFloat(rawAmount) || 0
+  const hoursPerMonth = 160
+  const quickScenarios = useMemo<QuickScenario[]>(
+    () => [
+      {
+        label: `$3k ${t.netLabel.toLowerCase()}`,
+        amount: 3000,
+        currency: "USD",
+        type: "net",
+      },
+      {
+        label: `$4k ${t.netLabel.toLowerCase()}`,
+        amount: 4000,
+        currency: "USD",
+        type: "net",
+      },
+      {
+        label: `$5k ${t.netLabel.toLowerCase()}`,
+        amount: 5000,
+        currency: "USD",
+        type: "net",
+      },
+      {
+        label: `€3.5k ${t.netLabel.toLowerCase()}`,
+        amount: 3500,
+        currency: "EUR",
+        type: "net",
+      },
+      {
+        label: `20k PLN ${t.grossLabel.toLowerCase()}`,
+        amount: 20000,
+        currency: "PLN",
+        type: "gross",
+      },
+    ],
+    [t],
+  )
 
   useEffect(() => {
-    trackPageView();
-  }, []);
-
+    trackPageView()
+  }, [])
   useEffect(() => {
-    if (amount > 0) {
-      trackCalculatorUsed();
-    }
-  }, [amount]);
+    if (amount > 0) trackCalculatorUsed()
+  }, [amount])
 
   const results = useMemo(() => {
-    if (amount <= 0 || !isLoaded) return null;
-    const monthlyPLN = toPLN(amount, currency, rates);
-
-    let b2bResult, uopResult;
-
-    if (inputType === "gross") {
-      b2bResult = calculateB2BFromGross(monthlyPLN, profile);
-      uopResult = calculateUoPFromGross(monthlyPLN, profile);
-    } else {
-      b2bResult = calculateB2BFromNet(monthlyPLN, profile);
-      uopResult = calculateUoPFromNet(monthlyPLN, profile);
+    if (!isLoaded) return null
+    if (amount <= 0) {
+      return {
+        b2bGrossPLN: 0,
+        b2bNetPLN: 0,
+        uopGrossPLN: 0,
+        uopNetPLN: 0,
+      }
     }
+    const monthlyPLN = toPLN(amount, currency, rates)
+    const b2b =
+      inputType === "gross"
+        ? calculateB2BFromGross(monthlyPLN, profile)
+        : calculateB2BFromNet(monthlyPLN, profile)
+    const uop =
+      inputType === "gross"
+        ? calculateUoPFromGross(monthlyPLN, profile)
+        : calculateUoPFromNet(monthlyPLN, profile)
 
     return {
-      b2bGrossPLN: b2bResult.monthlyGross,
-      b2bNetPLN: b2bResult.monthlyNet,
-      uopGrossPLN: uopResult.monthlyGross,
-      uopNetPLN: uopResult.monthlyNet,
-    };
-  }, [amount, currency, inputType, profile, isLoaded, rates]);
+      b2bGrossPLN: b2b.monthlyGross,
+      b2bNetPLN: b2b.monthlyNet,
+      uopGrossPLN: uop.monthlyGross,
+      uopNetPLN: uop.monthlyNet,
+    }
+  }, [amount, currency, inputType, isLoaded, profile, rates])
 
   const recruiterMessage = useMemo(() => {
-    if (!results || amount <= 0) return "";
-    const inputVal = fmt(amount, currency);
-    const typeLabel = inputType === "net" ? t.net.toLowerCase() : t.gross.toLowerCase();
-    const msgs: Record<Lang, string> = {
-      en: `Hi! I'm currently looking at opportunities in the range of around ${inputVal} ${typeLabel} per month, but I'm flexible depending on the project, team, and growth opportunities. Happy to discuss the details and learn more about the role.`,
-      pl: `Cześć! Aktualnie szukam oportunności w przedziale około ${inputVal} ${typeLabel} miesięcznie, ale jestem elastyczny/a w zależności od projektu, zespołu i możliwości rozwoju. Chętnie omówię szczegóły i dowiem się więcej o stanowisku.`,
-      ua: `Привіт! Шукаю можливості в діапазоні близько ${inputVal} ${typeLabel} на місяць. Розглядаю гнучкість залежно від проєкту, команди та можливостей розвитку. Можемо обговорити деталі щоб дізнатися більше про посаду.`,
-    };
-    return msgs[lang];
-  }, [results, amount, currency, lang, inputType, t]);
+    const type =
+      inputType === "net"
+        ? t.desiredNet.toLowerCase()
+        : t.offeredGross.toLowerCase()
+    return t.recruiterMessage(fmt(amount, currency), type)
+  }, [amount, currency, inputType, t])
 
-  const quickScenarios = [
-    { label: "$3k net", amount: 3000, currency: "USD" as Currency, type: "net" as InputType },
-    { label: "$4k net", amount: 4000, currency: "USD" as Currency, type: "net" as InputType },
-    { label: "$5k net", amount: 5000, currency: "USD" as Currency, type: "net" as InputType },
-    { label: "€3.5k net", amount: 3500, currency: "EUR" as Currency, type: "net" as InputType },
-    { label: "20k PLN gross", amount: 20000, currency: "PLN" as Currency, type: "gross" as InputType },
-  ];
+  const openTaxProfile = () => {
+    setTaxProfileOpen(true)
+    trackTaxProfileOpen()
+  }
 
-  if (showComparison) {
-    return <ComparisonPage onBack={() => setShowComparison(false)} rates={rates} />;
+  const applyScenario = (scenario: QuickScenario) => {
+    setRawAmount(String(scenario.amount))
+    setSliderValue(scenario.amount)
+    setCurrency(scenario.currency)
+    setInputType(scenario.type)
+    trackQuickScenarioClick(scenario.label)
+  }
+
+  const copyRecruiterMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(recruiterMessage)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 2000)
+      trackRecruiterMessageCopy()
+    } catch {
+      setCopied(false)
+    }
   }
 
   return (
-    <div className="min-h-screen w-full" style={{ background: "var(--color-background)", fontFamily: "var(--font-body)" }}>
-      <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-6">
-
-        {/* Header */}
-        {isLoaded && (
+    <div className="min-h-screen bg-page text-content">
+      <div data-dialog-background>
+        <AppShell>
           <Header
             lang={lang}
-            onLanguageChange={(l) => { setLang(l); trackLanguageChanged(l); }}
-            b2bLabel={`${profile.b2b.ryczaltRate}% ryczałt`}
-            uopLabel="Standard UoP"
-            onEditB2B={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
-            onEditUoP={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
-            onCompare={() => setShowComparison(true)}
+            t={t}
+            onLanguageChange={(nextLang) => {
+              setLang(nextLang)
+              trackLanguageChanged(nextLang)
+            }}
           />
-        )}
 
-        {/* ── WORKSPACE (2-column on desktop, 1-column on mobile) ── */}
-        <CalculatorWorkspace
-          amount={amount}
-          rawAmount={rawAmount}
-          currency={currency}
-          inputType={inputType}
-          sliderValue={sliderValue}
-          onAmountChange={(val) => setRawAmount(val)}
-          onSliderChange={(val) => setSliderValue(val)}
-          onCurrencyChange={(c) => { setCurrency(c); trackCurrencyChanged(c); }}
-          onInputTypeChange={(type) => { setInputType(type); trackModeChanged(type); }}
-          onOpenB2BSettings={() => { setShowB2BSettings(true); trackTaxProfileOpen(); }}
-          onOpenUoPSettings={() => { setShowUoPSettings(true); trackTaxProfileOpen(); }}
-          onQuickScenarioClick={(label) => trackQuickScenarioClick(label)}
-          quickScenarios={quickScenarios}
-          results={results}
-          hoursPerMonth={hoursPerMonth}
-          onCompareClick={() => setShowComparison(true)}
-          recruiterMessage={recruiterMessage}
-          onCopyMessage={() => { navigator.clipboard.writeText(recruiterMessage); setCopied(true); setTimeout(() => setCopied(false), 2000); trackRecruiterMessageCopy(); }}
-          copied={copied}
-          t={t}
-          rates={rates}
-        />
+          {showComparison ? (
+            <ComparisonPage
+              onBack={() => setShowComparison(false)}
+              rates={rates}
+              profile={profile}
+              t={t}
+            />
+          ) : results ? (
+            <CalculatorWorkspace
+              rawAmount={rawAmount}
+              amount={amount}
+              currency={currency}
+              inputType={inputType}
+              sliderValue={sliderValue}
+              profile={profile}
+              quickScenarios={quickScenarios}
+              t={t}
+              rates={rates}
+              results={results}
+              hoursPerMonth={hoursPerMonth}
+              recruiterMessage={recruiterMessage}
+              copied={copied}
+              onAmountChange={setRawAmount}
+              onSliderChange={setSliderValue}
+              onCurrencyChange={(nextCurrency) => {
+                setCurrency(nextCurrency)
+                trackCurrencyChanged(nextCurrency)
+              }}
+              onInputTypeChange={(nextInputType) => {
+                setInputType(nextInputType)
+                trackModeChanged(nextInputType)
+              }}
+              onQuickScenario={applyScenario}
+              onEditProfile={openTaxProfile}
+              onCompare={() => setShowComparison(true)}
+              onCopy={() => {
+                void copyRecruiterMessage()
+              }}
+            />
+          ) : (
+            <main
+              className="flex min-h-[60vh] items-center justify-center"
+              role="status"
+              aria-live="polite"
+            >
+              <span
+                className="size-8 animate-spin rounded-full border-2 border-border border-t-primary"
+                aria-hidden="true"
+              />
+              <span className="sr-only">{t.loadingCalculator}</span>
+            </main>
+          )}
 
-        {/* Footer */}
-        <div className="flex flex-col items-center gap-1.5 pb-4">
-          <p className="text-xs" style={{ color: "var(--color-muted-foreground)", opacity: 0.5 }}>
-            {t.disclaimer}
-          </p>
-          <a
-            href="mailto:si13n@yahoo.com"
-            className="text-xs transition-opacity"
-            style={{ color: "var(--color-muted-foreground)", opacity: 0.4, textDecoration: "none" }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.4")}
-            onClick={() => trackFeedbackClick()}
-          >
-            {t.feedback}
-          </a>
-          <p className="text-xs" style={{ color: "var(--color-muted-foreground)", opacity: 0.3 }}>
-            Rates updated {formatRateDate(effectiveDate)}{isFallback ? " · fallback" : ""}
-          </p>
-        </div>
-
-        {/* Tax Settings Modals */}
-        {showB2BSettings && (
-          <B2BSettingsModal
-            profile={profile}
-            onUpdate={updateProfile}
-            onReset={resetToDefaults}
-            onClose={() => setShowB2BSettings(false)}
+          <TrustStrip
+            t={t}
+            rateLabel={formatRateDate(
+              effectiveDate,
+              lang === "pl" ? "pl-PL" : lang === "ua" ? "uk-UA" : "en-US",
+            )}
+            isFallback={isFallback}
           />
-        )}
-
-        {showUoPSettings && (
-          <UoPSettingsModal
-            profile={profile}
-            onUpdate={updateProfile}
-            onReset={resetToDefaults}
-            onClose={() => setShowUoPSettings(false)}
-          />
-        )}
-
+          <Footer t={t} />
+        </AppShell>
       </div>
+
+      <TaxProfileModal
+        open={taxProfileOpen}
+        profile={profile}
+        t={t}
+        onClose={() => setTaxProfileOpen(false)}
+        onSave={updateProfile}
+      />
     </div>
-  );
+  )
 }
