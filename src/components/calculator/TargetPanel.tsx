@@ -3,7 +3,6 @@ import type { TaxProfile } from "../../config/tax"
 import type { Translation } from "../../i18n/translations"
 import { SYM } from "../../lib/formatting"
 import type { Currency, InputType } from "../../types"
-import { Button } from "../ui/Button"
 import { SegmentedControl } from "../ui/SegmentedControl"
 
 export interface QuickScenario {
@@ -159,17 +158,17 @@ export function TargetPanel(props: TargetPanelProps) {
       </div>
 
       <div className="rounded-xl border border-border bg-surface-subtle p-3 tablet:p-3.5">
-        <div className="flex min-h-11 items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <h3 className="text-sm font-semibold tablet:text-[15px]">
             {props.t.taxProfile}
           </h3>
-          <Button
-            variant="secondary"
+          <button
+            type="button"
             onClick={props.onEditProfile}
-            className="shrink-0 px-3"
+            className="shrink-0 border-b border-dashed border-current text-xs font-semibold leading-5 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             {props.t.editTaxProfile}
-          </Button>
+          </button>
         </div>
         <div className="mt-1 text-xs leading-[18px] text-content-secondary tablet:hidden">
           <p>

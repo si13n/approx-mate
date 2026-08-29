@@ -35,12 +35,6 @@ export function OfferResultCard({
         ? t.invoiceLabel
         : t.grossLabel.toLowerCase()
       : t.takeHomeLabel
-  const equivalentLabel =
-    inputType === "net"
-      ? isB2B
-        ? t.invoiceEquivalent
-        : t.grossEquivalent
-      : t.takeHome
   const conversions = (value: number, dec = 0) =>
     (["USD", "EUR"] as Currency[])
       .map((item) => fmt(fromPLN(value, item, rates), item, dec))
@@ -68,7 +62,7 @@ export function OfferResultCard({
         ≈ {plnCompact(headlinePLN)} {headlineSuffix}
       </p>
       <p className={`text-xs font-medium ${textTone}`}>
-        {equivalentLabel} · {conversions(headlinePLN)}
+        {conversions(headlinePLN)}
       </p>
       {inputType === "net" && (
         <div className="text-xs text-content-secondary tablet:hidden">

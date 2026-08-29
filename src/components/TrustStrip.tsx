@@ -7,6 +7,8 @@ interface TrustStripProps {
 }
 
 export function TrustStrip({ t, rateLabel, isFallback }: TrustStripProps) {
+  const rateSourceLabel = t.ratesDaily.split(" · ")[0]
+
   return (
     <section
       className="rounded-card bg-page px-3.5 py-3 text-xs text-content-secondary tablet:flex tablet:min-h-[52px] tablet:items-center tablet:justify-between tablet:px-[18px]"
@@ -26,7 +28,7 @@ export function TrustStrip({ t, rateLabel, isFallback }: TrustStripProps) {
           ↻
         </span>
         <span>
-          {isFallback ? t.fallbackRates : `${t.ratesDaily} · ${rateLabel}`}
+          {isFallback ? t.fallbackRates : `${rateSourceLabel} · ${rateLabel}`}
         </span>
       </div>
       <div className="hidden items-center gap-2 tablet:flex">
@@ -43,7 +45,7 @@ export function TrustStrip({ t, rateLabel, isFallback }: TrustStripProps) {
       </div>
       <p className="m-0 leading-[18px] tablet:hidden">
         {t.rulesExample} ·{" "}
-        {isFallback ? t.fallbackRates : `${t.ratesDaily} (${rateLabel})`} ·{" "}
+        {isFallback ? t.fallbackRates : `${rateSourceLabel} · ${rateLabel}`} ·{" "}
         {t.estimateAdvice.toLowerCase()}.
       </p>
     </section>
