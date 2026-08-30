@@ -1,20 +1,43 @@
-# Approxmate
+# ApproxMate
 
-A lightweight salary calculator for comparing employment contracts in Poland. One number in → all equivalents out.
+**ApproxMate is a modular job, compensation, fit, and career decision platform.**
 
-**[📊 Tax Rules](./docs/TAX_RULES_POLAND.md)** · **[📚 Project docs](./docs/GA_EVENTS.md)**
+Today it provides a fast Poland-focused compensation calculator for comparing B2B and UoP offers. The product roadmap expands that foundation into job analysis, explainable offer scoring, CV fit, negotiation support, job comparison, saved decision history, market benchmarking, and an adaptive Career Copilot.
+
+**[Open ApproxMate](https://approxmate.me)** · **[Product Roadmap](https://github.com/si13n/approx-mate/issues/15)** · **[Product PRD](https://github.com/si13n/approx-mate/issues/12)**
 
 ---
 
-## What It Does
+## What It Does Today
 
-Enter a salary (gross or net) → instantly see:
-- Net/gross equivalents across 3 currencies (PLN, USD, EUR)
+Enter a salary in gross or net terms and instantly see:
+
+- Net/gross equivalents across PLN, USD, and EUR
 - B2B vs UoP comparison
-- Hourly rates
+- Monthly, annual, and hourly values
+- Configurable Polish tax assumptions
 - Pre-formatted recruiter message
+- Dated NBP exchange-rate information
 
-Customize tax assumptions without leaving the interface.
+The current experience is intentionally low-friction: salary calculations run locally, tax settings persist in the browser, and no account is required.
+
+## Product Direction
+
+ApproxMate is evolving from a compensation calculator into a set of independent but connected decision modules. Users should be able to start from the calculator, a vacancy, a CV/profile, or a comparison and progressively add context only when it improves the answer.
+
+The planned sequence is maintained in **[Product Roadmap #15](https://github.com/si13n/approx-mate/issues/15)**:
+
+1. UX Polish
+2. Job X-Ray + Offer Score
+3. Shareable Result Card
+4. CV Match + Personalized Verdict
+5. Negotiation Advisor + Recruiter Reply
+6. Job Comparison
+7. Authorization + Saved Jobs / History
+8. Market Benchmarking
+9. Career Copilot
+
+The detailed modular product model, entry points, artifacts, adaptive flows, and capability boundaries live in **[Product PRD #12](https://github.com/si13n/approx-mate/issues/12)**.
 
 ## Quick Start
 
@@ -35,7 +58,7 @@ Open `http://localhost:8787/`. The Vite dev server uses the built-in emergency r
 
 ## Project Structure
 
-```
+```text
 src/                         # React application
 ├── App.tsx                  # Main UI and application state
 ├── components/              # Reusable UI and modal components
@@ -45,132 +68,110 @@ worker/                      # Cloudflare Worker entrypoint and API logic
 ├── index.ts                 # SPA assets, redirects, and API routing
 └── exchangeRates.ts         # NBP fetch, cache, and fallback handling
 public/                      # Static files copied into the Vite build
-docs/                        # Supporting project references
+docs/                        # Supporting project documentation
 wrangler.jsonc               # Worker, assets, and local-dev configuration
 ```
 
 `worker-configuration.d.ts` is generated from the Wrangler configuration; refresh it with `pnpm cf:types` after changing Worker bindings.
 
+## Current Features
+
+- **Two calculation modes** — net or gross input
+- **Three currencies** — PLN, USD, EUR
+- **B2B / UoP comparison** — normalized compensation view
+- **Custom tax profile** — B2B rate, ZUS profile, PPK, KUP, sickness insurance
+- **Responsive UI** — desktop and mobile layouts
+- **Multilingual UI** — EN, PL, UA
+- **Cloudflare edge API** — exchange-rate endpoint and static app delivery
+- **Privacy-first analytics** — no salary values sent to analytics
+- **Automatic exchange rates** — dated NBP rates with cache/fallback handling
+
 ## Tax Calculation Logic
 
-**Annual-first model** for accuracy:
-- Gross monthly → × 12 → annual
-- Apply annual thresholds (ZUS caps, PIT brackets)
-- ÷ 12 → display average monthly net
+ApproxMate uses an **annual-first model** for tax accuracy:
 
-Supports:
-- **B2B** — Configurable ryczałt (8.5%-17%), ZUS profiles, auto health tiers
-- **UoP** — Tax brackets (12%/32%), KUP deduction, PPK, annual caps
+- Gross monthly → annual value
+- Apply annual thresholds, PIT brackets, ZUS caps, and configured rules
+- Convert the annual result back to an average monthly value
 
-[📄 Full tax rules documentation](./TAX_RULES_POLAND.md)
+Supported Polish contract logic includes:
+
+- **B2B** — configurable ryczałt rates, ZUS profiles, and health contribution tiers
+- **UoP** — PIT brackets, KUP deduction, PPK, and annual contribution caps
+
+See **[Polish tax rules](./docs/TAX_RULES_POLAND.md)** for the detailed calculation assumptions and source references.
 
 ## Tax Configuration
 
-All Polish tax rules live in **`src/config/tax/2026.ts`**:
-- Official ZUS contribution values
+Polish tax rules are versioned in `src/config/tax/2026.ts`, including:
+
+- ZUS contribution values
 - Health thresholds
-- Tax brackets & caps
-- Source references included
+- Tax brackets and caps
+- Source references
 
-Update this file when legislation changes.
+Update the configuration when legislation changes rather than scattering tax constants through application code.
 
-## Features
+## Exchange Rates
 
-- ✨ **Two modes** — Net or gross input
-- 💱 **3 currencies** — PLN, USD, EUR
-- ⚙️ **Customizable** — B2B rate, ZUS profile, PPK, KUP
-- 📱 **Responsive** — Works on mobile
-- 🌍 **Multilingual** — EN, PL, UA
-- 💾 **Edge API** — Cloudflare Worker, localStorage only
-- 📊 **Analytics** — Privacy-first GA4 tracking
-- 🔄 **Exchange rates** — Auto-updated daily
+The Cloudflare Worker fetches USD and EUR rates from the NBP Table A endpoint through `/api/exchange-rates`.
 
-## Customization
-
-Click tax profile chips under the title to adjust:
-- B2B ryczałt rate (8.5%-17%)
-- ZUS profile (Full, Preferential, Ulga na start)
-- Sickness insurance
-- UoP KUP (250/300 PLN)
-- PPK (2% employee)
-
-Settings persist in browser storage.
+Successful responses are cached for 12 hours, with a separately cached copy available for up to 7 days when NBP is unavailable. The frontend displays the NBP effective date and uses built-in emergency rates only when the API has no usable cached response.
 
 ## Tech Stack
 
 - **React 19** + TypeScript
-- **Vite** (fast builds)
-- **Tailwind CSS v4** (styling)
-- **Vitest** (automated unit tests)
-- **GA4** (analytics, no PII)
+- **Vite**
+- **Tailwind CSS v4**
+- **Vitest**
+- **Cloudflare Workers**
+- **GA4** with privacy-safe event tracking
 
-No database is required; the exchange-rate API runs at the Cloudflare edge.
+The current product does not require a database. Persistent accounts and saved cloud history are planned separately in roadmap issue **[#22](https://github.com/si13n/approx-mate/issues/22)**.
 
-## Roadmap
+## Documentation
 
-### v1.1 ✅
-- Configurable tax profiles
-- Advanced B2B/UoP settings
-- Annual-first calculations
-- Automated regression coverage
-
-### v1.2 (Planned)
-- Salary history/comparison
-- Lump-sum tax option
-- Multiple employment scenarios
-
-### v2.0 (Vision)
-- **Multi-country support** — Extend tax config to other EU countries
-- Germany, UK, Netherlands, etc.
-- Unified calculator across markets
-
-## Future: Multi-Country
-
-Each country gets its own tax config file:
-```
-src/config/tax/
-├── 2026.ts          # Poland
-├── germany/2026.ts  # Germany (future)
-├── uk/2026.ts       # UK (future)
-└── index.ts         # Router
-```
-
-Same calculation engine, different tax rules.
-
-## Exchange Rates
-
-The Cloudflare Worker fetches USD and EUR from the NBP Table A endpoint in one request at `/api/exchange-rates`. Successful responses are cached for 12 hours, with a separately cached copy available for up to 7 days when NBP is unavailable. The frontend displays the NBP effective date and falls back to the built-in emergency rates only when the API has no cached response.
-
-## Browser Support
-
-Modern browsers: Chrome, Firefox, Safari, Edge. Requires ES2020+.
+- **[Product Roadmap](https://github.com/si13n/approx-mate/issues/15)** — high-level product delivery sequence
+- **[Modular Product PRD](https://github.com/si13n/approx-mate/issues/12)** — core modules, artifacts, entry points, and adaptive funnels
+- **[Polish Tax Rules](./docs/TAX_RULES_POLAND.md)** — tax calculation assumptions and references
+- **[GA4 Events](./docs/GA_EVENTS.md)** — analytics event definitions
+- **[UX Redesign](https://github.com/si13n/approx-mate/issues/9)** — current redesign work
+- **[Competitor Landscape](https://github.com/si13n/approx-mate/issues/10)** — product/market comparison
 
 ## Deployment
 
-Cloudflare Workers serves both the Vite static assets and the exchange-rate API. Production deploys are configured for Cloudflare Workers Builds from `main`, with branch previews enabled in the Cloudflare dashboard.
+Cloudflare Workers serves both the Vite static assets and the exchange-rate API. Production deployments are configured from `main`, with branch previews available through Cloudflare.
 
 ```bash
 pnpm build
 pnpm deploy
 ```
 
-The target production custom domain is `https://approxmate.me`; after the domain is moved to Cloudflare, `www.approxmate.me` will redirect to the canonical hostname.
+Production: **https://approxmate.me**
 
 ## Testing
 
 ```bash
 pnpm test:run            # Run the test suite once
-pnpm type-check         # TypeScript validation
-pnpm build              # Production asset build
-pnpm cf:dry-run         # Build and validate the Worker deployment
+pnpm type-check          # TypeScript validation
+pnpm build               # Production asset build
+pnpm cf:dry-run          # Build and validate the Worker deployment
 ```
+
+## Browser Support
+
+Modern Chrome, Firefox, Safari, and Edge. Requires ES2020+.
 
 ## Privacy
 
-- ✅ No user data stored on servers
-- ✅ No salary amounts in analytics
-- ✅ GA4 with IP anonymization
-- ✅ Salary calculations run locally in the browser
+Current calculator behavior:
+
+- No salary amounts are stored on the server
+- No salary amounts are sent to analytics
+- Salary calculations run locally in the browser
+- Tax-profile settings persist in browser storage
+
+Future CV, account, and saved-history capabilities must define explicit consent, retention, export, and deletion behavior before implementation.
 
 ## License
 
@@ -178,4 +179,4 @@ MIT
 
 ---
 
-**Questions?** Open an issue or email `si13n@yahoo.com`
+**Questions or ideas?** Open a GitHub issue.
