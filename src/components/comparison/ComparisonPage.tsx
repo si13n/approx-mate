@@ -16,9 +16,10 @@ interface ComparisonPageProps {
   rates: Record<string, number>
   profile: TaxProfile
   t: Translation
+  initialOffers?: Offer[]
 }
 
-const initialOffers: Offer[] = [
+const defaultOffers: Offer[] = [
   {
     id: "1",
     name: "A",
@@ -44,8 +45,11 @@ export function ComparisonPage({
   rates,
   profile,
   t,
+  initialOffers,
 }: ComparisonPageProps) {
-  const [offers, setOffers] = useState<Offer[]>(initialOffers)
+  const [offers, setOffers] = useState<Offer[]>(() =>
+    initialOffers && initialOffers.length >= 2 ? initialOffers : defaultOffers,
+  )
   const [shared, setShared] = useState(false)
   const hoursPerMonth = 160
   const calculations = useMemo(

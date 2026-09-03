@@ -14,6 +14,12 @@ Complete list of events tracked in Approxmate.
 | `recruiter_message_copy` | Copy message button | (none) | Track feature usage |
 | `quick_scenario_click` | Click preset | `scenario` | Understand popular rates |
 | `feedback_click` | Click feedback link | (none) | Track engagement |
+| `job_analysis_started` | Submit a vacancy | `source_type` | Measure Job X-Ray starts |
+| `job_analysis_completed` | Vacancy parsing succeeds | `source_type`, `extracted_fields` | Measure deterministic parser quality |
+| `job_analysis_failed` | Vacancy parsing fails | `error_code` | Diagnose safe-fetch and parsing failures |
+| `offer_tab_opened` | Analysis tab is created | (none) | Measure completed analysis flow |
+| `offer_tab_closed` | Analysis tab is closed | (none) | Understand workspace usage |
+| `offer_compare_clicked` | Compare CTA on an analysis is clicked | (none) | Measure analysis-to-comparison conversion |
 
 ---
 
@@ -208,6 +214,8 @@ Complete list of events tracked in Approxmate.
 - ❌ Calculated net/gross values
 - ❌ Hourly rates
 - ❌ Recruiter message text
+- ❌ Vacancy URLs or pasted vacancy text
+- ❌ Extracted vacancy titles, companies, salaries, or skills
 - ❌ Any personally identifiable information (PII)
 
 **Privacy features enabled:**
