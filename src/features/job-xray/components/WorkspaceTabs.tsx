@@ -5,6 +5,7 @@ import { jobXRayIcons } from "../icons"
 export interface OfferTab {
   id: string
   label: string
+  title?: string
 }
 
 interface WorkspaceTabsProps {
@@ -44,15 +45,15 @@ export function WorkspaceTabs({
   }
 
   const tabClasses = (active: boolean) =>
-    `relative flex h-[42px] min-w-[150px] items-center rounded-t-xl border border-b-0 px-3 text-sm font-semibold focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary ${
+    `relative flex h-[41px] w-[150px] shrink-0 items-center overflow-hidden rounded-t-[12px] border border-border text-sm font-semibold ${
       active
-        ? "bg-surface text-action before:absolute before:inset-x-1 before:top-0 before:h-1 before:rounded-t-full before:bg-primary"
-        : "bg-surface-subtle text-content-secondary"
+        ? "z-10 border-b-0 bg-surface text-action before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[3px] before:rounded-t-[11px] before:bg-primary"
+        : "bg-surface-subtle text-content-secondary hover:bg-surface"
     }`
 
   return (
     <div
-      className="flex w-full overflow-x-auto"
+      className="relative z-10 -mb-px flex w-full items-end gap-1 overflow-x-auto"
       role="tablist"
       aria-label={t.workspaceTabs}
     >
@@ -69,7 +70,7 @@ export function WorkspaceTabs({
           tabIndex={activeTab === "calculator" ? 0 : -1}
           onClick={() => onSelect("calculator")}
           onKeyDown={(event) => handleKeyDown(event, "calculator")}
-          className="flex min-h-11 flex-1 items-center justify-center gap-2"
+          className="flex h-full min-w-0 flex-1 items-center justify-center gap-2 px-3 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-primary"
         >
           <img
             src={jobXRayIcons.calculator}
@@ -83,7 +84,7 @@ export function WorkspaceTabs({
       {offers.map((offer) => {
         const active = activeTab === offer.id
         return (
-          <div key={offer.id} className={`${tabClasses(active)} ml-1`}>
+          <div key={offer.id} className={tabClasses(active)}>
             <button
               ref={(node) => {
                 if (node) refs.current.set(offer.id, node)
@@ -96,7 +97,8 @@ export function WorkspaceTabs({
               tabIndex={active ? 0 : -1}
               onClick={() => onSelect(offer.id)}
               onKeyDown={(event) => handleKeyDown(event, offer.id)}
-              className="flex min-h-11 min-w-0 flex-1 items-center gap-2 pl-1"
+              title={offer.title}
+              className="flex h-full min-w-0 flex-1 items-center gap-2 overflow-hidden pl-3 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-primary"
             >
               <img
                 src={jobXRayIcons.briefcase}
@@ -104,15 +106,18 @@ export function WorkspaceTabs({
                 aria-hidden="true"
                 className="size-4 shrink-0"
               />
-              <span className="truncate">{offer.label}</span>
+              <span className="block min-w-0 truncate text-left">
+                {offer.label}
+              </span>
             </button>
             <button
               type="button"
               onClick={() => onClose(offer.id)}
-              aria-label={`${t.closeOffer} ${offer.label}`}
-              className="ml-1 flex size-11 shrink-0 items-center justify-center rounded-lg text-lg text-content-secondary hover:bg-page focus-visible:outline-2 focus-visible:outline-primary"
+              aria-label={`${t.closeOffer} ${offer.title ?? offer.label}`}
+              title={`${t.closeOffer} ${offer.label}`}
+              className="mr-1 flex size-8 shrink-0 items-center justify-center rounded-lg text-base leading-none text-content-secondary hover:bg-page hover:text-content focus-visible:outline-2 focus-visible:outline-primary"
             >
-              ×
+              <span aria-hidden="true">×</span>
             </button>
           </div>
         )
