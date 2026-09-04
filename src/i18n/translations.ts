@@ -27,6 +27,11 @@ export interface Translation {
   takeHome: string
   grossPerHour: string
   netPerHour: string
+  whereMoneyGoes: string
+  taxAndContributions: string
+  businessCosts: string
+  benefitsShare: string
+  seeCalculation: string
   compareOffers: string
   compareDescription: string
   recruiterTitle: string
@@ -172,6 +177,11 @@ const en: Translation = {
   takeHome: "TAKE-HOME / MO",
   grossPerHour: "GROSS / H",
   netPerHour: "NET / H",
+  whereMoneyGoes: "Where the money goes",
+  taxAndContributions: "Tax & contributions",
+  businessCosts: "Business costs",
+  benefitsShare: "Benefits",
+  seeCalculation: "See calculation",
   compareOffers: "Compare offers",
   compareDescription:
     "Add 2–3 offers and rank them by cash, total value, and effective hourly rate.",
@@ -321,6 +331,11 @@ const pl: Translation = {
   takeHome: "NA RĘKĘ / MIES.",
   grossPerHour: "BRUTTO / H",
   netPerHour: "NETTO / H",
+  whereMoneyGoes: "Podział wynagrodzenia",
+  taxAndContributions: "Podatki i składki",
+  businessCosts: "Koszty działalności",
+  benefitsShare: "Benefity",
+  seeCalculation: "Zobacz obliczenie",
   compareOffers: "Porównaj oferty",
   compareDescription:
     "Dodaj 2–3 oferty i porównaj gotówkę, wartość roczną oraz stawkę godzinową.",
@@ -470,6 +485,11 @@ const ua: Translation = {
   takeHome: "НА РУКИ / МІС.",
   grossPerHour: "БРУТТО / ГОД",
   netPerHour: "НЕТТО / ГОД",
+  whereMoneyGoes: "Розподіл коштів",
+  taxAndContributions: "Податки та внески",
+  businessCosts: "Витрати бізнесу",
+  benefitsShare: "Пільги",
+  seeCalculation: "Переглянути розрахунок",
   compareOffers: "Порівняти пропозиції",
   compareDescription:
     "Додайте 2–3 пропозиції та порівняйте дохід, річну суму й погодинну ставку.",

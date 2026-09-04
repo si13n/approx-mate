@@ -1,5 +1,5 @@
 import type { Translation } from "../../i18n/translations"
-import { fmt } from "../../lib/formatting"
+import { fmt, fromPLN, toPLN } from "../../lib/formatting"
 import type { Currency, InputType } from "../../types"
 import { Button } from "../ui/Button"
 import { OfferResultCard } from "./OfferResultCard"
@@ -27,22 +27,30 @@ interface DecisionResultsProps {
 
 export function DecisionResults(props: DecisionResultsProps) {
   const target = fmt(props.amount, props.currency)
+  const targetPLN = toPLN(props.amount, props.currency, props.rates)
+  const targetConversions = (["PLN", "USD", "EUR"] as Currency[])
+    .filter((currency) => currency !== props.currency)
+    .map((currency) => fmt(fromPLN(targetPLN, currency, props.rates), currency))
+    .join(" · ")
   const decisionLabel =
     props.inputType === "net" ? props.t.toTakeHome : props.t.offeredGross
   return (
     <section
-      className="flex min-w-0 flex-col gap-3 rounded-panel border border-border bg-surface p-4 desktop:p-6"
+      className="flex min-w-0 flex-col gap-4 rounded-bl-[24px] rounded-br-[24px] rounded-tr-[24px] border border-border bg-surface p-4 desktop:p-6"
       aria-labelledby="decision-title"
     >
-      <div>
+      <div className="desktop:min-h-[58px]">
         <p className="text-xs font-semibold text-content-secondary desktop:normal-case">
           {props.t.yourDecision}
         </p>
         <h2
           id="decision-title"
-          className="mt-1 font-display text-xl font-bold tablet:text-[27px]"
+          className="mt-[3px] font-display text-xl font-bold leading-tight tablet:text-[27px]"
         >
-          {decisionLabel} {target} {props.t.perMonth}
+          <span>
+            {decisionLabel} {target} {props.t.perMonth}{" "}
+          </span>
+          <span className="font-normal">· {targetConversions}</span>
         </h2>
       </div>
       <div className="grid gap-2 tablet:grid-cols-2 tablet:gap-3">
