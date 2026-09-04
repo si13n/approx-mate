@@ -53,7 +53,7 @@ export function WorkspaceTabs({
 
   return (
     <div
-      className="relative z-10 -mb-px flex w-full items-end gap-1 overflow-x-auto"
+      className="relative z-10 -mb-px flex w-full items-end gap-1 overflow-x-auto pl-6"
       role="tablist"
       aria-label={t.workspaceTabs}
     >
