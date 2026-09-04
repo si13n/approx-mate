@@ -61,61 +61,59 @@ export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
         </p>
       </section>
       <main className="grid min-w-0 gap-3 desktop:grid-cols-[416px_minmax(0,1fr)] desktop:gap-5">
-        <div className="min-w-0">
-          <TargetPanel {...props} />
-        </div>
         <div className="flex min-w-0 flex-col gap-3">
           <JobXRayPanel
             t={props.t}
             offerCount={props.offers.length}
             onAnalyze={props.onAnalyzeOffer}
           />
-          <div className="min-w-0">
-            <WorkspaceTabs
-              offers={props.offers.map((offer, index) => ({
-                id: offer.id,
-                label: `${props.t.offerLabel} ${index + 1}`,
-                title: offer.analysis.title.value ?? undefined,
-              }))}
-              activeTab={props.activeTab}
-              t={props.t}
-              onSelect={props.onSelectTab}
-              onClose={props.onCloseOffer}
-            />
-            {props.activeTab === "calculator" ? (
-              <div
-                id="workspace-panel-calculator"
-                role="tabpanel"
-                aria-labelledby="workspace-tab-calculator"
-              >
-                <DecisionResults
-                  results={props.results}
-                  amount={props.amount}
-                  currency={props.currency}
-                  inputType={props.inputType}
-                  rates={props.rates}
-                  hoursPerMonth={props.hoursPerMonth}
-                  recruiterMessage={props.recruiterMessage}
-                  copied={props.copied}
+          <TargetPanel {...props} />
+        </div>
+        <div className="min-w-0">
+          <WorkspaceTabs
+            offers={props.offers.map((offer, index) => ({
+              id: offer.id,
+              label: `${props.t.offerLabel} ${index + 1}`,
+              title: offer.analysis.title.value ?? undefined,
+            }))}
+            activeTab={props.activeTab}
+            t={props.t}
+            onSelect={props.onSelectTab}
+            onClose={props.onCloseOffer}
+          />
+          {props.activeTab === "calculator" ? (
+            <div
+              id="workspace-panel-calculator"
+              role="tabpanel"
+              aria-labelledby="workspace-tab-calculator"
+            >
+              <DecisionResults
+                results={props.results}
+                amount={props.amount}
+                currency={props.currency}
+                inputType={props.inputType}
+                rates={props.rates}
+                hoursPerMonth={props.hoursPerMonth}
+                recruiterMessage={props.recruiterMessage}
+                copied={props.copied}
+                t={props.t}
+                onCompare={props.onCompare}
+                onCopy={props.onCopy}
+              />
+            </div>
+          ) : (
+            props.offers
+              .filter((offer) => offer.id === props.activeTab)
+              .map((offer) => (
+                <OfferAnalysisPanel
+                  key={offer.id}
+                  analysis={offer.analysis}
+                  sourceText={offer.sourceText}
                   t={props.t}
-                  onCompare={props.onCompare}
-                  onCopy={props.onCopy}
+                  onCompare={props.onCompareOffer}
                 />
-              </div>
-            ) : (
-              props.offers
-                .filter((offer) => offer.id === props.activeTab)
-                .map((offer) => (
-                  <OfferAnalysisPanel
-                    key={offer.id}
-                    analysis={offer.analysis}
-                    sourceText={offer.sourceText}
-                    t={props.t}
-                    onCompare={props.onCompareOffer}
-                  />
-                ))
-            )}
-          </div>
+              ))
+          )}
         </div>
       </main>
     </>
