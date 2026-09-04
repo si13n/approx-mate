@@ -11,6 +11,7 @@ interface SegmentedControlProps<T extends string> {
   tone?: "primary" | "accent"
   ariaLabel: string
   compact?: boolean
+  comfortable?: boolean
 }
 
 export function SegmentedControl<T extends string>({
@@ -20,6 +21,7 @@ export function SegmentedControl<T extends string>({
   tone = "primary",
   ariaLabel,
   compact = false,
+  comfortable = false,
 }: SegmentedControlProps<T>) {
   const active =
     tone === "accent"
@@ -66,7 +68,9 @@ export function SegmentedControl<T extends string>({
                 ?.querySelectorAll<HTMLButtonElement>("[role='radio']")
                 [nextIndex]?.focus()
             }}
-            className={`min-h-11 rounded-[9px] px-2 font-semibold transition-colors active:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary ${
+            className={`${
+              comfortable ? "min-h-[52px]" : "min-h-11"
+            } rounded-[9px] px-2 font-semibold transition-colors active:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary ${
               selected ? active : "text-content-secondary hover:bg-surface"
             } ${compact ? "text-xs" : "text-sm"}`}
           >
