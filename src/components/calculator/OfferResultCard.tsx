@@ -19,6 +19,7 @@ function plnCompact(value: number) {
 
 interface BreakdownItem {
   label: string
+  shortLabel?: string
   percentage: number
   color: string
 }
@@ -61,7 +62,12 @@ function MoneyBreakdown({
               aria-hidden="true"
             />
             <span className="min-w-0">
-              <span className="block whitespace-nowrap">{item.label}</span>
+              <span className="block whitespace-nowrap">
+                <span className="tablet:hidden">
+                  {item.shortLabel ?? item.label}
+                </span>
+                <span className="hidden tablet:inline">{item.label}</span>
+              </span>
               <span className="block">{item.percentage}%</span>
             </span>
           </div>
@@ -106,19 +112,26 @@ export function OfferResultCard({
         { label: takeHomeLabel, percentage: 66, color: "#2563eb" },
         {
           label: t.taxAndContributions,
+          shortLabel: t.taxAndContributionsShort,
           percentage: 22,
           color: "#bfd7fe",
         },
-        { label: t.businessCosts, percentage: 12, color: "#94a3b8" },
+        {
+          label: t.businessCosts,
+          shortLabel: t.businessCostsShort,
+          percentage: 12,
+          color: "#94a3b8",
+        },
       ]
     : [
         { label: takeHomeLabel, percentage: 52, color: "#0891b2" },
         {
           label: t.taxAndContributions,
+          shortLabel: t.taxAndContributionsShort,
           percentage: 35,
           color: "#a5f3fc",
         },
-        { label: t.benefitsShare, percentage: 13, color: "#94a3b8" },
+        { label: t.benefitsShare, percentage: 13, color: "#3cc391" },
       ]
 
   return (

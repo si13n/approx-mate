@@ -149,6 +149,16 @@ export function TargetPanel(props: TargetPanelProps) {
           className="range-input mt-[7px] w-full focus-visible:outline-2 focus-visible:outline-primary"
           style={{ "--range-progress": `${progress}%` } as CSSProperties}
         />
+        <div className="mt-0.5 flex items-center justify-between text-xs text-content-secondary tablet:hidden">
+          <span>
+            {SYM[props.currency]}
+            {sliderMin / 1000}k
+          </span>
+          <span>
+            {SYM[props.currency]}
+            {sliderMax / 1000}k
+          </span>
+        </div>
       </div>
 
       <div className="hidden tablet:block">

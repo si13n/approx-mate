@@ -118,10 +118,7 @@ export function OfferAnalysisPanel({
       >
         <header className="flex flex-col gap-3 tablet:flex-row tablet:items-start tablet:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-semibold tracking-[0.06em] text-content-secondary">
-              {t.offerAnalysis}
-            </p>
-            <h2 className="mt-1 font-display text-2xl font-semibold">
+            <h2 className="font-display text-2xl font-semibold">
               {analysis.title.value ?? t.untitledOffer}
             </h2>
             <p className="mt-0.5 truncate text-xs text-content-secondary">
@@ -146,10 +143,10 @@ export function OfferAnalysisPanel({
           </div>
         </header>
 
-        <div className="mt-4 grid gap-3 desktop:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="mt-4 grid gap-3 desktop:grid-cols-[minmax(0,1fr)_280px] desktop:gap-5">
           <div className="min-w-0">
-            <section className="grid overflow-hidden rounded-card border border-border bg-surface-subtle tablet:grid-cols-3">
-              <div className="flex min-h-[84px] items-center gap-3 px-4 py-3">
+            <section className="grid overflow-hidden rounded-card border border-border bg-surface-subtle tablet:h-[116px] tablet:grid-cols-3 tablet:p-4">
+              <div className="flex min-h-[84px] items-center gap-3 px-4 py-3 tablet:min-h-0 tablet:px-3 tablet:py-0">
                 <span className="flex size-8 items-center justify-center rounded-xl bg-primary-subtle">
                   <Icon src={jobXRayIcons.employment} size="size-[18px]" />
                 </span>
@@ -157,18 +154,18 @@ export function OfferAnalysisPanel({
                   <p className="text-xs text-content-secondary">
                     {t.employment}
                   </p>
-                  <p className="font-display text-sm font-semibold">
+                  <p className="font-display text-base font-semibold">
                     {contract}
                   </p>
                 </div>
               </div>
-              <div className="flex min-h-[84px] items-center gap-3 border-t border-border px-4 py-3 tablet:border-l tablet:border-t-0">
+              <div className="flex min-h-[84px] items-center gap-3 border-t border-border px-4 py-3 tablet:min-h-0 tablet:border-l tablet:border-t-0 tablet:px-3 tablet:py-0">
                 <span className="flex size-8 items-center justify-center rounded-xl bg-success-subtle">
                   <Icon src={jobXRayIcons.salary} size="size-[18px]" />
                 </span>
                 <div>
                   <p className="text-xs text-content-secondary">{t.salary}</p>
-                  <p className="font-display text-sm font-semibold">
+                  <p className="font-display text-base font-semibold">
                     {formatSalary(salary) || missing}
                   </p>
                   {salaryDescription && (
@@ -178,13 +175,13 @@ export function OfferAnalysisPanel({
                   )}
                 </div>
               </div>
-              <div className="flex min-h-[84px] items-center gap-3 border-t border-border px-4 py-3 tablet:border-l tablet:border-t-0">
+              <div className="flex min-h-[84px] items-center gap-3 border-t border-border px-4 py-3 tablet:min-h-0 tablet:border-l tablet:border-t-0 tablet:px-3 tablet:py-0">
                 <span className="flex size-8 items-center justify-center rounded-xl bg-accent-subtle">
                   <Icon src={jobXRayIcons.workMode} size="size-[18px]" />
                 </span>
                 <div>
                   <p className="text-xs text-content-secondary">{t.workMode}</p>
-                  <p className="font-display text-sm font-semibold">
+                  <p className="font-display text-base font-semibold">
                     {workMode}
                   </p>
                   {analysis.officeDaysPerWeek.value && (
@@ -295,26 +292,26 @@ export function OfferAnalysisPanel({
             </dl>
           </aside>
         </div>
-      </div>
 
-      <section className="mt-0 flex min-h-[104px] flex-col justify-between gap-3 rounded-card bg-inverse p-4 text-content-inverse tablet:flex-row tablet:items-center">
-        <div>
-          <h3 className="font-display text-2xl font-semibold">
+        <section className="mt-4 flex min-h-[104px] flex-col justify-between gap-3 rounded-card bg-inverse p-4 text-content-inverse tablet:flex-row tablet:items-center">
+          <div>
+            <h3 className="font-display text-2xl font-semibold">
+              {t.compareOffers}
+            </h3>
+            <p className="mt-0.5 text-xs text-border-strong">
+              {t.compareDescription}
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={onCompare}
+            trailingIcon={<span aria-hidden="true">→</span>}
+            className="border-0 text-content"
+          >
             {t.compareOffers}
-          </h3>
-          <p className="mt-0.5 text-xs text-border-strong">
-            {t.compareDescription}
-          </p>
-        </div>
-        <Button
-          variant="secondary"
-          onClick={onCompare}
-          trailingIcon={<span aria-hidden="true">→</span>}
-          className="border-0 text-content"
-        >
-          {t.compareOffers}
-        </Button>
-      </section>
+          </Button>
+        </section>
+      </div>
 
       <OfferSourceDialog
         open={sourceOpen}

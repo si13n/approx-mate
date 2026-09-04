@@ -29,7 +29,9 @@ export interface Translation {
   netPerHour: string
   whereMoneyGoes: string
   taxAndContributions: string
+  taxAndContributionsShort: string
   businessCosts: string
+  businessCostsShort: string
   benefitsShare: string
   seeCalculation: string
   compareOffers: string
@@ -179,7 +181,9 @@ const en: Translation = {
   netPerHour: "NET / H",
   whereMoneyGoes: "Where the money goes",
   taxAndContributions: "Tax & contributions",
+  taxAndContributionsShort: "Tax & contrib.",
   businessCosts: "Business costs",
+  businessCostsShort: "Costs",
   benefitsShare: "Benefits",
   seeCalculation: "See calculation",
   compareOffers: "Compare offers",
@@ -333,7 +337,9 @@ const pl: Translation = {
   netPerHour: "NETTO / H",
   whereMoneyGoes: "Podział wynagrodzenia",
   taxAndContributions: "Podatki i składki",
+  taxAndContributionsShort: "Podatki",
   businessCosts: "Koszty działalności",
+  businessCostsShort: "Koszty",
   benefitsShare: "Benefity",
   seeCalculation: "Zobacz obliczenie",
   compareOffers: "Porównaj oferty",
@@ -487,7 +493,9 @@ const ua: Translation = {
   netPerHour: "НЕТТО / ГОД",
   whereMoneyGoes: "Розподіл коштів",
   taxAndContributions: "Податки та внески",
+  taxAndContributionsShort: "Податки",
   businessCosts: "Витрати бізнесу",
+  businessCostsShort: "Витрати",
   benefitsShare: "Пільги",
   seeCalculation: "Переглянути розрахунок",
   compareOffers: "Порівняти пропозиції",

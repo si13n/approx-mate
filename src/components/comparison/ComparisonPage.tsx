@@ -288,7 +288,103 @@ export function ComparisonPage({
           </span>
         </div>
         <div
-          className="overflow-x-auto"
+          className="overflow-x-auto tablet:hidden"
+          tabIndex={0}
+          role="table"
+          aria-label={t.detailedComparison}
+        >
+          <div
+            style={{
+              minWidth:
+                calculations.length > 2
+                  ? `${calculations.length * 179}px`
+                  : "100%",
+            }}
+          >
+            <div
+              className="grid min-h-[62px] border-y border-border bg-page"
+              role="row"
+              style={{
+                gridTemplateColumns:
+                  calculations.length > 2
+                    ? `repeat(${calculations.length}, minmax(179px, 1fr))`
+                    : `repeat(${calculations.length}, minmax(0, 1fr))`,
+              }}
+            >
+              {calculations.map((offer, index) => (
+                <div
+                  key={offer.id}
+                  className="flex min-w-0 flex-col justify-center px-3.5"
+                  role="columnheader"
+                >
+                  <div className="flex items-center gap-2 font-semibold">
+                    <span
+                      className={`size-2 shrink-0 rounded-full ${offerDots[index]}`}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      {t.offerLabel} {offer.name}
+                    </span>
+                    {winnerId === offer.id && (
+                      <span className="text-[10px] text-success">{t.best}</span>
+                    )}
+                  </div>
+                  <span className="mt-1 text-[11px] text-content-secondary">
+                    {offer.contractType} ·{" "}
+                    {offer.inputType === "gross" ? t.grossLabel : t.netLabel}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {rows.map((row) => (
+              <div
+                key={row.label}
+                className="border-b border-border"
+                role="rowgroup"
+              >
+                <div role="row">
+                  <div
+                    className="bg-surface-subtle px-3.5 py-2 text-xs font-medium text-content-secondary"
+                    role="rowheader"
+                  >
+                    {row.label}
+                  </div>
+                </div>
+                <div
+                  className="grid min-h-[72px]"
+                  role="row"
+                  style={{
+                    gridTemplateColumns:
+                      calculations.length > 2
+                        ? `repeat(${calculations.length}, minmax(179px, 1fr))`
+                        : `repeat(${calculations.length}, minmax(0, 1fr))`,
+                  }}
+                >
+                  {calculations.map((offer) => {
+                    const bestCell = Boolean(
+                      row.highlight && winnerId === offer.id,
+                    )
+                    return (
+                      <div
+                        key={offer.id}
+                        role="cell"
+                        className={`flex items-center justify-center px-3 text-center ${
+                          bestCell
+                            ? "bg-accent-subtle font-semibold text-accent"
+                            : "bg-surface"
+                        }`}
+                      >
+                        {row.value(offer)}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div
+          className="hidden overflow-x-auto tablet:block"
           tabIndex={0}
           aria-label={t.detailedComparison}
         >

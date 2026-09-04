@@ -47,7 +47,7 @@ export function WorkspaceTabs({
   const tabClasses = (active: boolean) =>
     `relative flex h-[41px] w-[150px] shrink-0 items-center overflow-hidden rounded-t-[12px] border border-border text-sm font-semibold ${
       active
-        ? "z-10 border-b-0 bg-surface text-action before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[3px] before:rounded-t-[11px] before:bg-primary"
+        ? "z-10 border-b-0 bg-surface text-action before:pointer-events-none before:absolute before:inset-x-1.5 before:top-0 before:h-[3px] before:rounded-t-[11px] before:bg-primary"
         : "bg-surface-subtle text-content-secondary hover:bg-surface"
     }`
 

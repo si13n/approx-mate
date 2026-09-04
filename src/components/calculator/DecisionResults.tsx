@@ -39,7 +39,7 @@ export function DecisionResults(props: DecisionResultsProps) {
       className="flex min-w-0 flex-col gap-4 rounded-bl-[24px] rounded-br-[24px] rounded-tr-[24px] border border-border bg-surface p-4 desktop:p-6"
       aria-labelledby="decision-title"
     >
-      <div className="desktop:min-h-[58px]">
+      <div className="hidden tablet:block desktop:min-h-[58px]">
         <p className="text-xs font-semibold text-content-secondary desktop:normal-case">
           {props.t.yourDecision}
         </p>
@@ -53,6 +53,12 @@ export function DecisionResults(props: DecisionResultsProps) {
           <span className="font-normal">· {targetConversions}</span>
         </h2>
       </div>
+      <h2
+        id="decision-title-mobile"
+        className="text-xs font-semibold uppercase text-content-secondary tablet:hidden"
+      >
+        {decisionLabel} {target} / {props.t.monthShort}
+      </h2>
       <div className="grid gap-2 tablet:grid-cols-2 tablet:gap-3">
         <OfferResultCard
           contract="B2B"
@@ -99,9 +105,9 @@ export function DecisionResults(props: DecisionResultsProps) {
           variant="secondary"
           onClick={props.onCompare}
           trailingIcon={<span aria-hidden="true">→</span>}
-          className="border-0"
+          className="border-0 bg-transparent px-0 text-content-inverse hover:bg-transparent tablet:border tablet:border-border-strong tablet:bg-surface tablet:px-4 tablet:text-content-secondary tablet:hover:bg-surface-subtle"
         >
-          {props.t.compareOffers}
+          <span className="hidden tablet:inline">{props.t.compareOffers}</span>
         </Button>
       </section>
     </section>
