@@ -58,7 +58,7 @@ export function TargetPanel(props: TargetPanelProps) {
 
   return (
     <section
-      className="flex flex-col gap-4 rounded-panel border border-border bg-surface p-4 desktop:p-6"
+      className="flex flex-col gap-2 rounded-panel border border-border bg-surface p-4 desktop:p-6"
       aria-labelledby="target-title"
     >
       <div className="hidden desktop:block">
@@ -67,7 +67,7 @@ export function TargetPanel(props: TargetPanelProps) {
         </p>
         <h2
           id="target-title"
-          className="mt-1 font-display text-[22px] font-semibold"
+          className="mt-2 font-display text-[22px] font-semibold"
         >
           {props.t.targetQuestion}
         </h2>
@@ -77,6 +77,7 @@ export function TargetPanel(props: TargetPanelProps) {
         value={props.inputType}
         onChange={props.onInputTypeChange}
         ariaLabel={props.t.targetQuestion}
+        comfortable
         options={[
           {
             value: "net",
@@ -121,7 +122,7 @@ export function TargetPanel(props: TargetPanelProps) {
           onChange={(event) =>
             props.onCurrencyChange(event.target.value as Currency)
           }
-          className="min-h-11 rounded-full border-0 bg-primary-subtle px-3 text-xs font-semibold text-action outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="min-h-8 rounded-full border-0 bg-primary-subtle px-3 text-xs font-semibold text-action outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
@@ -129,7 +130,7 @@ export function TargetPanel(props: TargetPanelProps) {
         </select>
       </div>
 
-      <div>
+      <div className="min-h-[51px]">
         <div className="flex items-center justify-between text-xs font-medium text-content-secondary">
           <label htmlFor="quick-amount">{props.t.quickAmount}</label>
           <span className="font-semibold text-action">
@@ -145,11 +146,14 @@ export function TargetPanel(props: TargetPanelProps) {
           step="100"
           value={Math.min(Math.max(props.sliderValue, sliderMin), sliderMax)}
           onChange={(event) => setSlider(Number(event.target.value))}
-          className="range-input w-full focus-visible:outline-2 focus-visible:outline-primary"
+          className="range-input mt-[7px] w-full focus-visible:outline-2 focus-visible:outline-primary"
           style={{ "--range-progress": `${progress}%` } as CSSProperties}
         />
-        <div className="flex justify-between text-xs text-content-secondary">
-          <span>{SYM[props.currency]}1k</span>
+        <div className="mt-0.5 flex items-center justify-between text-xs text-content-secondary tablet:hidden">
+          <span>
+            {SYM[props.currency]}
+            {sliderMin / 1000}k
+          </span>
           <span>
             {SYM[props.currency]}
             {sliderMax / 1000}k
@@ -157,43 +161,8 @@ export function TargetPanel(props: TargetPanelProps) {
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-surface-subtle p-3 tablet:p-3.5">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold tablet:text-[15px]">
-            {props.t.taxProfile}
-          </h3>
-          <button
-            type="button"
-            onClick={props.onEditProfile}
-            className="shrink-0 border-b border-dashed border-current text-xs font-semibold leading-5 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            {props.t.editTaxProfile}
-          </button>
-        </div>
-        <div className="mt-1 text-xs leading-[18px] text-content-secondary tablet:hidden">
-          <p>
-            B2B · {rateLabel} · {zusLabel}
-          </p>
-          <p>
-            UoP · {uopLabel}
-            {props.profile.uop.ppkEnabled ? " · PPK" : ""}
-          </p>
-        </div>
-        <div className="mt-2 hidden flex-wrap gap-2 tablet:flex">
-          <span className="rounded-full bg-primary-subtle px-2.5 py-1.5 text-[13px] font-semibold text-action">
-            {rateLabel}
-          </span>
-          <span className="rounded-full bg-accent-subtle px-2.5 py-1.5 text-[13px] font-semibold text-accent">
-            {zusLabel}
-          </span>
-          <span className="rounded-full bg-page px-2.5 py-1.5 text-[13px] font-semibold text-content-secondary">
-            {uopLabel}
-          </span>
-        </div>
-      </div>
-
       <div className="hidden tablet:block">
-        <p className="mb-2 text-xs font-semibold text-content-secondary">
+        <p className="mb-2 text-[13px] font-semibold leading-[18px] text-content-secondary">
           {props.t.quickScenarios}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -207,7 +176,7 @@ export function TargetPanel(props: TargetPanelProps) {
                 key={scenario.label}
                 type="button"
                 onClick={() => props.onQuickScenario(scenario)}
-                className={`min-h-9 rounded-full border px-2.5 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-primary ${
+                className={`min-h-[30px] rounded-full border px-2.5 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-primary ${
                   selected
                     ? "border-primary-border bg-primary-subtle text-action"
                     : "border-border bg-surface text-content-secondary hover:border-primary"
@@ -217,6 +186,34 @@ export function TargetPanel(props: TargetPanelProps) {
               </button>
             )
           })}
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-2">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold tablet:text-[15px]">
+            {props.t.taxProfile}
+          </h3>
+          <button
+            type="button"
+            onClick={props.onEditProfile}
+            className="shrink-0 border-b border-dashed border-current text-xs font-semibold leading-5 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            {props.t.editTaxProfile}
+          </button>
+        </div>
+        <div className="mt-2 text-xs leading-[18px] text-content-secondary tablet:hidden">
+          <p>
+            B2B · {rateLabel} · {zusLabel}
+          </p>
+          <p>
+            UoP · {uopLabel}
+            {props.profile.uop.ppkEnabled ? " · PPK" : ""}
+          </p>
+        </div>
+        <div className="mt-2 hidden text-[13px] leading-4 text-content-secondary tablet:block">
+          {rateLabel} · {zusLabel} · {uopLabel}
+          {props.profile.uop.ppkEnabled ? " · PPK" : ""}
         </div>
       </div>
     </section>

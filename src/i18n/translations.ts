@@ -27,6 +27,13 @@ export interface Translation {
   takeHome: string
   grossPerHour: string
   netPerHour: string
+  whereMoneyGoes: string
+  taxAndContributions: string
+  taxAndContributionsShort: string
+  businessCosts: string
+  businessCostsShort: string
+  benefitsShare: string
+  seeCalculation: string
   compareOffers: string
   compareDescription: string
   recruiterTitle: string
@@ -105,6 +112,42 @@ export interface Translation {
   ryczaltTerm: string
   standardUop: string
   commuterUop: string
+  jobXRay: string
+  analyzeAnyVacancy: string
+  vacancyPlaceholder: string
+  analyzeOffer: string
+  analyzingOffer: string
+  noAccountRequired: string
+  jobAnalysisLimit: string
+  jobAnalysisInvalid: string
+  jobAnalysisTooLarge: string
+  jobAnalysisPasteFallback: string
+  workspaceTabs: string
+  calculatorTab: string
+  closeOffer: string
+  offerAnalysis: string
+  untitledOffer: string
+  parsedFromJobPost: string
+  parsedFromPastedText: string
+  viewSource: string
+  offerSource: string
+  employment: string
+  salary: string
+  workMode: string
+  requiredSkills: string
+  responsibilities: string
+  niceToHave: string
+  offerDetails: string
+  location: string
+  seniority: string
+  experience: string
+  english: string
+  company: string
+  benefits: string
+  notMentioned: string
+  workModes: Record<"remote" | "hybrid" | "onsite", string>
+  salaryPeriod: Record<"hour" | "day" | "month" | "year", string>
+  officeDays: (count: number) => string
   recruiterMessage: (amount: string, type: string) => string
 }
 
@@ -136,6 +179,13 @@ const en: Translation = {
   takeHome: "TAKE-HOME / MO",
   grossPerHour: "GROSS / H",
   netPerHour: "NET / H",
+  whereMoneyGoes: "Where the money goes",
+  taxAndContributions: "Tax & contributions",
+  taxAndContributionsShort: "Tax & contrib.",
+  businessCosts: "Business costs",
+  businessCostsShort: "Costs",
+  benefitsShare: "Benefits",
+  seeCalculation: "See calculation",
   compareOffers: "Compare offers",
   compareDescription:
     "Add 2–3 offers and rank them by cash, total value, and effective hourly rate.",
@@ -217,6 +267,43 @@ const en: Translation = {
   ryczaltTerm: "ryczałt",
   standardUop: "Standard UoP",
   commuterUop: "Commuter UoP",
+  jobXRay: "JOB X-RAY",
+  analyzeAnyVacancy: "Analyze any vacancy",
+  vacancyPlaceholder: "Paste a link or job text",
+  analyzeOffer: "Analyze offer",
+  analyzingOffer: "Analyzing…",
+  noAccountRequired: "No account required",
+  jobAnalysisLimit: "Maximum of 3 offers reached",
+  jobAnalysisInvalid: "Paste a vacancy link or a longer job description.",
+  jobAnalysisTooLarge: "This vacancy is too large to analyze.",
+  jobAnalysisPasteFallback:
+    "We couldn’t read this page. Paste the vacancy text instead.",
+  workspaceTabs: "Calculator and analyzed offers",
+  calculatorTab: "Calculator",
+  closeOffer: "Close",
+  offerAnalysis: "OFFER ANALYSIS",
+  untitledOffer: "Untitled offer",
+  parsedFromJobPost: "Parsed from job post",
+  parsedFromPastedText: "Parsed from pasted text",
+  viewSource: "View source",
+  offerSource: "Original vacancy text",
+  employment: "Employment",
+  salary: "Salary",
+  workMode: "Work mode",
+  requiredSkills: "Required skills",
+  responsibilities: "Responsibilities",
+  niceToHave: "Nice to have",
+  offerDetails: "Offer details",
+  location: "Location",
+  seniority: "Seniority",
+  experience: "Experience",
+  english: "English",
+  company: "Company",
+  benefits: "Benefits",
+  notMentioned: "Not mentioned",
+  workModes: { remote: "Remote", hybrid: "Hybrid", onsite: "On-site" },
+  salaryPeriod: { hour: "hour", day: "day", month: "month", year: "year" },
+  officeDays: (count) => `${count} ${count === 1 ? "day" : "days"} in office`,
   recruiterMessage: (amount, type) =>
     `Hi! I'm currently looking at opportunities in the range of around ${amount} ${type} per month, but I'm flexible depending on the project, team, and growth opportunities. Happy to discuss the details and learn more about the role.`,
 }
@@ -248,6 +335,13 @@ const pl: Translation = {
   takeHome: "NA RĘKĘ / MIES.",
   grossPerHour: "BRUTTO / H",
   netPerHour: "NETTO / H",
+  whereMoneyGoes: "Podział wynagrodzenia",
+  taxAndContributions: "Podatki i składki",
+  taxAndContributionsShort: "Podatki",
+  businessCosts: "Koszty działalności",
+  businessCostsShort: "Koszty",
+  benefitsShare: "Benefity",
+  seeCalculation: "Zobacz obliczenie",
   compareOffers: "Porównaj oferty",
   compareDescription:
     "Dodaj 2–3 oferty i porównaj gotówkę, wartość roczną oraz stawkę godzinową.",
@@ -329,6 +423,43 @@ const pl: Translation = {
   ryczaltTerm: "ryczałt",
   standardUop: "Standardowa UoP",
   commuterUop: "UoP z dojazdem",
+  jobXRay: "PRZEŚWIETL OFERTĘ",
+  analyzeAnyVacancy: "Przeanalizuj dowolną ofertę",
+  vacancyPlaceholder: "Wklej link lub treść oferty",
+  analyzeOffer: "Analizuj ofertę",
+  analyzingOffer: "Analizowanie…",
+  noAccountRequired: "Konto nie jest wymagane",
+  jobAnalysisLimit: "Osiągnięto limit 3 ofert",
+  jobAnalysisInvalid: "Wklej link do oferty lub dłuższy opis stanowiska.",
+  jobAnalysisTooLarge: "Ta oferta jest zbyt duża do analizy.",
+  jobAnalysisPasteFallback:
+    "Nie udało się odczytać strony. Wklej treść oferty.",
+  workspaceTabs: "Kalkulator i przeanalizowane oferty",
+  calculatorTab: "Kalkulator",
+  closeOffer: "Zamknij",
+  offerAnalysis: "ANALIZA OFERTY",
+  untitledOffer: "Oferta bez nazwy",
+  parsedFromJobPost: "Dane z ogłoszenia",
+  parsedFromPastedText: "Dane z wklejonego tekstu",
+  viewSource: "Zobacz źródło",
+  offerSource: "Oryginalna treść oferty",
+  employment: "Zatrudnienie",
+  salary: "Wynagrodzenie",
+  workMode: "Tryb pracy",
+  requiredSkills: "Wymagane umiejętności",
+  responsibilities: "Obowiązki",
+  niceToHave: "Mile widziane",
+  offerDetails: "Szczegóły oferty",
+  location: "Lokalizacja",
+  seniority: "Poziom",
+  experience: "Doświadczenie",
+  english: "Angielski",
+  company: "Firma",
+  benefits: "Benefity",
+  notMentioned: "Nie podano",
+  workModes: { remote: "Zdalnie", hybrid: "Hybrydowo", onsite: "Stacjonarnie" },
+  salaryPeriod: { hour: "godz.", day: "dzień", month: "miesiąc", year: "rok" },
+  officeDays: (count) => `${count} ${count === 1 ? "dzień" : "dni"} w biurze`,
   recruiterMessage: (amount, type) =>
     `Dzień dobry! Interesują mnie oferty w przedziale około ${amount} ${type} miesięcznie, ale jestem elastyczny w zależności od projektu, zespołu i możliwości rozwoju. Chętnie omówię szczegóły stanowiska.`,
 }
@@ -360,6 +491,13 @@ const ua: Translation = {
   takeHome: "НА РУКИ / МІС.",
   grossPerHour: "БРУТТО / ГОД",
   netPerHour: "НЕТТО / ГОД",
+  whereMoneyGoes: "Розподіл коштів",
+  taxAndContributions: "Податки та внески",
+  taxAndContributionsShort: "Податки",
+  businessCosts: "Витрати бізнесу",
+  businessCostsShort: "Витрати",
+  benefitsShare: "Пільги",
+  seeCalculation: "Переглянути розрахунок",
   compareOffers: "Порівняти пропозиції",
   compareDescription:
     "Додайте 2–3 пропозиції та порівняйте дохід, річну суму й погодинну ставку.",
@@ -440,6 +578,43 @@ const ua: Translation = {
   ryczaltTerm: "ричалт",
   standardUop: "Стандартна UoP",
   commuterUop: "UoP з витратами на проїзд",
+  jobXRay: "АНАЛІЗ ВАКАНСІЇ",
+  analyzeAnyVacancy: "Проаналізуйте будь-яку вакансію",
+  vacancyPlaceholder: "Вставте посилання або текст вакансії",
+  analyzeOffer: "Аналізувати пропозицію",
+  analyzingOffer: "Аналізуємо…",
+  noAccountRequired: "Обліковий запис не потрібен",
+  jobAnalysisLimit: "Досягнуто ліміт у 3 пропозиції",
+  jobAnalysisInvalid: "Вставте посилання або довший опис вакансії.",
+  jobAnalysisTooLarge: "Ця вакансія завелика для аналізу.",
+  jobAnalysisPasteFallback:
+    "Не вдалося прочитати сторінку. Вставте текст вакансії.",
+  workspaceTabs: "Калькулятор і проаналізовані пропозиції",
+  calculatorTab: "Калькулятор",
+  closeOffer: "Закрити",
+  offerAnalysis: "АНАЛІЗ ПРОПОЗИЦІЇ",
+  untitledOffer: "Пропозиція без назви",
+  parsedFromJobPost: "Дані з вакансії",
+  parsedFromPastedText: "Дані зі вставленого тексту",
+  viewSource: "Переглянути джерело",
+  offerSource: "Оригінальний текст вакансії",
+  employment: "Зайнятість",
+  salary: "Зарплата",
+  workMode: "Формат роботи",
+  requiredSkills: "Обов’язкові навички",
+  responsibilities: "Обов’язки",
+  niceToHave: "Буде перевагою",
+  offerDetails: "Деталі пропозиції",
+  location: "Локація",
+  seniority: "Рівень",
+  experience: "Досвід",
+  english: "Англійська",
+  company: "Компанія",
+  benefits: "Бенефіти",
+  notMentioned: "Не вказано",
+  workModes: { remote: "Віддалено", hybrid: "Гібридно", onsite: "В офісі" },
+  salaryPeriod: { hour: "год.", day: "день", month: "місяць", year: "рік" },
+  officeDays: (count) => `${count} ${count === 1 ? "день" : "дні"} в офісі`,
   recruiterMessage: (amount, type) =>
     `Вітаю! Я розглядаю можливості в діапазоні близько ${amount} ${type} на місяць, але готовий обговорювати умови залежно від проєкту, команди та можливостей розвитку. Буду радий дізнатися більше про роль.`,
 }

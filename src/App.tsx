@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AppShell } from "./components/AppShell"
 import { Footer } from "./components/Footer"
 import { Header } from "./components/Header"
@@ -7,6 +7,11 @@ import { CalculatorWorkspace } from "./components/calculator/CalculatorWorkspace
 import type { QuickScenario } from "./components/calculator/TargetPanel"
 import { ComparisonPage } from "./components/comparison/ComparisonPage"
 import { TaxProfileModal } from "./components/tax-profile/TaxProfileModal"
+import {
+  createAnalysisComparisonOffers,
+  createCalculatorComparisonOffers,
+} from "./features/job-xray/comparisonPrefill"
+import type { AnalyzedOffer, JobAnalysis } from "./features/job-xray/types"
 import { translations } from "./i18n/translations"
 import {
   trackCalculatorUsed,
@@ -16,6 +21,9 @@ import {
   trackPageView,
   trackQuickScenarioClick,
   trackRecruiterMessageCopy,
+  trackOfferTabClosed,
+  trackOfferTabOpened,
+  trackOfferCompareClicked,
   trackTaxProfileOpen,
 } from "./lib/analytics"
 import { formatRateDate, useExchangeRates } from "./lib/exchangeRates"
@@ -28,6 +36,7 @@ import {
 } from "./lib/taxCalculations"
 import { useTaxProfile } from "./lib/useTaxProfile"
 import type { Currency, InputType, Lang } from "./types"
+import type { Offer } from "./components/comparison/compareCalculations"
 
 export default function App() {
   const [lang, setLang] = useState<Lang>("en")
@@ -38,6 +47,10 @@ export default function App() {
   const [copied, setCopied] = useState(false)
   const [taxProfileOpen, setTaxProfileOpen] = useState(false)
   const [showComparison, setShowComparison] = useState(false)
+  const [activeTab, setActiveTab] = useState("calculator")
+  const [analyzedOffers, setAnalyzedOffers] = useState<AnalyzedOffer[]>([])
+  const [comparisonOffers, setComparisonOffers] = useState<Offer[]>()
+  const offerSequence = useRef(0)
   const { rates, effectiveDate, isFallback } = useExchangeRates()
   const { profile, updateProfile, isLoaded } = useTaxProfile()
   const t = translations[lang]
@@ -146,6 +159,41 @@ export default function App() {
     }
   }
 
+  const target = { amount, currency, inputType }
+
+  const addAnalyzedOffer = (analysis: JobAnalysis, originalInput: string) => {
+    offerSequence.current += 1
+    const id = `offer-${offerSequence.current}`
+    const normalizedAnalysis = { ...analysis, id }
+    setAnalyzedOffers((current) => [
+      ...current,
+      {
+        id,
+        analysis: normalizedAnalysis,
+        sourceText: analysis.source.kind === "text" ? originalInput : null,
+      },
+    ])
+    setActiveTab(id)
+    trackOfferTabOpened()
+  }
+
+  const closeAnalyzedOffer = (id: string) => {
+    setAnalyzedOffers((current) => current.filter((offer) => offer.id !== id))
+    if (activeTab === id) setActiveTab("calculator")
+    trackOfferTabClosed()
+  }
+
+  const openCalculatorComparison = () => {
+    setComparisonOffers(createCalculatorComparisonOffers(target))
+    setShowComparison(true)
+  }
+
+  const openOfferComparison = () => {
+    setComparisonOffers(createAnalysisComparisonOffers(analyzedOffers, target))
+    setShowComparison(true)
+    trackOfferCompareClicked()
+  }
+
   return (
     <div className="min-h-screen bg-page text-content">
       <div data-dialog-background>
@@ -165,6 +213,7 @@ export default function App() {
               rates={rates}
               profile={profile}
               t={t}
+              initialOffers={comparisonOffers}
             />
           ) : results ? (
             <CalculatorWorkspace
@@ -181,6 +230,8 @@ export default function App() {
               hoursPerMonth={hoursPerMonth}
               recruiterMessage={recruiterMessage}
               copied={copied}
+              offers={analyzedOffers}
+              activeTab={activeTab}
               onAmountChange={setRawAmount}
               onSliderChange={setSliderValue}
               onCurrencyChange={(nextCurrency) => {
@@ -193,7 +244,11 @@ export default function App() {
               }}
               onQuickScenario={applyScenario}
               onEditProfile={openTaxProfile}
-              onCompare={() => setShowComparison(true)}
+              onCompare={openCalculatorComparison}
+              onAnalyzeOffer={addAnalyzedOffer}
+              onSelectTab={setActiveTab}
+              onCloseOffer={closeAnalyzedOffer}
+              onCompareOffer={openOfferComparison}
               onCopy={() => {
                 void copyRecruiterMessage()
               }}

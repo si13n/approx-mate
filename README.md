@@ -18,6 +18,8 @@ Enter a salary in gross or net terms and instantly see:
 - Configurable Polish tax assumptions
 - Pre-formatted recruiter message
 - Dated NBP exchange-rate information
+- Deterministic Job X-Ray for vacancy URLs or pasted text (no AI/API key)
+- Up to three analyzed-offer tabs with a comparison handoff
 
 The current experience is intentionally low-friction: salary calculations run locally, tax settings persist in the browser, and no account is required.
 
