@@ -70,7 +70,7 @@ describe("Monthly money breakdown", () => {
   it("discloses a shortfall when fixed B2B contributions exceed gross", () => {
     const result = calculateB2BFromGross(100, DEFAULT_TAX_PROFILE)
     const breakdown = getMonthlyBreakdown(result)
-    expect(breakdown.shortfall).toBeCloseTo(result.socialZUS + result.healthContribution - 100, 2)
+    expect(breakdown.shortfall).toBeCloseTo(result.socialZUS + result.labourFund + result.healthContribution - 100, 2)
     const html = renderToStaticMarkup(<MoneyBreakdown calculation={result} contract="B2B" t={translations.en} />)
     expect(html).toContain(translations.en.contributionShortfall)
     expect(html).not.toContain("linear-gradient")

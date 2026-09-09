@@ -30,6 +30,7 @@ export interface Translation {
   whereMoneyGoes: string
   incomeTaxLabel: string
   contributionsLabel: string
+  labourFundLabel: string
   socialInsuranceLabel: string
   healthInsuranceLabel: string
   contributionShortfall: string
@@ -181,6 +182,7 @@ const en: Translation = {
   whereMoneyGoes: "Where the money goes",
   incomeTaxLabel: "Income tax",
   contributionsLabel: "Contributions",
+  labourFundLabel: "Labour Fund (FP/FS)",
   socialInsuranceLabel: "Social insurance (ZUS)",
   healthInsuranceLabel: "Health insurance (NFZ)",
   contributionShortfall: "Contributions exceed income by",
@@ -192,7 +194,7 @@ const en: Translation = {
   copyMessage: "Copy message",
   copied: "Copied!",
   assumptionsTitle: "Transparent assumptions",
-  rulesExample: "2026 rules · example calculation",
+  rulesExample: "2026 rules · annual average",
   ratesDaily: "NBP rates · refreshed daily",
   transparentAssumptions: "Transparent assumptions",
   estimateAdvice: "Estimate, not tax advice",
@@ -336,6 +338,7 @@ const pl: Translation = {
   whereMoneyGoes: "Podział wynagrodzenia",
   incomeTaxLabel: "Podatek",
   contributionsLabel: "Składki",
+  labourFundLabel: "Fundusz Pracy (FP/FS)",
   socialInsuranceLabel: "Składki społeczne ZUS",
   healthInsuranceLabel: "Składka zdrowotna NFZ",
   contributionShortfall: "Składki przekraczają przychód o",
@@ -347,7 +350,7 @@ const pl: Translation = {
   copyMessage: "Kopiuj wiadomość",
   copied: "Skopiowano!",
   assumptionsTitle: "Przejrzyste założenia",
-  rulesExample: "Zasady 2026 · przykładowe obliczenie",
+  rulesExample: "Zasady 2026 · średnia roczna",
   ratesDaily: "Kursy NBP · aktualizacja codzienna",
   transparentAssumptions: "Przejrzyste założenia",
   estimateAdvice: "Szacunek, nie porada podatkowa",
@@ -491,6 +494,7 @@ const ua: Translation = {
   whereMoneyGoes: "Розподіл коштів",
   incomeTaxLabel: "Податок",
   contributionsLabel: "Внески",
+  labourFundLabel: "Фонд праці (FP/FS)",
   socialInsuranceLabel: "Соціальні внески ZUS",
   healthInsuranceLabel: "Медичний внесок NFZ",
   contributionShortfall: "Внески перевищують дохід на",
@@ -502,7 +506,7 @@ const ua: Translation = {
   copyMessage: "Копіювати повідомлення",
   copied: "Скопійовано!",
   assumptionsTitle: "Прозорі припущення",
-  rulesExample: "Правила 2026 · приклад розрахунку",
+  rulesExample: "Правила 2026 · середнє за рік",
   ratesDaily: "Курси NBP · щоденне оновлення",
   transparentAssumptions: "Прозорі припущення",
   estimateAdvice: "Оцінка, не податкова консультація",

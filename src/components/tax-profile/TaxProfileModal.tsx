@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import {
   DEFAULT_TAX_PROFILE,
-  TAX_2026,
+  DEFAULT_TAX_RULES,
   type B2BZUSProfile,
   type TaxProfile,
   type UoPKUPType,
@@ -112,7 +112,7 @@ export function TaxProfileModal({
               <div className="mb-1.5 flex items-center justify-between gap-3 text-xs font-medium">
                 <label htmlFor="ryczalt-rate">{t.ryczaltRate}</label>
                 <a
-                  href="https://www.podatki.gov.pl/ryczalt/"
+                  href={DEFAULT_TAX_RULES.sources.pit}
                   target="_blank"
                   rel="noreferrer"
                   className="hidden font-semibold text-action tablet:block"
@@ -135,9 +135,9 @@ export function TaxProfileModal({
                 }
                 className="h-11 w-full rounded-[10px] border border-border-strong bg-surface px-3 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary tablet:h-[52px] tablet:rounded-[13px] tablet:text-xl"
               >
-                {TAX_2026.b2b.ryczaltRates.map((rate) => (
+                {DEFAULT_TAX_RULES.b2b.ryczaltRates.map((rate) => (
                   <option key={rate} value={rate}>
-                    {Math.round(rate * 100)}%
+                    {Number((rate * 100).toFixed(1))}%
                   </option>
                 ))}
               </select>

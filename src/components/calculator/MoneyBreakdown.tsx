@@ -18,17 +18,18 @@ export function getMonthlyBreakdown(calculation: Calculation) {
       ? calculation.socialZUS
       : calculation.socialContributions
     : 0
+  const labourFund = hasIncome && "labourFund" in calculation ? calculation.labourFund : 0
   const health = hasIncome ? calculation.healthContribution : 0
   const ppk = hasIncome && "ppkContribution" in calculation
     ? calculation.ppkContribution
     : 0
-  const contributions = social + health + ppk
+  const contributions = social + labourFund + health + ppk
   const shortfall = Math.max(0, tax + contributions - gross)
   const shares = [net, tax, contributions].map((amount) => ({
     amount,
     percentage: gross > 0 ? (amount / gross) * 100 : 0,
   }))
-  return { gross, net, tax, social, health, ppk, shortfall, shares }
+  return { gross, net, tax, social, labourFund, health, ppk, shortfall, shares }
 }
 
 export function MoneyBreakdown({
@@ -62,6 +63,7 @@ export function MoneyBreakdown({
     { label: isB2B ? t.invoiceLabel : t.grossLabel, amount: breakdown.gross },
     { label: t.incomeTaxLabel, amount: breakdown.tax },
     { label: t.socialInsuranceLabel, amount: breakdown.social },
+    ...(breakdown.labourFund > 0 ? [{ label: t.labourFundLabel, amount: breakdown.labourFund }] : []),
     { label: t.healthInsuranceLabel, amount: breakdown.health },
     ...(breakdown.ppk > 0 ? [{ label: t.ppk, amount: breakdown.ppk }] : []),
     { label: takeHomeLabel, amount: breakdown.net },

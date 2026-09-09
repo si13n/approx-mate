@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TAX_2026 } from "../config/tax/2026";
+import { DEFAULT_EXCHANGE_RATES } from "../config/exchangeRates";
 
 export interface ExchangeRatesResponse {
   source: "NBP";
@@ -14,11 +14,7 @@ export interface ExchangeRatesResponse {
 export const FALLBACK_RATES: ExchangeRatesResponse = {
   source: "NBP",
   effectiveDate: "",
-  rates: {
-    PLN_PLN: TAX_2026.exchangeRates.PLN_PLN,
-    USD_PLN: TAX_2026.exchangeRates.USD_PLN,
-    EUR_PLN: TAX_2026.exchangeRates.EUR_PLN,
-  },
+  rates: DEFAULT_EXCHANGE_RATES,
 };
 
 export function parseExchangeRates(data: unknown): ExchangeRatesResponse {

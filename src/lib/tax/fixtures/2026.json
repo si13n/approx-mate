@@ -1,0 +1,166 @@
+[
+  {
+    "contract": "UoP",
+    "gross": 5000,
+    "kup": "standard",
+    "ppk": false,
+    "social": 685.5,
+    "health": 388.305,
+    "pit": 187.74,
+    "net": 3738.455
+  },
+  {
+    "contract": "UoP",
+    "gross": 5000,
+    "kup": "commuter",
+    "ppk": false,
+    "social": 685.5,
+    "health": 388.305,
+    "pit": 181.74,
+    "net": 3744.455
+  },
+  {
+    "contract": "UoP",
+    "gross": 5000,
+    "kup": "standard",
+    "ppk": true,
+    "social": 685.5,
+    "health": 388.305,
+    "pit": 196.74,
+    "net": 3629.455
+  },
+  {
+    "contract": "UoP",
+    "gross": 10000,
+    "kup": "standard",
+    "ppk": false,
+    "social": 1371.0,
+    "health": 776.61,
+    "pit": 705.48,
+    "net": 7146.91
+  },
+  {
+    "contract": "UoP",
+    "gross": 20000,
+    "kup": "standard",
+    "ppk": false,
+    "social": 2742.0,
+    "health": 1553.22,
+    "pit": 3142.56,
+    "net": 12562.22
+  },
+  {
+    "contract": "UoP",
+    "gross": 20000,
+    "kup": "standard",
+    "ppk": true,
+    "social": 2742.0,
+    "health": 1553.22,
+    "pit": 3238.56,
+    "net": 12066.22
+  },
+  {
+    "contract": "UoP",
+    "gross": 30000,
+    "kup": "standard",
+    "ppk": false,
+    "social": 3386.73,
+    "health": 2395.1943,
+    "pit": 6136.2464,
+    "net": 18081.8293
+  },
+  {
+    "contract": "UoP",
+    "gross": 30000,
+    "kup": "commuter",
+    "ppk": true,
+    "social": 3386.73,
+    "health": 2395.1943,
+    "pit": 6264.2464,
+    "net": 17353.8293
+  },
+  {
+    "contract": "B2B",
+    "gross": 5000,
+    "zus": "full",
+    "sickness": false,
+    "rate": 0.12,
+    "social": 1649.82,
+    "labourFund": 138.47,
+    "health": 498.35,
+    "pit": 372.1206,
+    "net": 2341.2394
+  },
+  {
+    "contract": "B2B",
+    "gross": 20000,
+    "zus": "full",
+    "sickness": false,
+    "rate": 0.12,
+    "social": 1649.82,
+    "labourFund": 138.47,
+    "health": 830.58,
+    "pit": 2152.1868,
+    "net": 15228.9432
+  },
+  {
+    "contract": "B2B",
+    "gross": 30000,
+    "zus": "full",
+    "sickness": false,
+    "rate": 0.12,
+    "social": 1649.82,
+    "labourFund": 138.47,
+    "health": 1495.04,
+    "pit": 3312.3192,
+    "net": 23404.3508
+  },
+  {
+    "contract": "B2B",
+    "gross": 20000,
+    "zus": "full",
+    "sickness": true,
+    "rate": 0.12,
+    "social": 1788.29,
+    "labourFund": 138.47,
+    "health": 830.58,
+    "pit": 2135.5704,
+    "net": 15107.0896
+  },
+  {
+    "contract": "B2B",
+    "gross": 5000,
+    "zus": "preferential",
+    "sickness": false,
+    "rate": 0.085,
+    "social": 420.86,
+    "labourFund": 0.0,
+    "health": 498.35,
+    "pit": 368.047025,
+    "net": 3712.742975
+  },
+  {
+    "contract": "B2B",
+    "gross": 5000,
+    "zus": "preferential",
+    "sickness": true,
+    "rate": 0.12,
+    "social": 456.18,
+    "labourFund": 0.0,
+    "health": 498.35,
+    "pit": 515.3574,
+    "net": 3530.1126
+  },
+  {
+    "contract": "B2B",
+    "gross": 5000,
+    "zus": "ulgaNaStart",
+    "sickness": false,
+    "rate": 0.12,
+    "social": 0.0,
+    "labourFund": 0.0,
+    "health": 498.35,
+    "pit": 570.099,
+    "net": 3931.551
+  }
+]

@@ -83,6 +83,24 @@ export default function App() {
         type: "net",
       },
       {
+        label: `€5k ${t.netLabel.toLowerCase()}`,
+        amount: 5000,
+        currency: "EUR",
+        type: "net",
+      },
+      {
+        label: `10k PLN ${t.netLabel.toLowerCase()}`,
+        amount: 10000,
+        currency: "PLN",
+        type: "net",
+      },
+      {
+        label: `15k PLN ${t.grossLabel.toLowerCase()}`,
+        amount: 15000,
+        currency: "PLN",
+        type: "gross",
+      },
+      {
         label: `20k PLN ${t.grossLabel.toLowerCase()}`,
         amount: 20000,
         currency: "PLN",

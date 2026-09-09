@@ -64,8 +64,9 @@ Open `http://localhost:8787/`. The Vite dev server uses the built-in emergency r
 src/                         # React application
 ├── App.tsx                  # Main UI and application state
 ├── components/              # Reusable UI and modal components
-├── lib/                     # Calculations, persistence, analytics, i18n
-└── config/tax/2026.ts       # Polish tax rules (versioned by year)
+├── lib/taxCalculations.ts   # Shared calculator API
+├── lib/tax/                 # Pure tax functions, monthly scenarios, inverse solver
+└── config/tax/              # Typed rules registry and sources by year
 worker/                      # Cloudflare Worker entrypoint and API logic
 ├── index.ts                 # SPA assets, redirects, and API routing
 └── exchangeRates.ts         # NBP fetch, cache, and fallback handling
@@ -90,11 +91,13 @@ wrangler.jsonc               # Worker, assets, and local-dev configuration
 
 ## Tax Calculation Logic
 
-ApproxMate uses an **annual-first model** for tax accuracy:
+ApproxMate uses an **annual-average estimate**, not a monthly payslip:
 
-- Gross monthly → annual value
-- Apply annual thresholds, PIT brackets, ZUS caps, and configured rules
-- Convert the annual result back to an average monthly value
+- Expand constant income into twelve months, or supply a monthly scenario
+- Apply monthly contributions and annual caps, then calculate annual PIT
+- Convert the annual estimate back to an average monthly value
+- Keep B2B social insurance and non-deductible FP/FS separate
+- Verify reverse calculations within each B2B health tier
 
 Supported Polish contract logic includes:
 
@@ -105,12 +108,12 @@ See **[Polish tax rules](./docs/TAX_RULES_POLAND.md)** for the detailed calculat
 
 ## Tax Configuration
 
-Polish tax rules are versioned in `src/config/tax/2026.ts`, including:
+Polish tax rules are registered by year in `src/config/tax/index.ts`. The currently supported ruleset is `src/config/tax/2026.ts`, including:
 
 - ZUS contribution values
 - Health thresholds
 - Tax brackets and caps
-- Source references
+- Effective dates, verification date and specific official source references
 
 Update the configuration when legislation changes rather than scattering tax constants through application code.
 

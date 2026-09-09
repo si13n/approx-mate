@@ -1,11 +1,7 @@
 import { Currency } from "../types";
-import { TAX_2026 } from "../config/tax/2026";
+import { DEFAULT_EXCHANGE_RATES } from "../config/exchangeRates";
 
-export const RATES: Record<string, number> = {
-  PLN_PLN: TAX_2026.exchangeRates.PLN_PLN,
-  USD_PLN: TAX_2026.exchangeRates.USD_PLN,
-  EUR_PLN: TAX_2026.exchangeRates.EUR_PLN,
-};
+export const RATES: Record<string, number> = DEFAULT_EXCHANGE_RATES;
 export const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
 export const SUF: Record<Currency, string> = { USD: "", EUR: "", PLN: " PLN" };
 

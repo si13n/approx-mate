@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react"
+import { useLayoutEffect, useRef, useState, type FormEvent } from "react"
 import type { Translation } from "../../../i18n/translations"
 import {
   trackJobAnalysisCompleted,
@@ -18,22 +18,26 @@ interface JobXRayPanelProps {
 
 export function JobXRayPanel({ t, offerCount, onAnalyze }: JobXRayPanelProps) {
   const [input, setInput] = useState("")
+  const [collapsed, setCollapsed] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const atLimit = offerCount >= 3
 
-  const resizeInput = () => {
+  useLayoutEffect(() => {
     const element = inputRef.current
     if (!element) return
     element.style.height = "46px"
-    element.style.height = `${Math.min(element.scrollHeight, 128)}px`
-  }
+    if (input && !collapsed) {
+      element.style.height = `${Math.min(element.scrollHeight, 128)}px`
+    }
+  }, [input, collapsed])
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     if (loading || atLimit) return
     setError(null)
+    setCollapsed(true)
     setLoading(true)
     const sourceType = /^https?:\/\//i.test(input.trim()) ? "url" : "text"
     trackJobAnalysisStarted(sourceType)
@@ -58,7 +62,6 @@ export function JobXRayPanel({ t, offerCount, onAnalyze }: JobXRayPanelProps) {
       trackJobAnalysisCompleted(sourceType, extractedFields)
       onAnalyze(analysis, input.trim())
       setInput("")
-      requestAnimationFrame(resizeInput)
     } catch (caught) {
       const code =
         caught instanceof JobAnalysisClientError ? caught.code : "PARSE_FAILED"
@@ -104,7 +107,7 @@ export function JobXRayPanel({ t, offerCount, onAnalyze }: JobXRayPanelProps) {
           onChange={(event) => {
             setInput(event.target.value)
             setError(null)
-            requestAnimationFrame(resizeInput)
+            setCollapsed(false)
           }}
           className="min-h-[46px] max-h-32 resize-none overflow-y-auto rounded-xl border border-border-strong bg-surface-subtle px-3.5 py-3 text-sm leading-5 outline-none placeholder:text-content-secondary/70 focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-60"
           aria-describedby={error ? "job-xray-error" : undefined}

@@ -1,215 +1,83 @@
-# Polish Tax Rules 2026
+# Polish tax estimates
 
-**Official sources:** ZUS, podatki.gov.pl, NBP
+ApproxMate compares annual compensation and displays annual totals divided by 12. These are **average monthly estimates**, not the amount on a particular payslip or a tax-return calculation. Supported inputs were checked against the sources below on 9 September 2026.
 
----
+## One engine and one ruleset per year
 
-## Exchange Rates
+- `src/config/tax/<year>.ts`: rates, thresholds, contribution amounts, effective dates and source URLs.
+- `src/config/tax/index.ts`: year registry and default profile. Unknown years fail explicitly; they never silently use another year's rules.
+- `src/lib/tax/core.ts`: pure PIT, contribution and health functions with explicit rules as input.
+- `src/lib/tax/scenarios.ts`: January–December scenarios with monthly income and profiles, annual accumulation and totals.
+- `src/lib/tax/inverse.ts`: bounded net-to-gross search with a verified feasible result.
+- `src/lib/taxCalculations.ts`: the shared public API for Calculator, Compare and money breakdowns.
 
-| Currency | Rate |
-|----------|------|
-| PLN | 1.0 |
-| USD | 3.85 |
-| EUR | 4.25 |
+The obsolete `calculations.ts` and `tax.config.ts` implementations have been removed. FX display fallbacks live separately in `src/config/exchangeRates.ts`; live NBP rates come from the Cloudflare API.
 
-Updated daily via GitHub Actions.
+## Calculation assumptions
 
----
+**UoP:** one employer, ordinary salary, standard or commuter KUP, full annual tax reduction, no other income or special exemptions. Pension and disability share an annual contribution-base cap. Sickness remains uncapped. Employee contributions reduce both health and PIT bases; employer accident insurance is never deducted from employee gross. Basic employee PPK reduces take-home; basic employer PPK increases taxable income, without increasing employee social/health bases. Employer PPK is assumed paid in the same year. The low-pay health cap uses the statutory 2021 reference with PIT-2 assumed.
 
-## B2B (Ryczałt)
+Annual PIT applies each rate only to the base inside that bracket, then deducts the annual reduction once. Amounts retain fractional PLN until display formatting; per-payment contribution rounding, whole-PLN PIT rounding, payroll advances and annual refunds are not modelled. This can differ from payroll by small rounding amounts even where all other assumptions match.
 
-### Ryczałt Rates
+**B2B:** one selected ryczałt rate, one business, invoice revenue excluding VAT, the selected minimum ZUS profile and optional sickness insurance. Social insurance and FP/FS are separate: both reduce spendable income, but FP/FS reduces neither ryczałt taxable revenue nor the revenue used to select the health tier. Taxable revenue deducts social insurance and half of health contributions.
 
-Selectable: **8.5%, 12%, 14%, 15%, 17%**
+The model provisions the final annual health tier for every active month using the published monthly contribution. Contributions are assumed paid in the modelled year. Actual monthly health payments may initially use a lower tier; the subsequent settlement, its payment date, annual health-base rounding and the tax year of its deduction require a payment ledger and are outside this estimate. Expense deductions, mixed ryczałt rates, VAT, relief eligibility, Mały ZUS Plus, ZUS holidays, age-based exemptions, special PIT reliefs and simultaneous employment/business are not modelled.
 
-Default: **12%** (common for IT services)
+The quick calculator holds the selected profile constant for the year to compare assumptions. **Selecting Ulga na start does not establish eligibility or mean it lasts twelve months.** Its ordinary maximum is six full calendar months; preferential contributions can then apply for 24 months if eligible. Scenario callers supply the correct profile per month explicitly. No future-year rates or automatic eligibility decisions are invented.
 
-⚠️ Your actual rate depends on PKWiU code and service type. Check with accountant.
+A zero-revenue active B2B month still has contributions. Set `active: false` and `gross: 0` for an inactive month. Scenarios preserve negative annual cash results; the quick calculator displays zero available take-home and the money breakdown discloses a contribution shortfall for positive invoices that do not cover costs.
 
-### ZUS (Social Insurance)
+## Monthly scenarios
 
-Three profiles available:
+Each call takes exactly twelve chronological entries for one registered tax year. Rows contain contribution components and taxable income (UoP) or provisioned health (B2B), **not monthly net payslips**. Annual PIT is calculated once from the complete year. Inactive months can represent starting or ending work mid-year; each call starts with fresh annual accumulators.
 
-#### 1. **Full ZUS** ← Default
-- Social contribution: **1,788.29 PLN/month**
-- With voluntary sickness: **1,926.76 PLN/month**
-- Best for stable, higher income
+```ts
+import { DEFAULT_TAX_PROFILE } from "../src/config/tax"
+import { calculateB2BScenario, constantIncomeYear } from "../src/lib/tax/scenarios"
 
-#### 2. **Preferential ZUS**
-- Social contribution: **420.86 PLN/month**
-- With voluntary sickness: **456.18 PLN/month**
-- Lower threshold for eligibility
-
-#### 3. **Ulga na start** (Startup Relief)
-- Social contribution: **0 PLN/month** (temporary)
-- Health insurance: Still required
-- For newly self-employed (limited time)
-
-### Health Insurance (Zdrowotna)
-
-**Automatic** based on annual revenue (net of ZUS):
-
-| Annual Revenue | Monthly Health |
-|---|---|
-| ≤ 60,000 PLN | 498.35 PLN |
-| 60,001 – 300,000 PLN | 830.58 PLN |
-| > 300,000 PLN | 1,495.04 PLN |
-
-### Sickness Insurance (Składka Chorobowa)
-
-Optional: **2.45%** of contribution base
-
-Only available with Full or Preferential ZUS.
-
-### Tax Base Calculation
-
-```
-taxable revenue
-= gross revenue
-  - social ZUS contributions
-  - (50% × health contributions)
-
-tax = taxable revenue × ryczałt rate
+// Explicit assumption: an eligible business starts on January 1.
+const months = constantIncomeYear(10000, DEFAULT_TAX_PROFILE).map((month, index) => ({
+  ...month,
+  profile: {
+    ...month.profile,
+    b2b: { ...month.profile.b2b, zusProfile: index < 6 ? "ulgaNaStart" as const : "preferential" as const },
+  },
+}))
+const result = calculateB2BScenario(months, 2026)
 ```
 
----
+For constant-income reverse calculations, UoP expands the search until it brackets the target. B2B searches health tiers in ascending order because net falls at a tier transition and there can be more than one gross value for the same target. Results must reach the requested net within one grosz; failure is explicit.
 
-## UoP (Employment)
+## Independent verification
 
-### Income Tax (PIT)
+`src/lib/tax/fixtures/2026.json` contains fixed reference results calculated separately with decimal arithmetic, without importing production code or configuration. Do not regenerate expectations from the engine under test. Changing a rule requires rechecking the source and independently recalculating affected fixtures.
 
-**Brackets (annual):**
-| Income | Rate |
-|---|---|
-| Up to 120,000 PLN | 12% |
-| Above 120,000 PLN | 32% |
+Examples under the unrounded annual-average model:
 
-**Tax reduction:** 3,600 PLN/year (300 PLN/month average)
+| Scenario | Social / month | FP/FS / month | Health / month | PIT / month | Net / month |
+|---|---:|---:|---:|---:|---:|
+| UoP 5,000 gross, standard KUP, no PPK | 685.50 | — | 388.305 | 187.74 | 3,738.455 |
+| UoP 5,000 gross, basic PPK | 685.50 | — | 388.305 | 196.74 | 3,629.455 |
+| B2B 20,000 invoice, 12%, full ZUS, no sickness | 1,649.82 | 138.47 | 830.58 | 2,152.1868 | 15,228.9432 |
 
-**Calculation is annual-first** to ensure threshold accuracy.
+For the first example: employee social contributions are `60000 × (9.76% + 1.5% + 2.45%) = 8226` annually. The health base is `60000 − 8226`; the PIT base is `60000 − 8226 − 3000 = 48774`. Annual PIT is `48774 × 12% − 3600 = 2252.88`. With PPK, employer contributions add 900 to that annual PIT base and employee contributions subtract 1200 from annual take-home.
 
-### Social Insurance (ZUS) — Employee
+For the B2B example: monthly taxable revenue is `20000 − 1649.82 − 830.58 / 2 = 17934.89`. FP/FS is a cash payment only. Net is `20000 − 1649.82 − 138.47 − 830.58 − 17934.89 × 12%`.
 
-| Type | Rate | Note |
-|---|---|---|
-| Pension (Emerytalne) | 9.76% | Capped annually |
-| Disability (Rentowe) | 1.5% | Capped annually |
-| Sickness (Chorobowa) | 2.45% | Full month only |
-| Work accident (Wypadkowe) | 1.67% | Employer pays |
+Tests cover reference examples, PIT and health boundaries, annual social-cap crossing, PPK, variable income, changing ZUS profiles, inactive months, shortfalls, invalid inputs, unsupported years and inverse calculations. Integration tests verify that Compare and money breakdowns consume the same engine.
 
-**Annual cap:** 282,600 PLN (pension + disability only)
+## Sources and maintenance
 
-### Health Insurance (Zdrowotna)
+- [PIT scale and ryczałt rates — Ministry of Finance](https://www.podatki.gov.pl/podatki-firmowe/pit/stawki-i-limity)
+- [Employee income and KUP — Ministry of Finance](https://www.podatki.gov.pl/podatki-osobiste/pit/informacje-podstawowe/co-jest-opodatkowane/dochody-z-pracy)
+- [2026 contributions and annual cap — ZUS](https://www.zus.pl/firmy/rozliczenia-z-zus/skladki-na-ubezpieczenia)
+- [Employee contribution funding — ZUS](https://www.zus.pl/documents/10182/167561/Jestes_pracownikiem.pdf/a049dc44-6680-4a0e-b07a-60adc7dc01eb) (use for funding/rates; its historical annual-cap amount is not used)
+- [Employee health base — ZUS](https://www.zus.pl/pracujacy/ubezpieczenie-zdrowotne-w-polsce/podstawa-wymiaru-skladek-na-ubezpieczenie-zdrowotne)
+- [Low-pay health cap — ZUS](https://www.zus.pl/o-zus/o-nas/programy-transformacji-cyfrowej-zus/zmiany-od-2022-r./zmiany-w-skladce-zdrowotnej)
+- [Health deduction — Ministry of Finance](https://www.podatki.gov.pl/ulgi-i-odliczenia/odliczenie-skladek-na-ubezpieczenie-zdrowotne-pit)
+- [ZUS deductions and FP/FS — biznes.gov.pl](https://www.biznes.gov.pl/pl/portal/00230)
+- [Employer PPK taxation — official PPK portal](https://www.mojeppk.pl/faq/pracownik/podatki-i-skladki-zus_jaki-podatek-zaplaci-pracownik-od-wplaty-pracodawcy.html)
+- [PPK contribution rates — official PPK portal](https://www.mojeppk.pl/dla-pracownika/artykul.html)
+- [Ulga na start and preferential contributions — ZUS](https://www.zus.pl/en/-/ulga-na-start-preferencyjna-podstawa-dzialalnosc-nieewidencjonowana-jakie-sa-warunki-uprawnienia-i-skutk-1)
 
-**9% of:**
-```
-gross salary
-- pension contribution
-- disability contribution
-```
-
-Not deductible from tax (unlike ZUS).
-
-### KUP (Tax-Deductible Costs)
-
-Selectable:
-- **Standard: 250 PLN/month**
-- **Commuter: 300 PLN/month** (if workplace in different town)
-
-Default: **Standard (250 PLN)**
-
-### PPK (Workplace Savings Fund)
-
-**Optional:** Employee **2%** + Employer **1.5%**
-
-Default: **Off**
-
-Employee contribution reduces take-home (no tax benefit currently).
-
-### Calculation Example
-
-```
-Monthly gross: 5,000 PLN
-Annual gross: 60,000 PLN
-
-Annual ZUS (pension + disability):
-5,000 × (0.0976 + 0.015) × 12 = 8,049.60 PLN
-(Under annual cap of 282,600)
-
-Annual health (9% of reduced base):
-(60,000 - 5,853.60) × 0.09 = 4,873.01 PLN
-
-Taxable (for PIT):
-60,000 - 5,853.60 - 3,000 (KUP) = 51,146.40 PLN
-
-PIT (12% bracket, under 120k threshold):
-51,146.40 × 0.12 - 3,600 = 2,537.57 PLN
-
-Annual net:
-60,000 - 8,049.60 - 4,873.01 - 2,537.57 = 44,540 PLN
-
-Average monthly: 44,540 ÷ 12 = 3,712 PLN
-```
-
----
-
-## Key Differences: B2B vs UoP
-
-| | B2B | UoP |
-|---|---|---|
-| **Tax rate** | Ryczałt (8.5%-17%) | Progressive (12%-32%) |
-| **ZUS** | Optional profiles | Mandatory |
-| **Health** | Income-tiered | Fixed 9% |
-| **Flexibility** | Customizable | Standard |
-| **Risk** | Responsibility for books | Employer handles |
-| **Avg. benefit** | Often higher net | Stability, benefits |
-
----
-
-## When to Use Each Profile
-
-### B2B Full ZUS
-✅ Stable income > 10k/month  
-✅ Long-term contracts  
-✅ Want to build ZUS history  
-
-### B2B Preferential ZUS
-✅ Income 5-10k/month  
-✅ Eligible (startup, etc.)  
-✅ Lower fixed costs  
-
-### B2B Ulga na start
-✅ Newly self-employed  
-✅ First 24 months  
-✅ Building business  
-
-### UoP
-✅ Want simplicity  
-✅ Employment benefits  
-✅ Tax not a focus  
-
----
-
-## Updates & Maintenance
-
-This documentation reflects **2026 rules**.
-
-**When legislation changes:**
-1. Update `src/config/tax/2026.ts`
-2. Include official source link
-3. Add version note
-4. Run tests (`npm test`)
-
-**To add a new country:** Duplicate the tax config file and modify values.
-
----
-
-## Official Sources
-
-- **ZUS** — https://www.zus.pl/ (contribution tables, caps)
-- **Ministerstwo Finansów** — https://www.podatki.gov.pl/ (tax brackets, deductions)
-- **NBP** — https://api.nbp.pl/ (exchange rates)
-
-Always verify current rates with official sources before contracts.
-
-**This calculator provides estimates, not tax advice.**
+For a new year, add and register an independently sourced ruleset, verify formulas and reference cases, then update the default year and year-specific UI copy together. Run `pnpm test:run`, `pnpm type-check` and `pnpm build`. An existing year's values must not be overwritten with the next year's rates.

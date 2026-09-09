@@ -41,7 +41,7 @@ export function TargetPanel(props: TargetPanelProps) {
     preferential: props.t.preferential,
     full: props.t.fullZus,
   }[props.profile.b2b.zusProfile]
-  const rateLabel = `${Math.round(props.profile.b2b.ryczaltRate * 100)}% ${props.t.ryczaltTerm}`
+  const rateLabel = `${Number((props.profile.b2b.ryczaltRate * 100).toFixed(1))}% ${props.t.ryczaltTerm}`
   const uopLabel =
     props.profile.uop.kupType === "standard"
       ? props.t.standardUop
@@ -58,7 +58,7 @@ export function TargetPanel(props: TargetPanelProps) {
 
   return (
     <section
-      className="flex flex-col gap-2 rounded-panel border border-border bg-surface p-4 desktop:p-6"
+      className="flex flex-col gap-4 rounded-panel border border-border bg-surface p-4 desktop:p-6"
       aria-labelledby="target-title"
     >
       <div className="hidden desktop:block">
@@ -186,7 +186,7 @@ export function TargetPanel(props: TargetPanelProps) {
         </div>
       </div>
 
-      <div className="border-t border-border pt-2">
+      <div className="border-t border-border pt-4">
         <div className="flex items-center justify-between gap-3">
           <h3 className="text-sm font-semibold tablet:text-[15px]">
             {props.t.taxProfile}
@@ -194,7 +194,7 @@ export function TargetPanel(props: TargetPanelProps) {
           <button
             type="button"
             onClick={props.onEditProfile}
-            className="shrink-0 border-b border-dashed border-current text-[11px] font-semibold leading-4 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="shrink-0 border-b border-dashed border-current text-xs font-normal leading-4 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             {props.t.editTaxProfile}
           </button>
