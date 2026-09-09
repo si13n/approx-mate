@@ -26,6 +26,7 @@ export interface UoPCalculationResult {
   annualGross: number;
   annualNet: number;
   socialContributions: number;
+  ppkContribution: number;
   healthContribution: number;
   incomeTax: number;
   effectiveMonthlyRate: number;
@@ -183,6 +184,7 @@ export function calculateUoPFromGross(
     annualGross,
     annualNet,
     socialContributions: annualEmployeeSocial / 12,
+    ppkContribution: annualPPKEmployee / 12,
     healthContribution: annualHealth / 12,
     incomeTax: annualPIT / 12,
     effectiveMonthlyRate: monthlyNet,

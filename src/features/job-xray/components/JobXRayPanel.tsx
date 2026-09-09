@@ -129,22 +129,19 @@ export function JobXRayPanel({ t, offerCount, onAnalyze }: JobXRayPanelProps) {
           {loading ? t.analyzingOffer : t.analyzeOffer}
         </Button>
       </form>
-      <div className="mt-2 flex min-h-[18px] items-start gap-1.5 text-xs">
-        {error ? (
-          <p id="job-xray-error" role="alert" className="text-danger">
-            {error}
-          </p>
-        ) : (
-          <>
-            <span className="font-semibold text-action" aria-hidden="true">
-              ✓
-            </span>
-            <p className="font-medium text-content-secondary">
-              {atLimit ? t.jobAnalysisLimit : t.noAccountRequired}
+      {(error || atLimit) && (
+        <div className="mt-2 text-xs">
+          {error ? (
+            <p id="job-xray-error" role="alert" className="text-danger">
+              {error}
             </p>
-          </>
-        )}
-      </div>
+          ) : (
+            <p role="status" className="font-medium text-content-secondary">
+              {t.jobAnalysisLimit}
+            </p>
+          )}
+        </div>
+      )}
     </section>
   )
 }

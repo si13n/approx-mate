@@ -1,12 +1,15 @@
 import type { Translation } from "../../i18n/translations"
 import { fmt, fromPLN } from "../../lib/formatting"
+import type {
+  B2BCalculationResult,
+  UoPCalculationResult,
+} from "../../lib/taxCalculations"
+import { MoneyBreakdown } from "./MoneyBreakdown"
 import type { Currency, InputType } from "../../types"
 
 interface OfferResultCardProps {
   contract: "B2B" | "UoP"
-  grossPLN: number
-  netPLN: number
-  currency: Currency
+  calculation: B2BCalculationResult | UoPCalculationResult
   inputType: InputType
   rates: Record<string, number>
   hoursPerMonth: number
@@ -17,81 +20,16 @@ function plnCompact(value: number) {
   return `${Math.round(value / 100) / 10}k PLN`
 }
 
-interface BreakdownItem {
-  label: string
-  shortLabel?: string
-  percentage: number
-  color: string
-}
-
-function MoneyBreakdown({
-  items,
-  t,
-  linkTone,
-}: {
-  items: BreakdownItem[]
-  t: Translation
-  linkTone: string
-}) {
-  let offset = 0
-  const stops = items.flatMap((item) => {
-    const start = offset
-    offset += item.percentage
-    return [`${item.color} ${start}%`, `${item.color} ${offset}%`]
-  })
-
-  return (
-    <div className="flex min-w-0 flex-col gap-2.5">
-      <p className="text-xs font-semibold leading-4">{t.whereMoneyGoes}</p>
-      <div
-        className="h-2.5 w-full rounded-[4px]"
-        style={{
-          backgroundImage: `linear-gradient(90deg, ${stops.join(", ")})`,
-        }}
-        role="img"
-        aria-label={items
-          .map((item) => `${item.label}: ${item.percentage}%`)
-          .join(", ")}
-      />
-      <div className="grid h-[34px] grid-cols-[0.9fr_1.25fr_0.85fr] gap-2 text-xs leading-[17px]">
-        {items.map((item) => (
-          <div key={item.label} className="flex min-w-0 items-start gap-2">
-            <span
-              className="mt-1 size-2.5 shrink-0 rounded-full"
-              style={{ backgroundColor: item.color }}
-              aria-hidden="true"
-            />
-            <span className="min-w-0">
-              <span className="block whitespace-nowrap">
-                <span className="tablet:hidden">
-                  {item.shortLabel ?? item.label}
-                </span>
-                <span className="hidden tablet:inline">{item.label}</span>
-              </span>
-              <span className="block">{item.percentage}%</span>
-            </span>
-          </div>
-        ))}
-      </div>
-      <span className={`text-xs font-semibold leading-4 ${linkTone}`}>
-        {t.seeCalculation} <span aria-hidden="true">→</span>
-      </span>
-    </div>
-  )
-}
-
 export function OfferResultCard({
   contract,
-  grossPLN,
-  netPLN,
-  currency,
+  calculation,
   inputType,
   rates,
   hoursPerMonth,
   t,
 }: OfferResultCardProps) {
   const isB2B = contract === "B2B"
-  const takeHomeLabel = `${t.takeHomeLabel.charAt(0).toUpperCase()}${t.takeHomeLabel.slice(1)}`
+  const { monthlyGross: grossPLN, monthlyNet: netPLN } = calculation
   const headlinePLN = inputType === "net" ? grossPLN : netPLN
   const headlineSuffix =
     inputType === "net"
@@ -107,32 +45,6 @@ export function OfferResultCard({
     ? "border-primary bg-primary-subtle"
     : "border-[#0891b2] bg-accent-subtle"
   const textTone = isB2B ? "text-action" : "text-accent"
-  const breakdownItems: BreakdownItem[] = isB2B
-    ? [
-        { label: takeHomeLabel, percentage: 66, color: "#2563eb" },
-        {
-          label: t.taxAndContributions,
-          shortLabel: t.taxAndContributionsShort,
-          percentage: 22,
-          color: "#bfd7fe",
-        },
-        {
-          label: t.businessCosts,
-          shortLabel: t.businessCostsShort,
-          percentage: 12,
-          color: "#94a3b8",
-        },
-      ]
-    : [
-        { label: takeHomeLabel, percentage: 52, color: "#0891b2" },
-        {
-          label: t.taxAndContributions,
-          shortLabel: t.taxAndContributionsShort,
-          percentage: 35,
-          color: "#a5f3fc",
-        },
-        { label: t.benefitsShare, percentage: 13, color: "#3cc391" },
-      ]
 
   return (
     <article
@@ -175,7 +87,7 @@ export function OfferResultCard({
           </span>
         </div>
       </div>
-      <MoneyBreakdown items={breakdownItems} t={t} linkTone={textTone} />
+      <MoneyBreakdown calculation={calculation} contract={contract} t={t} />
     </article>
   )
 }

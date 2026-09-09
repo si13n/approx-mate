@@ -28,11 +28,11 @@ export interface Translation {
   grossPerHour: string
   netPerHour: string
   whereMoneyGoes: string
-  taxAndContributions: string
-  taxAndContributionsShort: string
-  businessCosts: string
-  businessCostsShort: string
-  benefitsShare: string
+  incomeTaxLabel: string
+  contributionsLabel: string
+  socialInsuranceLabel: string
+  healthInsuranceLabel: string
+  contributionShortfall: string
   seeCalculation: string
   compareOffers: string
   compareDescription: string
@@ -117,7 +117,6 @@ export interface Translation {
   vacancyPlaceholder: string
   analyzeOffer: string
   analyzingOffer: string
-  noAccountRequired: string
   jobAnalysisLimit: string
   jobAnalysisInvalid: string
   jobAnalysisTooLarge: string
@@ -180,11 +179,11 @@ const en: Translation = {
   grossPerHour: "GROSS / H",
   netPerHour: "NET / H",
   whereMoneyGoes: "Where the money goes",
-  taxAndContributions: "Tax & contributions",
-  taxAndContributionsShort: "Tax & contrib.",
-  businessCosts: "Business costs",
-  businessCostsShort: "Costs",
-  benefitsShare: "Benefits",
+  incomeTaxLabel: "Income tax",
+  contributionsLabel: "Contributions",
+  socialInsuranceLabel: "Social insurance (ZUS)",
+  healthInsuranceLabel: "Health insurance (NFZ)",
+  contributionShortfall: "Contributions exceed income by",
   seeCalculation: "See calculation",
   compareOffers: "Compare offers",
   compareDescription:
@@ -272,7 +271,6 @@ const en: Translation = {
   vacancyPlaceholder: "Paste a link or job text",
   analyzeOffer: "Analyze offer",
   analyzingOffer: "Analyzing…",
-  noAccountRequired: "No account required",
   jobAnalysisLimit: "Maximum of 3 offers reached",
   jobAnalysisInvalid: "Paste a vacancy link or a longer job description.",
   jobAnalysisTooLarge: "This vacancy is too large to analyze.",
@@ -336,11 +334,11 @@ const pl: Translation = {
   grossPerHour: "BRUTTO / H",
   netPerHour: "NETTO / H",
   whereMoneyGoes: "Podział wynagrodzenia",
-  taxAndContributions: "Podatki i składki",
-  taxAndContributionsShort: "Podatki",
-  businessCosts: "Koszty działalności",
-  businessCostsShort: "Koszty",
-  benefitsShare: "Benefity",
+  incomeTaxLabel: "Podatek",
+  contributionsLabel: "Składki",
+  socialInsuranceLabel: "Składki społeczne ZUS",
+  healthInsuranceLabel: "Składka zdrowotna NFZ",
+  contributionShortfall: "Składki przekraczają przychód o",
   seeCalculation: "Zobacz obliczenie",
   compareOffers: "Porównaj oferty",
   compareDescription:
@@ -428,7 +426,6 @@ const pl: Translation = {
   vacancyPlaceholder: "Wklej link lub treść oferty",
   analyzeOffer: "Analizuj ofertę",
   analyzingOffer: "Analizowanie…",
-  noAccountRequired: "Konto nie jest wymagane",
   jobAnalysisLimit: "Osiągnięto limit 3 ofert",
   jobAnalysisInvalid: "Wklej link do oferty lub dłuższy opis stanowiska.",
   jobAnalysisTooLarge: "Ta oferta jest zbyt duża do analizy.",
@@ -492,11 +489,11 @@ const ua: Translation = {
   grossPerHour: "БРУТТО / ГОД",
   netPerHour: "НЕТТО / ГОД",
   whereMoneyGoes: "Розподіл коштів",
-  taxAndContributions: "Податки та внески",
-  taxAndContributionsShort: "Податки",
-  businessCosts: "Витрати бізнесу",
-  businessCostsShort: "Витрати",
-  benefitsShare: "Пільги",
+  incomeTaxLabel: "Податок",
+  contributionsLabel: "Внески",
+  socialInsuranceLabel: "Соціальні внески ZUS",
+  healthInsuranceLabel: "Медичний внесок NFZ",
+  contributionShortfall: "Внески перевищують дохід на",
   seeCalculation: "Переглянути розрахунок",
   compareOffers: "Порівняти пропозиції",
   compareDescription:
@@ -583,7 +580,6 @@ const ua: Translation = {
   vacancyPlaceholder: "Вставте посилання або текст вакансії",
   analyzeOffer: "Аналізувати пропозицію",
   analyzingOffer: "Аналізуємо…",
-  noAccountRequired: "Обліковий запис не потрібен",
   jobAnalysisLimit: "Досягнуто ліміт у 3 пропозиції",
   jobAnalysisInvalid: "Вставте посилання або довший опис вакансії.",
   jobAnalysisTooLarge: "Ця вакансія завелика для аналізу.",

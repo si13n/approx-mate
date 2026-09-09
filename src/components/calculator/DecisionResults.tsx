@@ -1,3 +1,7 @@
+import type {
+  B2BCalculationResult,
+  UoPCalculationResult,
+} from "../../lib/taxCalculations"
 import type { Translation } from "../../i18n/translations"
 import { fmt, fromPLN, toPLN } from "../../lib/formatting"
 import type { Currency, InputType } from "../../types"
@@ -5,11 +9,9 @@ import { Button } from "../ui/Button"
 import { OfferResultCard } from "./OfferResultCard"
 import { RecruiterMessage } from "./RecruiterMessage"
 
-interface Results {
-  b2bGrossPLN: number
-  b2bNetPLN: number
-  uopGrossPLN: number
-  uopNetPLN: number
+export interface Results {
+  b2b: B2BCalculationResult
+  uop: UoPCalculationResult
 }
 interface DecisionResultsProps {
   results: Results
@@ -62,9 +64,7 @@ export function DecisionResults(props: DecisionResultsProps) {
       <div className="grid gap-2 tablet:grid-cols-2 tablet:gap-3">
         <OfferResultCard
           contract="B2B"
-          grossPLN={props.results.b2bGrossPLN}
-          netPLN={props.results.b2bNetPLN}
-          currency={props.currency}
+          calculation={props.results.b2b}
           inputType={props.inputType}
           rates={props.rates}
           hoursPerMonth={props.hoursPerMonth}
@@ -72,9 +72,7 @@ export function DecisionResults(props: DecisionResultsProps) {
         />
         <OfferResultCard
           contract="UoP"
-          grossPLN={props.results.uopGrossPLN}
-          netPLN={props.results.uopNetPLN}
-          currency={props.currency}
+          calculation={props.results.uop}
           inputType={props.inputType}
           rates={props.rates}
           hoursPerMonth={props.hoursPerMonth}

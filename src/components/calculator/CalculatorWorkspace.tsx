@@ -5,7 +5,7 @@ import { WorkspaceTabs } from "../../features/job-xray/components/WorkspaceTabs"
 import type { AnalyzedOffer, JobAnalysis } from "../../features/job-xray/types"
 import type { Translation } from "../../i18n/translations"
 import type { Currency, InputType } from "../../types"
-import { DecisionResults } from "./DecisionResults"
+import { DecisionResults, type Results } from "./DecisionResults"
 import { TargetPanel, type QuickScenario } from "./TargetPanel"
 
 interface CalculatorWorkspaceProps {
@@ -18,12 +18,7 @@ interface CalculatorWorkspaceProps {
   quickScenarios: QuickScenario[]
   t: Translation
   rates: Record<string, number>
-  results: {
-    b2bGrossPLN: number
-    b2bNetPLN: number
-    uopGrossPLN: number
-    uopNetPLN: number
-  }
+  results: Results
   hoursPerMonth: number
   recruiterMessage: string
   copied: boolean

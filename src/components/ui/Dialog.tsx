@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 
 interface DialogProps {
   open: boolean
@@ -68,7 +69,7 @@ export function Dialog({ open, titleId, onClose, children }: DialogProps) {
   }, [open, onClose])
 
   if (!open) return null
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-inverse/45 min-[640px]:p-6"
       onMouseDown={(event) => event.target === event.currentTarget && onClose()}
@@ -82,6 +83,7 @@ export function Dialog({ open, titleId, onClose, children }: DialogProps) {
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

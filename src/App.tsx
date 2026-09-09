@@ -101,30 +101,17 @@ export default function App() {
 
   const results = useMemo(() => {
     if (!isLoaded) return null
-    if (amount <= 0) {
-      return {
-        b2bGrossPLN: 0,
-        b2bNetPLN: 0,
-        uopGrossPLN: 0,
-        uopNetPLN: 0,
-      }
-    }
-    const monthlyPLN = toPLN(amount, currency, rates)
+    const monthlyPLN = amount > 0 ? toPLN(amount, currency, rates) : 0
     const b2b =
-      inputType === "gross"
+      inputType === "gross" || monthlyPLN === 0
         ? calculateB2BFromGross(monthlyPLN, profile)
         : calculateB2BFromNet(monthlyPLN, profile)
     const uop =
-      inputType === "gross"
+      inputType === "gross" || monthlyPLN === 0
         ? calculateUoPFromGross(monthlyPLN, profile)
         : calculateUoPFromNet(monthlyPLN, profile)
 
-    return {
-      b2bGrossPLN: b2b.monthlyGross,
-      b2bNetPLN: b2b.monthlyNet,
-      uopGrossPLN: uop.monthlyGross,
-      uopNetPLN: uop.monthlyNet,
-    }
+    return { b2b, uop }
   }, [amount, currency, inputType, isLoaded, profile, rates])
 
   const recruiterMessage = useMemo(() => {
@@ -201,6 +188,11 @@ export default function App() {
           <Header
             lang={lang}
             t={t}
+            onHome={() => {
+              setShowComparison(false)
+              setActiveTab("calculator")
+              window.scrollTo({ top: 0, behavior: "instant" })
+            }}
             onLanguageChange={(nextLang) => {
               setLang(nextLang)
               trackLanguageChanged(nextLang)

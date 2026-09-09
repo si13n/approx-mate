@@ -176,7 +176,7 @@ export function TargetPanel(props: TargetPanelProps) {
                 key={scenario.label}
                 type="button"
                 onClick={() => props.onQuickScenario(scenario)}
-                className={`min-h-[30px] rounded-full border px-2.5 text-[13px] font-semibold focus-visible:outline-2 focus-visible:outline-primary ${
+                className={`min-h-7 rounded-full border px-2 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-primary ${
                   selected
                     ? "border-primary-border bg-primary-subtle text-action"
                     : "border-border bg-surface text-content-secondary hover:border-primary"
@@ -197,7 +197,7 @@ export function TargetPanel(props: TargetPanelProps) {
           <button
             type="button"
             onClick={props.onEditProfile}
-            className="shrink-0 border-b border-dashed border-current text-xs font-semibold leading-5 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="shrink-0 border-b border-dashed border-current text-[11px] font-semibold leading-4 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             {props.t.editTaxProfile}
           </button>
