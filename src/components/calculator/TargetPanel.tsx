@@ -62,12 +62,9 @@ export function TargetPanel(props: TargetPanelProps) {
       aria-labelledby="target-title"
     >
       <div className="hidden desktop:block">
-        <p className="text-xs font-semibold tracking-[0.08em] text-content-secondary">
-          {props.t.yourTarget}
-        </p>
         <h2
           id="target-title"
-          className="mt-2 font-display text-[22px] font-semibold"
+          className="font-display text-[22px] font-semibold"
         >
           {props.t.targetQuestion}
         </h2>

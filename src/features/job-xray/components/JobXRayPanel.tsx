@@ -80,12 +80,9 @@ export function JobXRayPanel({ t, offerCount, onAnalyze }: JobXRayPanelProps) {
       className="rounded-panel border border-border bg-surface px-4 py-4 desktop:px-6"
       aria-labelledby="job-xray-title"
     >
-      <p className="text-xs font-semibold tracking-[0.08em] text-content-secondary">
-        {t.jobXRay}
-      </p>
       <h2
         id="job-xray-title"
-        className="mt-1 font-display text-[22px] font-semibold"
+        className="font-display text-[22px] font-semibold"
       >
         {t.analyzeAnyVacancy}
       </h2>

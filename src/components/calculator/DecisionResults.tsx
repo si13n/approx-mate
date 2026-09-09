@@ -41,13 +41,10 @@ export function DecisionResults(props: DecisionResultsProps) {
       className="flex min-w-0 flex-col gap-4 rounded-bl-[24px] rounded-br-[24px] rounded-tr-[24px] border border-border bg-surface p-4 desktop:p-6"
       aria-labelledby="decision-title"
     >
-      <div className="hidden tablet:block desktop:min-h-[58px]">
-        <p className="text-xs font-semibold text-content-secondary desktop:normal-case">
-          {props.t.yourDecision}
-        </p>
+      <div className="hidden tablet:block">
         <h2
           id="decision-title"
-          className="mt-[3px] font-display text-xl font-bold leading-tight tablet:text-[27px]"
+          className="font-display text-xl font-bold leading-tight tablet:text-[27px]"
         >
           <span>
             {decisionLabel} {target} {props.t.perMonth}{" "}
