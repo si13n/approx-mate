@@ -365,6 +365,7 @@ export function NewHomePage() {
                     fontWeight: 500,
                     color: "#575e7a",
                     textDecoration: "underline",
+                    textDecorationStyle: "dotted",
                   }}
                   onClick={(e) => e.preventDefault()}
                 >
