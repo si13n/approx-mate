@@ -32,6 +32,7 @@ input[type="range"].new-home-salary-slider::-webkit-slider-thumb {
   cursor: pointer;
   margin-top: -10px;
   box-shadow: 0 2px 8px rgba(89, 166, 255, 0.3);
+  transform: translateY(3px);
 }
 
 /* Firefox */
@@ -57,4 +58,5 @@ input[type="range"].new-home-salary-slider::-moz-range-thumb {
   border: 3px solid white;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(89, 166, 255, 0.3);
+  transform: translateY(3px);
 }

@@ -28,7 +28,7 @@ function SalarySlider({
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className="relative h-7">
+      <div className="relative" style={{ height: "32px" }}>
         {/* Background track */}
         <div className="absolute left-0 top-1/2 w-full h-1.5 -translate-y-1/2 rounded-full bg-[#DEE3ED]" />
 
@@ -49,7 +49,8 @@ function SalarySlider({
           step={100}
           value={sliderValue}
           onChange={(e) => onSliderChange(Number(e.target.value))}
-          className="new-home-salary-slider absolute inset-0 w-full h-full"
+          className="new-home-salary-slider absolute left-0 top-0 w-full"
+          style={{ height: "32px" }}
         />
       </div>
 
