@@ -21,17 +21,20 @@ function SalarySlider({
 }) {
   const sliderMin = 5000;
   const sliderMax = 100000;
-  const percentage = ((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100;
+  const percentage = useMemo(
+    () => ((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100,
+    [sliderValue]
+  );
 
   return (
     <div className="w-full flex flex-col gap-3">
       <div className="relative h-7">
         {/* Background track */}
-        <div className="absolute w-full h-1.5 top-1/2 -translate-y-1/2 rounded-full bg-[#DEE3ED]" />
+        <div className="absolute left-0 top-1/2 w-full h-1.5 -translate-y-1/2 rounded-full bg-[#DEE3ED]" />
 
         {/* Gradient active track (sized to slider value) */}
         <div
-          className="absolute h-1.5 top-1/2 -translate-y-1/2 rounded-full"
+          className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full"
           style={{
             width: `${percentage}%`,
             background: "linear-gradient(to right, #7A45F9, #42A3FE)",
@@ -46,7 +49,7 @@ function SalarySlider({
           step={100}
           value={sliderValue}
           onChange={(e) => onSliderChange(Number(e.target.value))}
-          className="new-home-salary-slider absolute w-full h-7 top-0 left-0"
+          className="new-home-salary-slider absolute inset-0 w-full h-full"
         />
       </div>
 

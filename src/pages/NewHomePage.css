@@ -6,37 +6,39 @@ input[type="range"].new-home-salary-slider {
   -webkit-appearance: none;
   -moz-appearance: none;
   width: 100%;
-  height: 6px;
+  height: 100%;
   background: transparent;
   outline: none;
   cursor: pointer;
+  padding: 0;
+  border: none;
 }
 
 /* Webkit (Chrome, Safari, Edge) */
 input[type="range"].new-home-salary-slider::-webkit-slider-runtrack {
-  background: #DEE3ED;
-  height: 6px;
-  border-radius: 3px;
+  background: transparent;
+  height: 100%;
+  border-radius: 0;
 }
 
 input[type="range"].new-home-salary-slider::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #59A6FF;
   border: 3px solid white;
   cursor: pointer;
-  margin-top: -12px;
+  margin-top: -10px;
   box-shadow: 0 2px 8px rgba(89, 166, 255, 0.3);
 }
 
 /* Firefox */
 input[type="range"].new-home-salary-slider::-moz-range-track {
-  background: #DEE3ED;
-  height: 6px;
-  border-radius: 3px;
+  background: transparent;
+  height: 100%;
+  border-radius: 0;
   border: none;
 }
 
@@ -44,11 +46,12 @@ input[type="range"].new-home-salary-slider::-moz-range-progress {
   background: linear-gradient(to right, #7A45F9, #42A3FE);
   height: 6px;
   border-radius: 3px;
+  margin-top: -2.25px;
 }
 
 input[type="range"].new-home-salary-slider::-moz-range-thumb {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #59A6FF;
   border: 3px solid white;
