@@ -79,17 +79,17 @@ export function NewHomePage() {
 
   return (
     <div
-      className="min-h-screen w-full relative overflow-hidden"
+      className="min-h-screen w-screen relative overflow-x-hidden overflow-y-auto"
       style={{ background: "#fdfdff" }}
     >
-      {/* Background orbit decorations (absolute, behind everything) */}
-      <div className="absolute -left-[330px] top-[570px] w-[540px] h-[540px] pointer-events-none">
+      {/* Background orbit decorations (absolute, behind everything) - clipped */}
+      <div className="absolute -left-[330px] top-[570px] w-[540px] h-[540px] pointer-events-none hidden md:block">
         <img src={orbitBottomLeft} alt="" className="w-full h-full" />
       </div>
-      <div className="absolute -left-[260px] -top-[345px] w-[620px] h-[620px] pointer-events-none">
+      <div className="absolute -left-[260px] -top-[345px] w-[620px] h-[620px] pointer-events-none hidden md:block">
         <img src={orbitTopLeft} alt="" className="w-full h-full" />
       </div>
-      <div className="absolute right-[-62px] top-[330px] w-[520px] h-[520px] pointer-events-none">
+      <div className="absolute right-[-62px] top-[330px] w-[520px] h-[520px] pointer-events-none hidden md:block">
         <img src={orbitRight} alt="" className="w-full h-full" />
       </div>
 
@@ -106,7 +106,7 @@ export function NewHomePage() {
 
       {/* Editorial text labels (decorative, behind content) */}
       <div
-        className="absolute left-[58px] top-[338px] w-40 text-center pointer-events-none"
+        className="absolute left-[58px] top-[338px] w-40 text-center pointer-events-none hidden md:block"
         style={{
           fontSize: "8px",
           fontFamily: "Inter, sans-serif",
@@ -125,7 +125,7 @@ export function NewHomePage() {
       </div>
 
       <div
-        className="absolute right-[30px] top-[130px] w-40 text-center pointer-events-none"
+        className="absolute right-[30px] top-[130px] w-40 text-center pointer-events-none hidden md:block"
         style={{
           fontSize: "8px",
           fontFamily: "Inter, sans-serif",
@@ -144,7 +144,7 @@ export function NewHomePage() {
       </div>
 
       <div
-        className="absolute right-[30px] bottom-[154px] w-40 text-center pointer-events-none"
+        className="absolute right-[30px] bottom-[154px] w-40 text-center pointer-events-none hidden md:block"
         style={{
           fontSize: "8px",
           fontFamily: "Inter, sans-serif",
