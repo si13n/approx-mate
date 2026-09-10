@@ -163,9 +163,9 @@ export function NewHomePage() {
       </div>
 
       {/* Main content container */}
-      <div className="relative z-10 max-w-full px-4 py-4 flex flex-col gap-6">
+      <div className="relative z-10 w-full px-4 py-2 flex flex-col gap-6 overflow-x-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between h-14">
+        <div className="flex items-center justify-between gap-4 h-14 flex-wrap md:flex-nowrap">
           {/* Brand */}
           <div className="flex items-center gap-3">
             <img
@@ -188,7 +188,7 @@ export function NewHomePage() {
 
           {/* Navigation */}
           <nav
-            className="flex items-center gap-9 text-sm"
+            className="hidden md:flex items-center gap-6 text-sm"
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 500,
@@ -234,14 +234,14 @@ export function NewHomePage() {
         </div>
 
         {/* Hero section */}
-        <div className="text-center py-4 max-w-5xl mx-auto">
+        <div className="text-center py-2 max-w-5xl mx-auto">
           <h1
             style={{
-              fontSize: "76px",
+              fontSize: "clamp(32px, 8vw, 76px)",
               fontFamily: "Inter, sans-serif",
               fontWeight: 800,
               color: "#090a12",
-              lineHeight: "80px",
+              lineHeight: "1.1",
               marginBottom: "20px",
             }}
           >
@@ -264,14 +264,14 @@ export function NewHomePage() {
         </div>
 
         {/* Calculator demo section */}
-        <div className="flex justify-center py-8">
-          <div className="w-full max-w-2xl flex flex-col gap-6">
+        <div className="flex justify-center py-2 md:py-8">
+          <div className="w-full max-w-3xl px-2 flex flex-col gap-4 md:gap-6">
             {/* Amount display */}
             <div className="text-center">
-              <div className="flex items-baseline justify-center gap-4 mb-6">
+              <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-4 mb-4 md:mb-6">
                 <span
                   style={{
-                    fontSize: "68px",
+                    fontSize: "clamp(36px, 6vw, 68px)",
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 800,
                     color: "#090a12",
@@ -281,7 +281,7 @@ export function NewHomePage() {
                 </span>
                 <span
                   style={{
-                    fontSize: "28px",
+                    fontSize: "clamp(16px, 3vw, 28px)",
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
                     color: "#575e7a",
@@ -292,7 +292,7 @@ export function NewHomePage() {
               </div>
 
               {/* Salary slider */}
-              <div className="px-8 py-4">
+              <div className="px-4 md:px-8 py-2">
                 <SalarySlider
                   sliderValue={sliderValue}
                   onSliderChange={setSliderValue}
@@ -300,11 +300,11 @@ export function NewHomePage() {
               </div>
 
               {/* Result section */}
-              <div className="mt-8 space-y-3">
-                <div className="flex items-baseline justify-center gap-3">
+              <div className="mt-4 md:mt-8 space-y-2 md:space-y-3">
+                <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-3 flex-wrap">
                   <span
                     style={{
-                      fontSize: "40px",
+                      fontSize: "clamp(24px, 4vw, 40px)",
                       fontFamily: "Inter, sans-serif",
                       fontWeight: 600,
                       color: "#090a12",
@@ -314,7 +314,7 @@ export function NewHomePage() {
                   </span>
                   <span
                     style={{
-                      fontSize: "56px",
+                      fontSize: "clamp(32px, 6vw, 56px)",
                       fontFamily: "Inter, sans-serif",
                       fontWeight: 800,
                       color: "#090a12",
@@ -324,7 +324,7 @@ export function NewHomePage() {
                   </span>
                   <span
                     style={{
-                      fontSize: "28px",
+                      fontSize: "clamp(18px, 3vw, 28px)",
                       fontFamily: "Inter, sans-serif",
                       fontWeight: 400,
                       color: "#575e7a",
@@ -376,8 +376,8 @@ export function NewHomePage() {
         </div>
 
         {/* Job X-RAY section */}
-        <div className="flex justify-center py-8">
-          <div className="w-full max-w-2xl">
+        <div className="flex justify-center py-2 md:py-8">
+          <div className="w-full max-w-3xl px-2">
             <label
               style={{
                 fontSize: "14px",
@@ -429,7 +429,7 @@ export function NewHomePage() {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-center py-8">
+        <div className="flex justify-center py-2">
           <p
             style={{
               fontSize: "12px",
