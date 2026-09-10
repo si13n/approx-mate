@@ -234,7 +234,7 @@ export function NewHomePage() {
         </div>
 
         {/* Hero section */}
-        <div className="text-center py-8 max-w-2xl mx-auto">
+        <div className="text-center py-8 max-w-5xl mx-auto">
           <h1
             style={{
               fontSize: "76px",
