@@ -65,6 +65,7 @@ function SalarySlider({
 
 export function NewHomePage() {
   const [sliderValue, setSliderValue] = useState<number>(22000);
+  const [jobOfferInput, setJobOfferInput] = useState<string>("");
 
   // Calculate B2B net income with 1000 PLN business cost deduction
   const result = useMemo(() => {
@@ -79,6 +80,18 @@ export function NewHomePage() {
 
   const formatAmount = (amount: number) => {
     return Math.round(amount).toLocaleString("pl-PL");
+  };
+
+  const navigate = (path: string) => {
+    window.location.href = path;
+  };
+
+  const handleJobOfferAnalyze = () => {
+    if (jobOfferInput.trim()) {
+      // Pass job offer to main app via URL parameter or storage
+      sessionStorage.setItem('jobOfferInput', jobOfferInput);
+      navigate('/calculator');
+    }
   };
 
   return (
@@ -199,19 +212,19 @@ export function NewHomePage() {
               color: "#090a12",
             }}
           >
-            <button className="hover:opacity-75 transition-opacity">
+            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/calculator')}>
               Calculator
             </button>
-            <button className="hover:opacity-75 transition-opacity">
+            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/calculator')}>
               Job X-RAY
             </button>
-            <button className="hover:opacity-75 transition-opacity">
+            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/compare')}>
               Compare Offers
             </button>
-            <button className="hover:opacity-75 transition-opacity">
+            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/how-it-works')}>
               How it works
             </button>
-            <button className="hover:opacity-75 transition-opacity">
+            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/about')}>
               About
             </button>
           </nav>
@@ -360,9 +373,8 @@ export function NewHomePage() {
                   B2B · Ryczałt 12% · Poland · 2026
                 </p>
 
-                <a
-                  href="#"
-                  className="inline-block mt-2"
+                <button
+                  className="inline-block mt-2 bg-none border-none cursor-pointer"
                   style={{
                     fontSize: "16px",
                     fontFamily: "Inter, sans-serif",
@@ -370,11 +382,12 @@ export function NewHomePage() {
                     color: "#575e7a",
                     textDecoration: "underline",
                     textDecorationStyle: "dotted",
+                    padding: 0,
                   }}
-                  onClick={(e) => e.preventDefault()}
+                  onClick={() => navigate('/calculator')}
                 >
                   Calculate in detail →
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -403,18 +416,25 @@ export function NewHomePage() {
                 background: "#fff",
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-1">
                 <img src={iconLink} alt="" className="w-5.5 h-5.5" />
-                <span
+                <input
+                  type="text"
+                  value={jobOfferInput}
+                  onChange={(e) => setJobOfferInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleJobOfferAnalyze()}
+                  placeholder="Paste a vacancy link or job description"
                   style={{
                     fontSize: "15px",
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
                     color: "#8c96b2",
+                    border: "none",
+                    background: "transparent",
+                    outline: "none",
+                    flex: 1,
                   }}
-                >
-                  Paste a vacancy link or job description
-                </span>
+                />
               </div>
 
               <button
@@ -425,7 +445,9 @@ export function NewHomePage() {
                   fontFamily: "Inter, sans-serif",
                   fontWeight: 600,
                   boxShadow: "0px 4px 12px -4px rgba(0,0,0,0.12)",
+                  cursor: "pointer",
                 }}
+                onClick={handleJobOfferAnalyze}
               >
                 Analyze
               </button>
