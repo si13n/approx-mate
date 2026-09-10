@@ -79,7 +79,7 @@ export function NewHomePage() {
 
   return (
     <div
-      className="min-h-screen w-screen relative overflow-x-hidden overflow-y-auto"
+      className="w-screen relative overflow-x-hidden"
       style={{ background: "#fdfdff" }}
     >
       {/* Background orbit decorations (absolute, behind everything) - clipped */}
