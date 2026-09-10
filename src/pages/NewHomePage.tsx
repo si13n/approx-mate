@@ -163,7 +163,7 @@ export function NewHomePage() {
       </div>
 
       {/* Main content container */}
-      <div className="relative z-10 w-full px-4 py-2 flex flex-col gap-6 overflow-x-hidden">
+      <div className="relative z-10 w-full px-4 py-1 flex flex-col gap-2 md:gap-4 overflow-x-hidden">
         {/* Header */}
         <div className="flex items-center justify-between gap-4 h-14 flex-wrap md:flex-nowrap">
           {/* Brand */}
@@ -242,7 +242,7 @@ export function NewHomePage() {
               fontWeight: 800,
               color: "#090a12",
               lineHeight: "1.1",
-              marginBottom: "20px",
+              marginBottom: "8px",
             }}
           >
             Know what the offer
@@ -264,8 +264,8 @@ export function NewHomePage() {
         </div>
 
         {/* Calculator demo section */}
-        <div className="flex justify-center py-2 md:py-8">
-          <div className="w-full max-w-3xl px-2 flex flex-col gap-4 md:gap-6">
+        <div className="flex justify-center py-1">
+          <div className="w-full max-w-3xl px-2 flex flex-col gap-2 md:gap-3">
             {/* Amount display */}
             <div className="text-center">
               <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-4 mb-4 md:mb-6">
@@ -300,7 +300,7 @@ export function NewHomePage() {
               </div>
 
               {/* Result section */}
-              <div className="mt-4 md:mt-8 space-y-2 md:space-y-3">
+              <div className="mt-2 space-y-1">
                 <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-3 flex-wrap">
                   <span
                     style={{
@@ -376,7 +376,7 @@ export function NewHomePage() {
         </div>
 
         {/* Job X-RAY section */}
-        <div className="flex justify-center py-2 md:py-8">
+        <div className="flex justify-center py-1">
           <div className="w-full max-w-3xl px-2">
             <label
               style={{
