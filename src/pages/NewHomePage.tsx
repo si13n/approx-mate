@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
 import { calculateB2BFromGross } from "../lib/taxCalculations";
 import { DEFAULT_TAX_PROFILE } from "../config/tax";
+import { JobOfferInputBar } from "../components/JobOfferInputBar";
+import { translations } from "../i18n/translations";
 import "./NewHomePage.css";
 
 // SVG Asset imports
 import logoMark from "../assets/new-homepage/logo-mark.svg";
 import iconMoon from "../assets/new-homepage/icon-moon.svg";
-import iconLink from "../assets/new-homepage/icon-link.svg";
 import orbitBottomLeft from "../assets/new-homepage/orbit-bottom-left.svg";
 import orbitRight from "../assets/new-homepage/orbit-right.svg";
 import orbitTopLeft from "../assets/new-homepage/orbit-top-left.svg";
@@ -67,8 +68,8 @@ function SalarySlider({
 
 export function NewHomePage() {
   const [sliderValue, setSliderValue] = useState<number>(22000);
-  const [jobOfferInput, setJobOfferInput] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+  const t = translations.en;
 
   // Calculate B2B net income with 1000 PLN business cost deduction
   const result = useMemo(() => {
@@ -87,14 +88,6 @@ export function NewHomePage() {
 
   const navigate = (path: string) => {
     window.location.href = path;
-  };
-
-  const handleJobOfferAnalyze = () => {
-    if (jobOfferInput.trim()) {
-      // Pass job offer to main app via URL parameter or storage
-      sessionStorage.setItem('jobOfferInput', jobOfferInput);
-      navigate('/calculator');
-    }
   };
 
   return (
@@ -390,62 +383,7 @@ export function NewHomePage() {
         {/* Job X-RAY section */}
         <div className="flex justify-center py-1">
           <div className="w-full max-w-3xl px-2">
-            <label
-              style={{
-                fontSize: "14px",
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
-                color: "#575e7a",
-                display: "block",
-                marginBottom: "12px",
-              }}
-            >
-              Have a job offer?
-            </label>
-
-            <div
-              className="flex items-center justify-between gap-2 px-4 py-2 rounded-2xl border"
-              style={{
-                borderColor: "#dbe0ed",
-                background: "#fff",
-              }}
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <img src={iconLink} alt="" className="w-5.5 h-5.5" />
-                <input
-                  type="text"
-                  value={jobOfferInput}
-                  onChange={(e) => setJobOfferInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleJobOfferAnalyze()}
-                  placeholder="Paste a vacancy link or job description"
-                  style={{
-                    fontSize: "15px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    color: "#8c96b2",
-                    border: "none",
-                    background: "transparent",
-                    outline: "none",
-                    flex: 1,
-                  }}
-                />
-              </div>
-
-              <button
-                className="px-6 py-2.5 rounded-xl font-semibold text-white hover:opacity-90 transition-opacity"
-                style={{
-                  background: "#090a12",
-                  fontSize: "15px",
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 600,
-                  boxShadow: "0px 4px 12px -4px rgba(0,0,0,0.12)",
-                  cursor: "pointer",
-                }}
-                onClick={handleJobOfferAnalyze}
-              >
-                Analyze
-              </button>
-            </div>
+            <JobOfferInputBar t={t} />
           </div>
         </div>
 
