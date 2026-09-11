@@ -147,19 +147,19 @@ export default function App() {
     <div className="relative min-h-screen overflow-hidden bg-page text-content">
       <PageDecorations />
       <div className="relative z-10" data-dialog-background>
+        <Header
+          lang={lang}
+          t={t}
+          activePage="calculator"
+          onHome={() => {
+            window.location.href = "/"
+          }}
+          onLanguageChange={(nextLang) => {
+            setLang(nextLang)
+            trackLanguageChanged(nextLang)
+          }}
+        />
         <AppShell>
-          <Header
-            lang={lang}
-            t={t}
-            activePage="calculator"
-            onHome={() => {
-              window.location.href = "/"
-            }}
-            onLanguageChange={(nextLang) => {
-              setLang(nextLang)
-              trackLanguageChanged(nextLang)
-            }}
-          />
           {results ? (
             <>
               <CalculatorWorkspace
@@ -227,9 +227,8 @@ export default function App() {
               <span className="sr-only">{t.loadingCalculator}</span>
             </main>
           )}
-
-          <Footer t={t} />
         </AppShell>
+        <Footer t={t} />
       </div>
 
       <TaxProfileModal
