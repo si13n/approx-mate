@@ -36,7 +36,7 @@ export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
       <div className="min-w-0 desktop:w-[336px]">
         <TargetPanel {...props} />
       </div>
-      <div className="min-w-0 desktop:w-[848px]">
+      <div className="min-w-0">
         <DecisionResults
           results={props.results}
           amount={props.amount}
