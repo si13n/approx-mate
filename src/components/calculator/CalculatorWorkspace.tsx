@@ -26,7 +26,6 @@ interface CalculatorWorkspaceProps {
   onPeriodChange: (period: SalaryInputPeriod) => void
   onQuickScenario: (scenario: QuickScenario) => void
   onEditProfile: () => void
-  onCompare: () => void
   onCopy: () => void
 }
 
@@ -48,7 +47,6 @@ export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
           recruiterMessage={props.recruiterMessage}
           copied={props.copied}
           t={props.t}
-          onCompare={props.onCompare}
           onCopy={props.onCopy}
         />
       </div>

@@ -3,7 +3,7 @@ import { calculateB2BFromGross } from "../lib/taxCalculations"
 import { DEFAULT_TAX_PROFILE } from "../config/tax"
 import { Footer } from "../components/Footer"
 import { Header } from "../components/Header"
-import { JobOfferInputBar } from "../components/JobOfferInputBar"
+import { Button } from "../components/ui/Button"
 import { translations } from "../i18n/translations"
 import { trackLanguageChanged } from "../lib/analytics"
 import type { Lang } from "../types"
@@ -197,7 +197,7 @@ export function NewHomePage() {
         <div>·</div>
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 flex min-h-screen flex-col">
         <Header
           lang={lang}
           t={t}
@@ -209,7 +209,7 @@ export function NewHomePage() {
         />
 
         {/* Main content container */}
-        <div className="w-full px-4 py-1 flex flex-col gap-2 md:gap-4 overflow-x-hidden">
+        <div className="flex w-full flex-1 flex-col gap-2 overflow-x-hidden px-4 py-1 md:gap-4">
           {/* Hero section */}
           <div className="text-center py-2 max-w-5xl mx-auto">
             <h1
@@ -323,30 +323,16 @@ export function NewHomePage() {
                     B2B · Ryczałt 12% · Poland · 2026
                   </p>
 
-                  <button
-                    className="inline-block mt-2 bg-none border-none cursor-pointer"
-                    style={{
-                      fontSize: "16px",
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 500,
-                      color: "#575e7a",
-                      textDecoration: "underline",
-                      textDecorationStyle: "dotted",
-                      padding: 0,
-                    }}
+                  <Button
+                    variant="brand"
+                    className="mt-2 h-[52px] w-[186px] rounded-[8px] px-3 text-base underline decoration-dotted underline-offset-4"
+                    style={{ fontWeight: 400 }}
                     onClick={() => navigate("/calculator")}
                   >
                     Calculate in detail →
-                  </button>
+                  </Button>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Job X-RAY section */}
-          <div className="flex justify-center py-1">
-            <div className="w-full max-w-3xl px-2">
-              <JobOfferInputBar t={t} />
             </div>
           </div>
         </div>
