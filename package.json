@@ -1,6 +1,6 @@
 {
   "name": "approxmate",
-  "description": "Salary calculator for Poland - Compare B2B and UoP contracts",
+  "description": "Modular job, compensation, fit, and career decision platform.",
   "private": true,
   "version": "1.0.0",
   "type": "module",
