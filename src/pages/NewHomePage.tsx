@@ -355,16 +355,6 @@ export function NewHomePage() {
                   </span>
                 </div>
 
-                <p
-                  style={{
-                    fontSize: "16px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    color: "#575e7a",
-                  }}
-                >
-                  after tax, ZUS and 1 000 PLN business costs
-                </p>
 
                 <p
                   style={{
