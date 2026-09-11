@@ -15,12 +15,14 @@ import orbitPoint from "../assets/new-homepage/orbit-point.svg";
 function SalarySlider({
   sliderValue,
   onSliderChange,
+  isMobile,
 }: {
   sliderValue: number;
   onSliderChange: (val: number) => void;
+  isMobile?: boolean;
 }) {
   const sliderMin = 5000;
-  const sliderMax = 100000;
+  const sliderMax = isMobile ? 50000 : 100000;
   const percentage = useMemo(
     () => ((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100,
     [sliderValue]
@@ -57,7 +59,7 @@ function SalarySlider({
       {/* Min/Max labels */}
       <div className="flex justify-between text-sm" style={{ color: "#8c96b2" }}>
         <span>5 000</span>
-        <span>100 000</span>
+        <span>{isMobile ? "50 000+" : "100 000"}</span>
       </div>
     </div>
   );
@@ -66,6 +68,7 @@ function SalarySlider({
 export function NewHomePage() {
   const [sliderValue, setSliderValue] = useState<number>(22000);
   const [jobOfferInput, setJobOfferInput] = useState<string>("");
+  const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
   // Calculate B2B net income with 1000 PLN business cost deduction
   const result = useMemo(() => {
@@ -313,6 +316,7 @@ export function NewHomePage() {
                 <SalarySlider
                   sliderValue={sliderValue}
                   onSliderChange={setSliderValue}
+                  isMobile={isMobile}
                 />
               </div>
 
@@ -456,7 +460,7 @@ export function NewHomePage() {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-center py-2">
+        <div className="flex justify-between items-center py-2 px-4">
           <p
             style={{
               fontSize: "12px",
@@ -467,6 +471,22 @@ export function NewHomePage() {
           >
             ApproxMate 2026
           </p>
+          <button
+            onClick={() => window.location.href = "mailto:si13n@yahoo.com"}
+            style={{
+              fontSize: "12px",
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 500,
+              color: "#8c96b2",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              textDecoration: "underline",
+              padding: 0,
+            }}
+          >
+            Send feedback ↗
+          </button>
         </div>
       </div>
     </div>
