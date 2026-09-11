@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { calculateB2BFromGross } from "../lib/taxCalculations";
 import { DEFAULT_TAX_PROFILE } from "../config/tax";
 import { JobOfferInputBar } from "../components/JobOfferInputBar";
@@ -24,10 +24,12 @@ function SalarySlider({
 }) {
   const sliderMin = 5000;
   const sliderMax = isMobile ? 50000 : 100000;
-  const percentage = useMemo(
-    () => ((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100,
-    [sliderValue]
-  );
+  const activeTrackRef = useRef<HTMLDivElement>(null);
+  const getTrackWidth = (value: number) => {
+    const fraction = Math.min(1, Math.max(0, (value - sliderMin) / (sliderMax - sliderMin)));
+    // The 26px thumb's center travels from 13px to (input width - 13px).
+    return `calc(${fraction * 100}% + ${13 - fraction * 26}px)`;
+  };
 
   return (
     <div className="w-full flex flex-col gap-3">
@@ -37,9 +39,10 @@ function SalarySlider({
 
         {/* Gradient active track (sized to slider value) */}
         <div
+          ref={activeTrackRef}
           className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full"
           style={{
-            width: `${percentage}%`,
+            width: getTrackWidth(sliderValue),
             background: "linear-gradient(to right, #7A45F9, #42A3FE)",
           }}
         />
@@ -51,7 +54,15 @@ function SalarySlider({
           max={sliderMax}
           step={100}
           value={sliderValue}
-          onChange={(e) => onSliderChange(Number(e.target.value))}
+          aria-label="Monthly gross salary in PLN"
+          onChange={(e) => {
+            const value = e.currentTarget.valueAsNumber;
+            // Keep the fill aligned immediately, before the parent recalculates.
+            if (activeTrackRef.current) {
+              activeTrackRef.current.style.width = getTrackWidth(value);
+            }
+            onSliderChange(value);
+          }}
           className="new-home-salary-slider absolute left-0 top-0 w-full"
           style={{ height: "32px" }}
         />
