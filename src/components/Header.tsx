@@ -29,7 +29,7 @@ export function Header({
   ]
 
   return (
-    <header className="relative z-30 flex h-14 items-center justify-between bg-transparent">
+    <header className="relative z-30 flex h-14 w-full items-center justify-between bg-transparent px-4">
       {/* Brand */}
       <a
         href="/"
@@ -45,20 +45,20 @@ export function Header({
           event.preventDefault()
           onHome()
         }}
-        className="flex items-center gap-2 desktop:gap-3"
+        className="flex items-center gap-3"
       >
         <img
           src={logoMark}
           alt="ApproxMate"
-          className="size-6 desktop:size-8"
+          className="size-8 drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)]"
         />
-        <span className="font-display text-base font-extrabold tracking-[-0.6px] text-text-primary desktop:text-[22px] desktop:tracking-[-0.8px]">
+        <span className="font-display text-[22px] font-extrabold tracking-[-0.8px] text-text-primary">
           ApproxMate
         </span>
       </a>
 
       {/* Navigation */}
-      <nav className="hidden items-center gap-9 desktop:flex">
+      <nav className="hidden items-center gap-6 desktop:flex">
         {navItems.map((item) => (
           <a
             key={item.id}
@@ -73,7 +73,7 @@ export function Header({
       </nav>
 
       {/* Header Actions */}
-      <div className="flex items-center gap-4 desktop:gap-6">
+      <div className="flex items-center gap-6">
         <label className="sr-only" htmlFor="language-select">
           {t.language}
         </label>
@@ -81,7 +81,7 @@ export function Header({
           id="language-select"
           value={lang}
           onChange={(event) => onLanguageChange(event.target.value as Lang)}
-          className="appearance-none bg-transparent text-[13px] font-medium tracking-[-0.1px] text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-primary desktop:text-[14px]"
+          className="appearance-none bg-transparent text-[14px] font-medium tracking-[-0.1px] text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <option value="en">EN</option>
           <option value="pl">PL</option>
@@ -109,7 +109,7 @@ export function Header({
       </div>
 
       {mobileOpen && (
-        <nav className="absolute right-0 top-14 flex min-w-52 flex-col gap-1 rounded-2xl border border-border-subtle bg-white p-2 shadow-[0_16px_40px_rgba(55,65,110,0.14)] desktop:hidden">
+        <nav className="absolute right-4 top-14 flex min-w-52 flex-col gap-1 rounded-2xl border border-border-subtle bg-white p-2 shadow-[0_16px_40px_rgba(55,65,110,0.14)] desktop:hidden">
           {navItems.map((item) => (
             <a
               key={item.id}

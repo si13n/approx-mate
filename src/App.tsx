@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import { AppShell } from "./components/AppShell"
 import { Footer } from "./components/Footer"
 import { Header } from "./components/Header"
-import { JobOfferInputBar } from "./components/JobOfferInputBar"
 import { PageDecorations } from "./components/PageDecorations"
 import { CalculatorWorkspace } from "./components/calculator/CalculatorWorkspace"
 import type { QuickScenario } from "./components/calculator/TargetPanel"
@@ -146,74 +145,69 @@ export default function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-page text-content">
       <PageDecorations />
-      <div className="relative z-10" data-dialog-background>
+      <div
+        className="relative z-10 flex min-h-screen flex-col"
+        data-dialog-background
+      >
+        <Header
+          lang={lang}
+          t={t}
+          activePage="calculator"
+          onHome={() => {
+            window.location.href = "/"
+          }}
+          onLanguageChange={(nextLang) => {
+            setLang(nextLang)
+            trackLanguageChanged(nextLang)
+          }}
+        />
         <AppShell>
-          <Header
-            lang={lang}
-            t={t}
-            activePage="calculator"
-            onHome={() => {
-              window.location.href = "/"
-            }}
-            onLanguageChange={(nextLang) => {
-              setLang(nextLang)
-              trackLanguageChanged(nextLang)
-            }}
-          />
           {results ? (
-            <>
-              <CalculatorWorkspace
-                rawAmount={rawAmount}
-                amount={amount}
-                currency={currency}
-                inputType={inputType}
-                period={period}
-                sliderValue={sliderValue}
-                profile={profile}
-                quickScenarios={quickScenarios}
-                t={t}
-                rates={rates}
-                results={results}
-                hoursPerMonth={hoursPerMonth}
-                recruiterMessage={recruiterMessage}
-                copied={copied}
-                onAmountChange={setRawAmount}
-                onSliderChange={setSliderValue}
-                onCurrencyChange={(nextCurrency) => {
-                  setCurrency(nextCurrency)
-                  trackCurrencyChanged(nextCurrency)
-                }}
-                onInputTypeChange={(nextInputType) => {
-                  setInputType(nextInputType)
-                  trackModeChanged(nextInputType)
-                }}
-                onPeriodChange={(nextPeriod) => {
-                  const converted = convertSalaryPeriod(
-                    amount,
-                    period,
-                    nextPeriod,
-                  )
-                  const rounded =
-                    nextPeriod === "hour"
-                      ? Math.round(converted * 100) / 100
-                      : Math.round(converted)
-                  setRawAmount(String(rounded))
-                  setSliderValue(rounded)
-                  setPeriod(nextPeriod)
-                }}
-                onQuickScenario={applyScenario}
-                onEditProfile={openTaxProfile}
-                onCompare={() => {
-                  window.location.href = "/compare"
-                }}
-                onCopy={() => {
-                  void copyRecruiterMessage()
-                }}
-              />
-              <div className="mx-auto w-full max-w-[624px]">
-                <JobOfferInputBar t={t} />
-              </div>
-            </>
+            <CalculatorWorkspace
+              rawAmount={rawAmount}
+              amount={amount}
+              currency={currency}
+              inputType={inputType}
+              period={period}
+              sliderValue={sliderValue}
+              profile={profile}
+              quickScenarios={quickScenarios}
+              t={t}
+              rates={rates}
+              results={results}
+              hoursPerMonth={hoursPerMonth}
+              recruiterMessage={recruiterMessage}
+              copied={copied}
+              onAmountChange={setRawAmount}
+              onSliderChange={setSliderValue}
+              onCurrencyChange={(nextCurrency) => {
+                setCurrency(nextCurrency)
+                trackCurrencyChanged(nextCurrency)
+              }}
+              onInputTypeChange={(nextInputType) => {
+                setInputType(nextInputType)
+                trackModeChanged(nextInputType)
+              }}
+              onPeriodChange={(nextPeriod) => {
+                const converted = convertSalaryPeriod(
+                  amount,
+                  period,
+                  nextPeriod,
+                )
+                const rounded =
+                  nextPeriod === "hour"
+                    ? Math.round(converted * 100) / 100
+                    : Math.round(converted)
+                setRawAmount(String(rounded))
+                setSliderValue(rounded)
+                setPeriod(nextPeriod)
+              }}
+              onQuickScenario={applyScenario}
+              onEditProfile={openTaxProfile}
+              onCopy={() => {
+                void copyRecruiterMessage()
+              }}
+            />
           ) : (
             <main
               className="flex min-h-[60vh] items-center justify-center"
@@ -227,9 +221,8 @@ export default function App() {
               <span className="sr-only">{t.loadingCalculator}</span>
             </main>
           )}
-
-          <Footer t={t} />
         </AppShell>
+        <Footer t={t} />
       </div>
 
       <TaxProfileModal

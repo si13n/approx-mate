@@ -5,7 +5,6 @@ import type {
 import type { Translation } from "../../i18n/translations"
 import { fmt, fromPLN, toPLN } from "../../lib/formatting"
 import type { Currency, InputType, SalaryInputPeriod } from "../../types"
-import { Button } from "../ui/Button"
 import { OfferResultCard } from "./OfferResultCard"
 import { RecruiterMessage } from "./RecruiterMessage"
 
@@ -24,7 +23,6 @@ interface DecisionResultsProps {
   recruiterMessage: string
   copied: boolean
   t: Translation
-  onCompare: () => void
   onCopy: () => void
 }
 
@@ -81,27 +79,6 @@ export function DecisionResults(props: DecisionResultsProps) {
           t={props.t}
         />
       </div>
-      <section
-        className="flex flex-col gap-4 py-1 tablet:flex-row tablet:items-center tablet:justify-between"
-        aria-label={props.t.compareOffers}
-      >
-        <div>
-          <h3 className="font-display text-xl font-semibold text-text-primary">
-            {props.t.compareOffers}
-          </h3>
-          <p className="mt-1 text-xs leading-5 text-text-secondary tablet:text-sm">
-            {props.t.compareDescription}
-          </p>
-        </div>
-        <Button
-          variant="dark"
-          onClick={props.onCompare}
-          trailingIcon={<span aria-hidden="true">→</span>}
-          className="w-full shrink-0 rounded-[12px] tablet:w-auto tablet:min-w-[178px]"
-        >
-          {props.t.compareOffers}
-        </Button>
-      </section>
     </section>
   )
 }

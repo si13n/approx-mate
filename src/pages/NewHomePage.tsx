@@ -1,35 +1,40 @@
-import { useState, useMemo, useRef } from "react";
-import { calculateB2BFromGross } from "../lib/taxCalculations";
-import { DEFAULT_TAX_PROFILE } from "../config/tax";
-import { JobOfferInputBar } from "../components/JobOfferInputBar";
-import { translations } from "../i18n/translations";
-import "./NewHomePage.css";
+import { useState, useMemo, useRef } from "react"
+import { calculateB2BFromGross } from "../lib/taxCalculations"
+import { DEFAULT_TAX_PROFILE } from "../config/tax"
+import { Footer } from "../components/Footer"
+import { Header } from "../components/Header"
+import { Button } from "../components/ui/Button"
+import { translations } from "../i18n/translations"
+import { trackLanguageChanged } from "../lib/analytics"
+import type { Lang } from "../types"
+import "./NewHomePage.css"
 
 // SVG Asset imports
-import logoMark from "../assets/new-homepage/logo-mark.svg";
-import iconMoon from "../assets/new-homepage/icon-moon.svg";
-import orbitBottomLeft from "../assets/new-homepage/orbit-bottom-left.svg";
-import orbitRight from "../assets/new-homepage/orbit-right.svg";
-import orbitTopLeft from "../assets/new-homepage/orbit-top-left.svg";
-import orbitPoint from "../assets/new-homepage/orbit-point.svg";
+import orbitBottomLeft from "../assets/new-homepage/orbit-bottom-left.svg"
+import orbitRight from "../assets/new-homepage/orbit-right.svg"
+import orbitTopLeft from "../assets/new-homepage/orbit-top-left.svg"
+import orbitPoint from "../assets/new-homepage/orbit-point.svg"
 
 function SalarySlider({
   sliderValue,
   onSliderChange,
   isMobile,
 }: {
-  sliderValue: number;
-  onSliderChange: (val: number) => void;
-  isMobile?: boolean;
+  sliderValue: number
+  onSliderChange: (val: number) => void
+  isMobile?: boolean
 }) {
-  const sliderMin = 5000;
-  const sliderMax = isMobile ? 50000 : 100000;
-  const activeTrackRef = useRef<HTMLDivElement>(null);
+  const sliderMin = 5000
+  const sliderMax = isMobile ? 50000 : 100000
+  const activeTrackRef = useRef<HTMLDivElement>(null)
   const getTrackWidth = (value: number) => {
-    const fraction = Math.min(1, Math.max(0, (value - sliderMin) / (sliderMax - sliderMin)));
+    const fraction = Math.min(
+      1,
+      Math.max(0, (value - sliderMin) / (sliderMax - sliderMin)),
+    )
     // The 26px thumb's center travels from 13px to (input width - 13px).
-    return `calc(${fraction * 100}% + ${13 - fraction * 26}px)`;
-  };
+    return `calc(${fraction * 100}% + ${13 - fraction * 26}px)`
+  }
 
   return (
     <div className="w-full flex flex-col gap-3">
@@ -56,12 +61,12 @@ function SalarySlider({
           value={sliderValue}
           aria-label="Monthly gross salary in PLN"
           onChange={(e) => {
-            const value = e.currentTarget.valueAsNumber;
+            const value = e.currentTarget.valueAsNumber
             // Keep the fill aligned immediately, before the parent recalculates.
             if (activeTrackRef.current) {
-              activeTrackRef.current.style.width = getTrackWidth(value);
+              activeTrackRef.current.style.width = getTrackWidth(value)
             }
-            onSliderChange(value);
+            onSliderChange(value)
           }}
           className="new-home-salary-slider absolute left-0 top-0 w-full"
           style={{ height: "32px" }}
@@ -69,37 +74,43 @@ function SalarySlider({
       </div>
 
       {/* Min/Max labels */}
-      <div className="flex justify-between text-sm" style={{ color: "#8c96b2" }}>
+      <div
+        className="flex justify-between text-sm"
+        style={{ color: "#8c96b2" }}
+      >
         <span>5 000</span>
         <span>{isMobile ? "50 000+" : "100 000"}</span>
       </div>
     </div>
-  );
+  )
 }
 
 export function NewHomePage() {
-  const [sliderValue, setSliderValue] = useState<number>(22000);
-  const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
-  const t = translations.en;
+  const [sliderValue, setSliderValue] = useState<number>(22000)
+  const [isMobile, setIsMobile] = useState<boolean>(
+    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  )
+  const [lang, setLang] = useState<Lang>("en")
+  const t = translations[lang]
 
   // Calculate B2B net income with 1000 PLN business cost deduction
   const result = useMemo(() => {
-    const calc = calculateB2BFromGross(sliderValue, DEFAULT_TAX_PROFILE);
-    const netAfterCosts = Math.max(0, calc.monthlyNet - 1000);
+    const calc = calculateB2BFromGross(sliderValue, DEFAULT_TAX_PROFILE)
+    const netAfterCosts = Math.max(0, calc.monthlyNet - 1000)
     return {
       gross: sliderValue,
       net: calc.monthlyNet,
       netAfterCosts,
-    };
-  }, [sliderValue]);
+    }
+  }, [sliderValue])
 
   const formatAmount = (amount: number) => {
-    return Math.round(amount).toLocaleString("pl-PL");
-  };
+    return Math.round(amount).toLocaleString("pl-PL")
+  }
 
   const navigate = (path: string) => {
-    window.location.href = path;
-  };
+    window.location.href = path
+  }
 
   return (
     <div
@@ -186,250 +197,149 @@ export function NewHomePage() {
         <div>·</div>
       </div>
 
-      {/* Main content container */}
-      <div className="relative z-10 w-full px-4 py-1 flex flex-col gap-2 md:gap-4 overflow-x-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-4 h-14 flex-wrap md:flex-nowrap">
-          {/* Brand */}
-          <div className="flex items-center gap-3">
-            <img
-              src={logoMark}
-              alt="ApproxMate"
-              className="w-8 h-8"
-              style={{ filter: "drop-shadow(0 2px 8px rgba(59,130,246,0.3))" }}
-            />
-            <span
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <Header
+          lang={lang}
+          t={t}
+          onHome={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onLanguageChange={(nextLang) => {
+            setLang(nextLang)
+            trackLanguageChanged(nextLang)
+          }}
+        />
+
+        {/* Main content container */}
+        <div className="flex w-full flex-1 flex-col gap-2 overflow-x-hidden px-4 py-1 md:gap-4">
+          {/* Hero section */}
+          <div className="text-center py-2 max-w-5xl mx-auto">
+            <h1
               style={{
-                fontSize: "22px",
+                fontSize: "clamp(32px, 8vw, 76px)",
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 800,
                 color: "#090a12",
+                lineHeight: "1.1",
+                marginBottom: "8px",
               }}
             >
-              ApproxMate
-            </span>
-          </div>
-
-          {/* Navigation */}
-          <nav
-            className="hidden md:flex items-center gap-6 text-sm"
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 500,
-              color: "#090a12",
-            }}
-          >
-            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/calculator')}>
-              Calculator
-            </button>
-            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/calculator')}>
-              Job X-RAY
-            </button>
-            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/compare')}>
-              Compare Offers
-            </button>
-            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/how-it-works')}>
-              How it works
-            </button>
-            <button className="hover:opacity-75 transition-opacity" onClick={() => navigate('/about')}>
-              About
-            </button>
-          </nav>
-
-          {/* Header actions */}
-          <div className="flex items-center gap-6">
-            <span
+              Know what the offer
+              <br />
+              is really worth.
+            </h1>
+            <p
               style={{
-                fontSize: "14px",
+                fontSize: "19px",
                 fontFamily: "Inter, sans-serif",
-                fontWeight: 500,
-                color: "#090a12",
+                fontWeight: 400,
+                color: "#575e7a",
+                lineHeight: "28px",
               }}
             >
-              PL
-            </span>
-            <button
-              className="w-9 h-9 rounded-full flex items-center justify-center hover:opacity-75 transition-opacity"
-              style={{ background: "#090a12" }}
-            >
-              <img src={iconMoon} alt="Dark mode" className="w-4.5 h-4.5" />
-            </button>
+              Enter your offer and instantly see what you'll really take home in
+              Poland.
+            </p>
           </div>
-        </div>
 
-        {/* Hero section */}
-        <div className="text-center py-2 max-w-5xl mx-auto">
-          <h1
-            style={{
-              fontSize: "clamp(32px, 8vw, 76px)",
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 800,
-              color: "#090a12",
-              lineHeight: "1.1",
-              marginBottom: "8px",
-            }}
-          >
-            Know what the offer
-            <br />
-            is really worth.
-          </h1>
-          <p
-            style={{
-              fontSize: "19px",
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 400,
-              color: "#575e7a",
-              lineHeight: "28px",
-            }}
-          >
-            Enter your offer and instantly see what you'll really take home in
-            Poland.
-          </p>
-        </div>
-
-        {/* Calculator demo section */}
-        <div className="flex justify-center py-1">
-          <div className="w-full max-w-3xl px-2 flex flex-col gap-2 md:gap-3">
-            {/* Amount display */}
-            <div className="text-center">
-              <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-4 mb-4 md:mb-6">
-                <span
-                  style={{
-                    fontSize: "clamp(36px, 6vw, 68px)",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 800,
-                    color: "#090a12",
-                  }}
-                >
-                  {formatAmount(result.gross)}
-                </span>
-                <span
-                  style={{
-                    fontSize: "clamp(16px, 3vw, 28px)",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    color: "#575e7a",
-                  }}
-                >
-                  PLN / month
-                </span>
-              </div>
-
-              {/* Salary slider */}
-              <div className="px-4 md:px-8 py-2">
-                <SalarySlider
-                  sliderValue={sliderValue}
-                  onSliderChange={setSliderValue}
-                  isMobile={isMobile}
-                />
-              </div>
-
-              {/* Result section */}
-              <div className="mt-2 space-y-1">
-                <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-3 flex-wrap">
+          {/* Calculator demo section */}
+          <div className="flex justify-center py-1">
+            <div className="w-full max-w-3xl px-2 flex flex-col gap-2 md:gap-3">
+              {/* Amount display */}
+              <div className="text-center">
+                <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-4 mb-4 md:mb-6">
                   <span
                     style={{
-                      fontSize: "clamp(24px, 4vw, 40px)",
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 600,
-                      color: "#090a12",
-                    }}
-                  >
-                    You keep
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "clamp(32px, 6vw, 56px)",
+                      fontSize: "clamp(36px, 6vw, 68px)",
                       fontFamily: "Inter, sans-serif",
                       fontWeight: 800,
                       color: "#090a12",
                     }}
                   >
-                    {formatAmount(result.netAfterCosts)}
+                    {formatAmount(result.gross)}
                   </span>
                   <span
                     style={{
-                      fontSize: "clamp(18px, 3vw, 28px)",
+                      fontSize: "clamp(16px, 3vw, 28px)",
                       fontFamily: "Inter, sans-serif",
                       fontWeight: 400,
                       color: "#575e7a",
                     }}
                   >
-                    PLN
+                    PLN / month
                   </span>
                 </div>
 
+                {/* Salary slider */}
+                <div className="px-4 md:px-8 py-2">
+                  <SalarySlider
+                    sliderValue={sliderValue}
+                    onSliderChange={setSliderValue}
+                    isMobile={isMobile}
+                  />
+                </div>
 
-                <p
-                  style={{
-                    fontSize: "14px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    color: "#8c96b2",
-                  }}
-                >
-                  B2B · Ryczałt 12% · Poland · 2026
-                </p>
+                {/* Result section */}
+                <div className="mt-2 space-y-1">
+                  <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-3 flex-wrap">
+                    <span
+                      style={{
+                        fontSize: "clamp(24px, 4vw, 40px)",
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 600,
+                        color: "#090a12",
+                      }}
+                    >
+                      You keep
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "clamp(32px, 6vw, 56px)",
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 800,
+                        color: "#090a12",
+                      }}
+                    >
+                      {formatAmount(result.netAfterCosts)}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "clamp(18px, 3vw, 28px)",
+                        fontFamily: "Inter, sans-serif",
+                        fontWeight: 400,
+                        color: "#575e7a",
+                      }}
+                    >
+                      PLN
+                    </span>
+                  </div>
 
-                <button
-                  className="inline-block mt-2 bg-none border-none cursor-pointer"
-                  style={{
-                    fontSize: "16px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 500,
-                    color: "#575e7a",
-                    textDecoration: "underline",
-                    textDecorationStyle: "dotted",
-                    padding: 0,
-                  }}
-                  onClick={() => navigate('/calculator')}
-                >
-                  Calculate in detail →
-                </button>
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 400,
+                      color: "#8c96b2",
+                    }}
+                  >
+                    B2B · Ryczałt 12% · Poland · 2026
+                  </p>
+
+                  <Button
+                    variant="brand"
+                    className="mt-2 h-[52px] w-[186px] rounded-[8px] px-3 text-base underline decoration-dotted underline-offset-4"
+                    style={{ fontWeight: 400 }}
+                    onClick={() => navigate("/calculator")}
+                  >
+                    Calculate in detail →
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Job X-RAY section */}
-        <div className="flex justify-center py-1">
-          <div className="w-full max-w-3xl px-2">
-            <JobOfferInputBar t={t} />
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex justify-between items-center py-2 px-4">
-          <p
-            style={{
-              fontSize: "12px",
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 500,
-              color: "#8c96b2",
-            }}
-          >
-            ApproxMate 2026
-          </p>
-          <button
-            onClick={() => window.location.href = "mailto:si13n@yahoo.com"}
-            style={{
-              fontSize: "12px",
-              fontFamily: "Inter, sans-serif",
-              fontWeight: 500,
-              color: "#8c96b2",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              textDecoration: "underline",
-              padding: 0,
-            }}
-          >
-            Send feedback ↗
-          </button>
-        </div>
+        <Footer t={t} />
       </div>
     </div>
-  );
+  )
 }
 
-export default NewHomePage;
+export default NewHomePage
