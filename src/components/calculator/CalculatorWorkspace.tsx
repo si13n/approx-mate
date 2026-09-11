@@ -45,11 +45,11 @@ export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
           {props.t.heroDescription}
         </p>
       </section>
-      <main className="grid min-w-0 gap-3 desktop:grid-cols-[416px_minmax(0,1fr)] desktop:gap-5">
-        <div className="flex min-w-0 flex-col gap-3">
+      <main className="flex gap-16 min-w-0">
+        <div className="w-[336px] flex-shrink-0">
           <TargetPanel {...props} />
         </div>
-        <div className="min-w-0">
+        <div className="w-[848px] flex-shrink-0">
           <DecisionResults
             results={props.results}
             amount={props.amount}
