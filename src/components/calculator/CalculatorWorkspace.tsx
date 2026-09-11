@@ -1,6 +1,6 @@
 import type { TaxProfile } from "../../config/tax"
 import type { Translation } from "../../i18n/translations"
-import type { Currency, InputType } from "../../types"
+import type { Currency, InputType, SalaryInputPeriod } from "../../types"
 import { DecisionResults, type Results } from "./DecisionResults"
 import { TargetPanel, type QuickScenario } from "./TargetPanel"
 
@@ -9,6 +9,7 @@ interface CalculatorWorkspaceProps {
   amount: number
   currency: Currency
   inputType: InputType
+  period: SalaryInputPeriod
   sliderValue: number
   profile: TaxProfile
   quickScenarios: QuickScenario[]
@@ -22,6 +23,7 @@ interface CalculatorWorkspaceProps {
   onSliderChange: (value: number) => void
   onCurrencyChange: (currency: Currency) => void
   onInputTypeChange: (type: InputType) => void
+  onPeriodChange: (period: SalaryInputPeriod) => void
   onQuickScenario: (scenario: QuickScenario) => void
   onEditProfile: () => void
   onCompare: () => void
@@ -30,41 +32,26 @@ interface CalculatorWorkspaceProps {
 
 export function CalculatorWorkspace(props: CalculatorWorkspaceProps) {
   return (
-    <>
-      <section className="mt-1" aria-labelledby="hero-title">
-        <h1
-          id="hero-title"
-          className="max-w-3xl font-display text-[29px] font-bold leading-tight tablet:text-[38px]"
-        >
-          {props.t.heroTitle}
-        </h1>
-        <p className="mt-1.5 text-[13px] text-content-secondary tablet:hidden">
-          {props.t.heroDescriptionMobile}
-        </p>
-        <p className="mt-1.5 hidden text-base text-content-secondary tablet:block">
-          {props.t.heroDescription}
-        </p>
-      </section>
-      <main className="flex gap-16 min-w-0">
-        <div className="w-[336px] flex-shrink-0">
-          <TargetPanel {...props} />
-        </div>
-        <div className="w-[848px] flex-shrink-0">
-          <DecisionResults
-            results={props.results}
-            amount={props.amount}
-            currency={props.currency}
-            inputType={props.inputType}
-            rates={props.rates}
-            hoursPerMonth={props.hoursPerMonth}
-            recruiterMessage={props.recruiterMessage}
-            copied={props.copied}
-            t={props.t}
-            onCompare={props.onCompare}
-            onCopy={props.onCopy}
-          />
-        </div>
-      </main>
-    </>
+    <main className="grid min-w-0 gap-10 pt-3 desktop:grid-cols-[336px_minmax(0,848px)] desktop:gap-16 desktop:pt-5">
+      <div className="min-w-0 desktop:w-[336px]">
+        <TargetPanel {...props} />
+      </div>
+      <div className="min-w-0">
+        <DecisionResults
+          results={props.results}
+          amount={props.amount}
+          currency={props.currency}
+          inputType={props.inputType}
+          period={props.period}
+          rates={props.rates}
+          hoursPerMonth={props.hoursPerMonth}
+          recruiterMessage={props.recruiterMessage}
+          copied={props.copied}
+          t={props.t}
+          onCompare={props.onCompare}
+          onCopy={props.onCopy}
+        />
+      </div>
+    </main>
   )
 }

@@ -148,7 +148,7 @@ export interface Translation {
   workModes: Record<"remote" | "hybrid" | "onsite", string>
   salaryPeriod: Record<"hour" | "day" | "month" | "year", string>
   officeDays: (count: number) => string
-  recruiterMessage: (amount: string, type: string) => string
+  recruiterMessage: (amount: string, type: string, period: string) => string
 }
 
 const en: Translation = {
@@ -189,9 +189,9 @@ const en: Translation = {
   seeCalculation: "See calculation",
   compareOffers: "Compare offers",
   compareDescription:
-    "Add 2–3 offers and rank them by cash, total value, and effective hourly rate.",
-  recruiterTitle: "Message for recruiter",
-  copyMessage: "Copy message",
+    "Add 2–3 offers. Compare cash, total value, and effective hourly pay.",
+  recruiterTitle: "AI recruiter message",
+  copyMessage: "Copy",
   copied: "Copied!",
   assumptionsTitle: "Transparent assumptions",
   rulesExample: "2026 rules · annual average",
@@ -304,8 +304,8 @@ const en: Translation = {
   workModes: { remote: "Remote", hybrid: "Hybrid", onsite: "On-site" },
   salaryPeriod: { hour: "hour", day: "day", month: "month", year: "year" },
   officeDays: (count) => `${count} ${count === 1 ? "day" : "days"} in office`,
-  recruiterMessage: (amount, type) =>
-    `Hi! I'm currently looking at opportunities in the range of around ${amount} ${type} per month, but I'm flexible depending on the project, team, and growth opportunities. Happy to discuss the details and learn more about the role.`,
+  recruiterMessage: (amount, type, period) =>
+    `Hi! I'm currently looking at opportunities in the range of around ${amount} ${type} per ${period}, but I'm flexible depending on the project, team, and growth opportunities. Happy to discuss the details and learn more about the role.`,
 }
 
 const pl: Translation = {
@@ -345,9 +345,9 @@ const pl: Translation = {
   seeCalculation: "Zobacz obliczenie",
   compareOffers: "Porównaj oferty",
   compareDescription:
-    "Dodaj 2–3 oferty i porównaj gotówkę, wartość roczną oraz stawkę godzinową.",
-  recruiterTitle: "Wiadomość do rekrutera",
-  copyMessage: "Kopiuj wiadomość",
+    "Dodaj 2–3 oferty. Porównaj gotówkę, wartość roczną i stawkę godzinową.",
+  recruiterTitle: "Wiadomość AI do rekrutera",
+  copyMessage: "Kopiuj",
   copied: "Skopiowano!",
   assumptionsTitle: "Przejrzyste założenia",
   rulesExample: "Zasady 2026 · średnia roczna",
@@ -460,8 +460,8 @@ const pl: Translation = {
   workModes: { remote: "Zdalnie", hybrid: "Hybrydowo", onsite: "Stacjonarnie" },
   salaryPeriod: { hour: "godz.", day: "dzień", month: "miesiąc", year: "rok" },
   officeDays: (count) => `${count} ${count === 1 ? "dzień" : "dni"} w biurze`,
-  recruiterMessage: (amount, type) =>
-    `Dzień dobry! Interesują mnie oferty w przedziale około ${amount} ${type} miesięcznie, ale jestem elastyczny w zależności od projektu, zespołu i możliwości rozwoju. Chętnie omówię szczegóły stanowiska.`,
+  recruiterMessage: (amount, type, period) =>
+    `Dzień dobry! Interesują mnie oferty w przedziale około ${amount} ${type} / ${period}, ale jestem elastyczny w zależności od projektu, zespołu i możliwości rozwoju. Chętnie omówię szczegóły stanowiska.`,
 }
 
 const ua: Translation = {
@@ -501,9 +501,9 @@ const ua: Translation = {
   seeCalculation: "Переглянути розрахунок",
   compareOffers: "Порівняти пропозиції",
   compareDescription:
-    "Додайте 2–3 пропозиції та порівняйте дохід, річну суму й погодинну ставку.",
-  recruiterTitle: "Повідомлення рекрутеру",
-  copyMessage: "Копіювати повідомлення",
+    "Додайте 2–3 пропозиції. Порівняйте дохід, річну суму й погодинну ставку.",
+  recruiterTitle: "AI-повідомлення рекрутеру",
+  copyMessage: "Копіювати",
   copied: "Скопійовано!",
   assumptionsTitle: "Прозорі припущення",
   rulesExample: "Правила 2026 · середнє за рік",
@@ -615,8 +615,8 @@ const ua: Translation = {
   workModes: { remote: "Віддалено", hybrid: "Гібридно", onsite: "В офісі" },
   salaryPeriod: { hour: "год.", day: "день", month: "місяць", year: "рік" },
   officeDays: (count) => `${count} ${count === 1 ? "день" : "дні"} в офісі`,
-  recruiterMessage: (amount, type) =>
-    `Вітаю! Я розглядаю можливості в діапазоні близько ${amount} ${type} на місяць, але готовий обговорювати умови залежно від проєкту, команди та можливостей розвитку. Буду радий дізнатися більше про роль.`,
+  recruiterMessage: (amount, type, period) =>
+    `Вітаю! Я розглядаю можливості в діапазоні близько ${amount} ${type} / ${period}, але готовий обговорювати умови залежно від проєкту, команди та можливостей розвитку. Буду радий дізнатися більше про роль.`,
 }
 
 export const translations: Record<Lang, Translation> = { en, pl, ua }

@@ -2,14 +2,15 @@ import type { CSSProperties } from "react"
 import type { TaxProfile } from "../../config/tax"
 import type { Translation } from "../../i18n/translations"
 import { SYM } from "../../lib/formatting"
-import type { Currency, InputType } from "../../types"
-import { SegmentedControl } from "../ui/SegmentedControl"
+import { fromMonthlyAmount } from "../../lib/salaryPeriod"
+import type { Currency, InputType, SalaryInputPeriod } from "../../types"
 
 export interface QuickScenario {
   label: string
   amount: number
   currency: Currency
   type: InputType
+  period: SalaryInputPeriod
 }
 
 interface TargetPanelProps {
@@ -17,6 +18,7 @@ interface TargetPanelProps {
   amount: number
   currency: Currency
   inputType: InputType
+  period: SalaryInputPeriod
   sliderValue: number
   profile: TaxProfile
   quickScenarios: QuickScenario[]
@@ -25,13 +27,25 @@ interface TargetPanelProps {
   onSliderChange: (value: number) => void
   onCurrencyChange: (currency: Currency) => void
   onInputTypeChange: (type: InputType) => void
+  onPeriodChange: (period: SalaryInputPeriod) => void
   onQuickScenario: (scenario: QuickScenario) => void
   onEditProfile: () => void
 }
 
+function formatEditableAmount(value: string) {
+  if (!value) return ""
+  const [whole = "", decimal] = value.split(".")
+  const formattedWhole = Number(whole || 0).toLocaleString("en-US")
+  return decimal === undefined ? formattedWhole : `${formattedWhole}.${decimal}`
+}
+
 export function TargetPanel(props: TargetPanelProps) {
-  const sliderMax = props.currency === "PLN" ? 50000 : 10000
-  const sliderMin = 1000
+  const monthlyMin = 1_000
+  const monthlyMax = props.currency === "PLN" ? 50_000 : 10_000
+  const sliderMin = fromMonthlyAmount(monthlyMin, props.period)
+  const sliderMax = fromMonthlyAmount(monthlyMax, props.period)
+  const sliderStep =
+    props.period === "hour" ? 1 : props.period === "year" ? 1_200 : 100
   const progress =
     ((Math.min(Math.max(props.sliderValue, sliderMin), sliderMax) - sliderMin) /
       (sliderMax - sliderMin)) *
@@ -48,135 +62,158 @@ export function TargetPanel(props: TargetPanelProps) {
       : props.t.commuterUop
 
   const setAmount = (value: string) => {
-    props.onAmountChange(value)
-    props.onSliderChange(Number(value) || 0)
-  }
-  const setSlider = (value: number) => {
-    props.onSliderChange(value)
-    props.onAmountChange(String(value))
+    const normalized = value.replace(/,/g, "").replace(/[^\d.]/g, "")
+    const [whole = "", ...decimals] = normalized.split(".")
+    const next = decimals.length
+      ? `${whole}.${decimals.join("").slice(0, 2)}`
+      : whole
+    props.onAmountChange(next)
+    props.onSliderChange(Number(next) || 0)
   }
 
   return (
     <section
-      className="flex flex-col gap-4 rounded-panel border border-border bg-surface p-4 desktop:p-6"
-      aria-labelledby="target-title"
+      className="flex min-w-0 flex-col gap-6"
+      aria-label={props.t.targetQuestion}
     >
-      <div className="hidden desktop:block">
-        <h2
-          id="target-title"
-          className="font-display text-[22px] font-semibold"
-        >
-          {props.t.targetQuestion}
-        </h2>
+      <div
+        role="radiogroup"
+        aria-label={props.t.targetQuestion}
+        className="grid grid-cols-2 gap-2"
+      >
+        {([
+          ["net", props.t.desiredNet, props.t.desiredNetDesc],
+          ["gross", props.t.offeredGross, props.t.offeredGrossDesc],
+        ] as const).map(([value, label, description]) => {
+          const selected = props.inputType === value
+          return (
+            <button
+              key={value}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => props.onInputTypeChange(value)}
+              className={`min-w-0 rounded-[10px] px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+                selected ? "bg-[#e6f2ff]" : "hover:bg-white/70"
+              }`}
+            >
+              <span className="block truncate text-[15px] font-semibold text-text-primary">
+                {label}
+              </span>
+              <span className="mt-0.5 block truncate text-[11px] font-normal text-text-secondary">
+                {description}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
-      <SegmentedControl
-        value={props.inputType}
-        onChange={props.onInputTypeChange}
-        ariaLabel={props.t.targetQuestion}
-        comfortable
-        options={[
-          {
-            value: "net",
-            label: props.t.desiredNet,
-            description: props.t.desiredNetDesc,
-          },
-          {
-            value: "gross",
-            label: props.t.offeredGross,
-            description: props.t.offeredGrossDesc,
-          },
-        ]}
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-[72px] min-w-0 flex-1 items-center rounded-[12px] border border-border-subtle bg-white px-3.5">
+          {SYM[props.currency] && (
+            <span
+              className="font-display text-[38px] font-bold leading-none text-text-primary"
+              aria-hidden="true"
+            >
+              {SYM[props.currency]}
+            </span>
+          )}
+          <label htmlFor="target-amount" className="sr-only">
+            {props.t.amount}
+          </label>
+          <input
+            id="target-amount"
+            type="text"
+            inputMode="decimal"
+            value={formatEditableAmount(props.rawAmount)}
+            onChange={(event) => setAmount(event.target.value)}
+            className="min-w-0 flex-1 bg-transparent font-display text-[38px] font-bold leading-none tabular-nums text-text-primary outline-none"
+          />
+        </div>
+
+        <div className="flex shrink-0 items-center gap-3 text-[13px] font-medium text-text-secondary">
+          <label className="relative">
+            <span className="sr-only">{props.t.currency}</span>
+            <select
+              value={props.currency}
+              onChange={(event) =>
+                props.onCurrencyChange(event.target.value as Currency)
+              }
+              className="appearance-none bg-transparent py-2 pl-0 pr-3.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="PLN">PLN</option>
+            </select>
+            <span
+              className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-[10px]"
+              aria-hidden="true"
+            >
+              ⌄
+            </span>
+          </label>
+          <label className="relative">
+            <span className="sr-only">
+              {props.t.salaryPeriod[props.period]}
+            </span>
+            <select
+              value={props.period}
+              onChange={(event) =>
+                props.onPeriodChange(event.target.value as SalaryInputPeriod)
+              }
+              className="max-w-[70px] appearance-none bg-transparent py-2 pl-0 pr-3.5 outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <option value="month">{props.t.salaryPeriod.month}</option>
+              <option value="year">{props.t.salaryPeriod.year}</option>
+              <option value="hour">{props.t.salaryPeriod.hour}</option>
+            </select>
+            <span
+              className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-[10px]"
+              aria-hidden="true"
+            >
+              ⌄
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <input
+        id="quick-amount"
+        type="range"
+        min={sliderMin}
+        max={sliderMax}
+        step={sliderStep}
+        value={Math.min(Math.max(props.sliderValue, sliderMin), sliderMax)}
+        onChange={(event) => {
+          const value = Number(event.target.value)
+          props.onSliderChange(value)
+          props.onAmountChange(String(value))
+        }}
+        aria-label={props.t.quickAmount}
+        className="range-input w-full focus-visible:outline-2 focus-visible:outline-primary"
+        style={{ "--range-progress": `${progress}%` } as CSSProperties}
       />
 
-      <div className="flex min-h-[70px] items-center gap-2 rounded-[14px] border border-border-strong bg-surface-subtle px-3 tablet:min-h-[86px] tablet:px-[18px]">
-        <label htmlFor="target-amount" className="sr-only">
-          {props.t.amount}
-        </label>
-        {SYM[props.currency] && (
-          <span
-            className="font-display text-2xl font-medium text-content-secondary"
-            aria-hidden="true"
-          >
-            {SYM[props.currency]}
-          </span>
-        )}
-        <input
-          id="target-amount"
-          type="number"
-          min="0"
-          inputMode="decimal"
-          value={props.rawAmount}
-          onChange={(event) => setAmount(event.target.value)}
-          className="min-w-0 flex-1 bg-transparent font-display text-[31px] font-bold tabular-nums outline-none tablet:text-4xl"
-        />
-        <label htmlFor="target-currency" className="sr-only">
-          {props.t.currency}
-        </label>
-        <select
-          id="target-currency"
-          value={props.currency}
-          onChange={(event) =>
-            props.onCurrencyChange(event.target.value as Currency)
-          }
-          className="min-h-8 rounded-full border-0 bg-primary-subtle px-3 text-xs font-semibold text-action outline-none focus-visible:ring-2 focus-visible:ring-primary"
-        >
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="PLN">PLN</option>
-        </select>
-      </div>
-
-      <div className="min-h-[51px]">
-        <div className="flex items-center justify-between text-xs font-medium text-content-secondary">
-          <label htmlFor="quick-amount">{props.t.quickAmount}</label>
-          <span className="font-semibold text-action">
-            {SYM[props.currency]}
-            {Math.round(props.sliderValue / 100) / 10}k
-          </span>
-        </div>
-        <input
-          id="quick-amount"
-          type="range"
-          min={sliderMin}
-          max={sliderMax}
-          step="100"
-          value={Math.min(Math.max(props.sliderValue, sliderMin), sliderMax)}
-          onChange={(event) => setSlider(Number(event.target.value))}
-          className="range-input mt-[7px] w-full focus-visible:outline-2 focus-visible:outline-primary"
-          style={{ "--range-progress": `${progress}%` } as CSSProperties}
-        />
-        <div className="mt-0.5 flex items-center justify-between text-xs text-content-secondary tablet:hidden">
-          <span>
-            {SYM[props.currency]}
-            {sliderMin / 1000}k
-          </span>
-          <span>
-            {SYM[props.currency]}
-            {sliderMax / 1000}k
-          </span>
-        </div>
-      </div>
-
-      <div className="hidden tablet:block">
-        <p className="mb-2 text-[13px] font-semibold leading-[18px] text-content-secondary">
+      <div>
+        <p className="mb-2 text-xs font-medium leading-[18px] text-text-secondary">
           {props.t.quickScenarios}
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-[0.75fr_0.75fr_1.3fr_1.1fr] gap-1.5">
           {props.quickScenarios.map((scenario) => {
             const selected =
               props.amount === scenario.amount &&
               props.currency === scenario.currency &&
-              props.inputType === scenario.type
+              props.inputType === scenario.type &&
+              props.period === scenario.period
             return (
               <button
                 key={scenario.label}
                 type="button"
                 onClick={() => props.onQuickScenario(scenario)}
-                className={`min-h-7 rounded-full border px-2 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-primary ${
+                className={`min-h-10 min-w-0 whitespace-nowrap rounded-[10px] border px-1 text-[10px] font-normal transition-colors focus-visible:outline-2 focus-visible:outline-primary min-[360px]:text-[11px] desktop:text-xs ${
                   selected
-                    ? "border-primary-border bg-primary-subtle text-action"
-                    : "border-border bg-surface text-content-secondary hover:border-primary"
+                    ? "border-[#bdd7f5] bg-[#eef6ff] text-text-primary"
+                    : "border-border-subtle bg-white text-text-secondary hover:border-[#aeb9d5]"
                 }`}
               >
                 {scenario.label}
@@ -186,32 +223,23 @@ export function TargetPanel(props: TargetPanelProps) {
         </div>
       </div>
 
-      <div className="border-t border-border pt-4">
+      <div>
         <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold tablet:text-[15px]">
+          <h3 className="text-sm font-semibold text-text-primary tablet:text-[15px]">
             {props.t.taxProfile}
           </h3>
           <button
             type="button"
             onClick={props.onEditProfile}
-            className="shrink-0 border-b border-dashed border-current text-xs font-normal leading-4 text-action hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="shrink-0 border-b border-dashed border-current text-xs font-normal leading-4 text-text-primary hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            {props.t.editTaxProfile}
+            {props.t.editTaxProfile} →
           </button>
         </div>
-        <div className="mt-2 text-xs leading-[18px] text-content-secondary tablet:hidden">
-          <p>
-            B2B · {rateLabel} · {zusLabel}
-          </p>
-          <p>
-            UoP · {uopLabel}
-            {props.profile.uop.ppkEnabled ? " · PPK" : ""}
-          </p>
-        </div>
-        <div className="mt-2 hidden text-[13px] leading-4 text-content-secondary tablet:block">
+        <p className="mt-2 whitespace-nowrap text-[10px] leading-4 text-text-secondary min-[360px]:text-[11px] desktop:text-xs">
           {rateLabel} · {zusLabel} · {uopLabel}
           {props.profile.uop.ppkEnabled ? " · PPK" : ""}
-        </div>
+        </p>
       </div>
     </section>
   )

@@ -16,7 +16,7 @@ export function JobOfferInputBar({ t }: JobOfferInputBarProps) {
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleAnalyze()
     }
@@ -24,35 +24,36 @@ export function JobOfferInputBar({ t }: JobOfferInputBarProps) {
 
   return (
     <section
-      className="flex flex-col gap-2 desktop:gap-2"
+      className="flex min-w-0 flex-col gap-2"
       aria-labelledby="job-offer-label"
     >
       <label
         id="job-offer-label"
-        className="font-normal text-[14px] text-[#575e7a]"
+        className="text-[13px] font-normal text-text-secondary"
       >
         Have a job offer?
       </label>
-      <div className="flex h-[59px] items-center justify-between gap-3 rounded-[16px] border border-[#dbe0ed] bg-white px-4 py-2">
-        <div className="flex items-center gap-3">
+      <div className="flex h-[52px] min-w-0 items-center justify-between gap-2 rounded-[12px] border border-border-subtle bg-white px-2 py-1.5 pl-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
           <img
             src={iconLink}
             alt=""
-            className="size-[22px] shrink-0"
+            className="size-[18px] shrink-0"
             aria-hidden="true"
           />
           <input
             type="text"
             value={jobOfferInput}
             onChange={(e) => setJobOfferInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Paste a vacancy link or job description"
-            className="min-w-0 flex-1 bg-transparent font-normal text-[15px] text-[#8c96b2] outline-none placeholder-[#8c96b2]"
+            onKeyDown={handleKeyDown}
+            placeholder={t.vacancyPlaceholder}
+            className="min-w-0 flex-1 bg-transparent text-[12px] font-normal text-text-primary outline-none placeholder:text-text-muted min-[360px]:text-[13px] desktop:text-[14px]"
           />
         </div>
         <button
           onClick={handleAnalyze}
-          className="shrink-0 rounded-[12px] bg-[#090a12] px-6 py-2.5 font-semibold text-[15px] text-white shadow-[0px_4px_12px_-4px_rgba(0,0,0,0.12)] hover:opacity-90 transition-opacity"
+          type="button"
+          className="h-10 shrink-0 rounded-[10px] bg-action-primary px-3 text-[12px] font-medium text-white shadow-[0_4px_12px_-4px_rgba(0,0,0,0.12)] transition-opacity hover:opacity-90 min-[360px]:px-4 desktop:px-6 desktop:text-[13px]"
         >
           Analyze
         </button>
