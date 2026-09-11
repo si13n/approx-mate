@@ -1,12 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { calculateB2BFromGross } from "../lib/taxCalculations";
 import { DEFAULT_TAX_PROFILE } from "../config/tax";
+import { JobOfferInputBar } from "../components/JobOfferInputBar";
+import { translations } from "../i18n/translations";
 import "./NewHomePage.css";
 
 // SVG Asset imports
 import logoMark from "../assets/new-homepage/logo-mark.svg";
 import iconMoon from "../assets/new-homepage/icon-moon.svg";
-import iconLink from "../assets/new-homepage/icon-link.svg";
 import orbitBottomLeft from "../assets/new-homepage/orbit-bottom-left.svg";
 import orbitRight from "../assets/new-homepage/orbit-right.svg";
 import orbitTopLeft from "../assets/new-homepage/orbit-top-left.svg";
@@ -23,10 +24,12 @@ function SalarySlider({
 }) {
   const sliderMin = 5000;
   const sliderMax = isMobile ? 50000 : 100000;
-  const percentage = useMemo(
-    () => ((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100,
-    [sliderValue]
-  );
+  const activeTrackRef = useRef<HTMLDivElement>(null);
+  const getTrackWidth = (value: number) => {
+    const fraction = Math.min(1, Math.max(0, (value - sliderMin) / (sliderMax - sliderMin)));
+    // The 26px thumb's center travels from 13px to (input width - 13px).
+    return `calc(${fraction * 100}% + ${13 - fraction * 26}px)`;
+  };
 
   return (
     <div className="w-full flex flex-col gap-3">
@@ -36,9 +39,10 @@ function SalarySlider({
 
         {/* Gradient active track (sized to slider value) */}
         <div
+          ref={activeTrackRef}
           className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full"
           style={{
-            width: `${percentage}%`,
+            width: getTrackWidth(sliderValue),
             background: "linear-gradient(to right, #7A45F9, #42A3FE)",
           }}
         />
@@ -50,7 +54,15 @@ function SalarySlider({
           max={sliderMax}
           step={100}
           value={sliderValue}
-          onChange={(e) => onSliderChange(Number(e.target.value))}
+          aria-label="Monthly gross salary in PLN"
+          onChange={(e) => {
+            const value = e.currentTarget.valueAsNumber;
+            // Keep the fill aligned immediately, before the parent recalculates.
+            if (activeTrackRef.current) {
+              activeTrackRef.current.style.width = getTrackWidth(value);
+            }
+            onSliderChange(value);
+          }}
           className="new-home-salary-slider absolute left-0 top-0 w-full"
           style={{ height: "32px" }}
         />
@@ -67,8 +79,8 @@ function SalarySlider({
 
 export function NewHomePage() {
   const [sliderValue, setSliderValue] = useState<number>(22000);
-  const [jobOfferInput, setJobOfferInput] = useState<string>("");
   const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+  const t = translations.en;
 
   // Calculate B2B net income with 1000 PLN business cost deduction
   const result = useMemo(() => {
@@ -87,14 +99,6 @@ export function NewHomePage() {
 
   const navigate = (path: string) => {
     window.location.href = path;
-  };
-
-  const handleJobOfferAnalyze = () => {
-    if (jobOfferInput.trim()) {
-      // Pass job offer to main app via URL parameter or storage
-      sessionStorage.setItem('jobOfferInput', jobOfferInput);
-      navigate('/calculator');
-    }
   };
 
   return (
@@ -355,16 +359,6 @@ export function NewHomePage() {
                   </span>
                 </div>
 
-                <p
-                  style={{
-                    fontSize: "16px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    color: "#575e7a",
-                  }}
-                >
-                  after tax, ZUS and 1 000 PLN business costs
-                </p>
 
                 <p
                   style={{
@@ -400,62 +394,7 @@ export function NewHomePage() {
         {/* Job X-RAY section */}
         <div className="flex justify-center py-1">
           <div className="w-full max-w-3xl px-2">
-            <label
-              style={{
-                fontSize: "14px",
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
-                color: "#575e7a",
-                display: "block",
-                marginBottom: "12px",
-              }}
-            >
-              Have a job offer?
-            </label>
-
-            <div
-              className="flex items-center justify-between gap-2 px-4 py-2 rounded-2xl border"
-              style={{
-                borderColor: "#dbe0ed",
-                background: "#fff",
-              }}
-            >
-              <div className="flex items-center gap-3 flex-1">
-                <img src={iconLink} alt="" className="w-5.5 h-5.5" />
-                <input
-                  type="text"
-                  value={jobOfferInput}
-                  onChange={(e) => setJobOfferInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleJobOfferAnalyze()}
-                  placeholder="Paste a vacancy link or job description"
-                  style={{
-                    fontSize: "15px",
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    color: "#8c96b2",
-                    border: "none",
-                    background: "transparent",
-                    outline: "none",
-                    flex: 1,
-                  }}
-                />
-              </div>
-
-              <button
-                className="px-6 py-2.5 rounded-xl font-semibold text-white hover:opacity-90 transition-opacity"
-                style={{
-                  background: "#090a12",
-                  fontSize: "15px",
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 600,
-                  boxShadow: "0px 4px 12px -4px rgba(0,0,0,0.12)",
-                  cursor: "pointer",
-                }}
-                onClick={handleJobOfferAnalyze}
-              >
-                Analyze
-              </button>
-            </div>
+            <JobOfferInputBar t={t} />
           </div>
         </div>
 

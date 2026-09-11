@@ -6,14 +6,26 @@ interface HeaderProps {
   onLanguageChange: (lang: Lang) => void
   onHome: () => void
   t: Translation
+  activePage?: "calculator" | "job-xray" | "compare" | "how-it-works" | "about"
 }
 
-export function Header({ lang, onLanguageChange, onHome, t }: HeaderProps) {
+export function Header({
+  lang,
+  onLanguageChange,
+  onHome,
+  t,
+  activePage,
+}: HeaderProps) {
+  const navItems = [
+    { href: "/calculator", label: "Calculator", id: "calculator" },
+    { href: "/job-xray", label: "Job X-RAY", id: "job-xray" },
+    { href: "/compare", label: "Compare Offers", id: "compare" },
+    { href: "/how-it-works", label: "How it works", id: "how-it-works" },
+    { href: "/about", label: "About", id: "about" },
+  ]
+
   return (
-    <header
-      className="flex min-h-11 items-center justify-between"
-      aria-label="ApproxMate"
-    >
+    <header className="flex min-h-11 items-center justify-between gap-4 flex-wrap tablet:flex-nowrap">
       <a
         href="/"
         onClick={(event) => {
@@ -23,7 +35,8 @@ export function Header({ lang, onLanguageChange, onHome, t }: HeaderProps) {
             event.ctrlKey ||
             event.shiftKey ||
             event.altKey
-          ) return
+          )
+            return
           event.preventDefault()
           onHome()
         }}
@@ -39,19 +52,45 @@ export function Header({ lang, onLanguageChange, onHome, t }: HeaderProps) {
           approxmate
         </span>
       </a>
-      <label className="sr-only" htmlFor="language-select">
-        {t.language}
-      </label>
-      <select
-        id="language-select"
-        value={lang}
-        onChange={(event) => onLanguageChange(event.target.value as Lang)}
-        className="min-h-8 rounded-full border-0 bg-surface-subtle px-2.5 text-[11px] font-semibold uppercase text-content-secondary outline-none focus-visible:ring-2 focus-visible:ring-primary"
-      >
-        <option value="en">EN</option>
-        <option value="pl">PL</option>
-        <option value="ua">UA</option>
-      </select>
+
+      <nav className="hidden items-center gap-6 md:flex">
+        {navItems.map((item) => (
+          <a
+            key={item.id}
+            href={item.href}
+            className={`text-sm font-medium transition-opacity hover:opacity-75 ${
+              activePage === item.id
+                ? "border-b-2 border-primary text-content"
+                : "text-content-secondary"
+            }`}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <div className="flex items-center gap-4 md:gap-6">
+        <label className="sr-only" htmlFor="language-select">
+          {t.language}
+        </label>
+        <select
+          id="language-select"
+          value={lang}
+          onChange={(event) => onLanguageChange(event.target.value as Lang)}
+          className="min-h-8 rounded-full border-0 bg-surface-subtle px-2.5 text-[11px] font-semibold uppercase text-content-secondary outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <option value="en">EN</option>
+          <option value="pl">PL</option>
+          <option value="ua">UA</option>
+        </select>
+
+        <button
+          className="flex size-9 items-center justify-center rounded-full bg-content hover:opacity-75 transition-opacity"
+          aria-label="Toggle dark mode"
+        >
+          <span className="text-content-inverse text-lg">🌙</span>
+        </button>
+      </div>
     </header>
   )
 }

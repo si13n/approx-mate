@@ -1,17 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { AppShell } from "./components/AppShell"
 import { Footer } from "./components/Footer"
 import { Header } from "./components/Header"
-import { TrustStrip } from "./components/TrustStrip"
+import { JobOfferInputBar } from "./components/JobOfferInputBar"
 import { CalculatorWorkspace } from "./components/calculator/CalculatorWorkspace"
 import type { QuickScenario } from "./components/calculator/TargetPanel"
-import { ComparisonPage } from "./components/comparison/ComparisonPage"
 import { TaxProfileModal } from "./components/tax-profile/TaxProfileModal"
-import {
-  createAnalysisComparisonOffers,
-  createCalculatorComparisonOffers,
-} from "./features/job-xray/comparisonPrefill"
-import type { AnalyzedOffer, JobAnalysis } from "./features/job-xray/types"
 import { translations } from "./i18n/translations"
 import {
   trackCalculatorUsed,
@@ -21,9 +15,6 @@ import {
   trackPageView,
   trackQuickScenarioClick,
   trackRecruiterMessageCopy,
-  trackOfferTabClosed,
-  trackOfferTabOpened,
-  trackOfferCompareClicked,
   trackTaxProfileOpen,
 } from "./lib/analytics"
 import { formatRateDate, useExchangeRates } from "./lib/exchangeRates"
@@ -36,7 +27,6 @@ import {
 } from "./lib/taxCalculations"
 import { useTaxProfile } from "./lib/useTaxProfile"
 import type { Currency, InputType, Lang } from "./types"
-import type { Offer } from "./components/comparison/compareCalculations"
 
 export default function App() {
   const [lang, setLang] = useState<Lang>("en")
@@ -46,11 +36,6 @@ export default function App() {
   const [sliderValue, setSliderValue] = useState(5000)
   const [copied, setCopied] = useState(false)
   const [taxProfileOpen, setTaxProfileOpen] = useState(false)
-  const [showComparison, setShowComparison] = useState(false)
-  const [activeTab, setActiveTab] = useState("calculator")
-  const [analyzedOffers, setAnalyzedOffers] = useState<AnalyzedOffer[]>([])
-  const [comparisonOffers, setComparisonOffers] = useState<Offer[]>()
-  const offerSequence = useRef(0)
   const { rates, effectiveDate, isFallback } = useExchangeRates()
   const { profile, updateProfile, isLoaded } = useTaxProfile()
   const t = translations[lang]
@@ -164,41 +149,6 @@ export default function App() {
     }
   }
 
-  const target = { amount, currency, inputType }
-
-  const addAnalyzedOffer = (analysis: JobAnalysis, originalInput: string) => {
-    offerSequence.current += 1
-    const id = `offer-${offerSequence.current}`
-    const normalizedAnalysis = { ...analysis, id }
-    setAnalyzedOffers((current) => [
-      ...current,
-      {
-        id,
-        analysis: normalizedAnalysis,
-        sourceText: analysis.source.kind === "text" ? originalInput : null,
-      },
-    ])
-    setActiveTab(id)
-    trackOfferTabOpened()
-  }
-
-  const closeAnalyzedOffer = (id: string) => {
-    setAnalyzedOffers((current) => current.filter((offer) => offer.id !== id))
-    if (activeTab === id) setActiveTab("calculator")
-    trackOfferTabClosed()
-  }
-
-  const openCalculatorComparison = () => {
-    setComparisonOffers(createCalculatorComparisonOffers(target))
-    setShowComparison(true)
-  }
-
-  const openOfferComparison = () => {
-    setComparisonOffers(createAnalysisComparisonOffers(analyzedOffers, target))
-    setShowComparison(true)
-    trackOfferCompareClicked()
-  }
-
   return (
     <div className="min-h-screen bg-page text-content">
       <div data-dialog-background>
@@ -206,9 +156,8 @@ export default function App() {
           <Header
             lang={lang}
             t={t}
+            activePage="calculator"
             onHome={() => {
-              setShowComparison(false)
-              setActiveTab("calculator")
               window.scrollTo({ top: 0, behavior: "instant" })
             }}
             onLanguageChange={(nextLang) => {
@@ -217,52 +166,43 @@ export default function App() {
             }}
           />
 
-          {showComparison ? (
-            <ComparisonPage
-              onBack={() => setShowComparison(false)}
-              rates={rates}
-              profile={profile}
-              t={t}
-              initialOffers={comparisonOffers}
-            />
-          ) : results ? (
-            <CalculatorWorkspace
-              rawAmount={rawAmount}
-              amount={amount}
-              currency={currency}
-              inputType={inputType}
-              sliderValue={sliderValue}
-              profile={profile}
-              quickScenarios={quickScenarios}
-              t={t}
-              rates={rates}
-              results={results}
-              hoursPerMonth={hoursPerMonth}
-              recruiterMessage={recruiterMessage}
-              copied={copied}
-              offers={analyzedOffers}
-              activeTab={activeTab}
-              onAmountChange={setRawAmount}
-              onSliderChange={setSliderValue}
-              onCurrencyChange={(nextCurrency) => {
-                setCurrency(nextCurrency)
-                trackCurrencyChanged(nextCurrency)
-              }}
-              onInputTypeChange={(nextInputType) => {
-                setInputType(nextInputType)
-                trackModeChanged(nextInputType)
-              }}
-              onQuickScenario={applyScenario}
-              onEditProfile={openTaxProfile}
-              onCompare={openCalculatorComparison}
-              onAnalyzeOffer={addAnalyzedOffer}
-              onSelectTab={setActiveTab}
-              onCloseOffer={closeAnalyzedOffer}
-              onCompareOffer={openOfferComparison}
-              onCopy={() => {
-                void copyRecruiterMessage()
-              }}
-            />
+          {results ? (
+            <>
+              <CalculatorWorkspace
+                rawAmount={rawAmount}
+                amount={amount}
+                currency={currency}
+                inputType={inputType}
+                sliderValue={sliderValue}
+                profile={profile}
+                quickScenarios={quickScenarios}
+                t={t}
+                rates={rates}
+                results={results}
+                hoursPerMonth={hoursPerMonth}
+                recruiterMessage={recruiterMessage}
+                copied={copied}
+                onAmountChange={setRawAmount}
+                onSliderChange={setSliderValue}
+                onCurrencyChange={(nextCurrency) => {
+                  setCurrency(nextCurrency)
+                  trackCurrencyChanged(nextCurrency)
+                }}
+                onInputTypeChange={(nextInputType) => {
+                  setInputType(nextInputType)
+                  trackModeChanged(nextInputType)
+                }}
+                onQuickScenario={applyScenario}
+                onEditProfile={openTaxProfile}
+                onCompare={() => {
+                  window.location.href = "/compare"
+                }}
+                onCopy={() => {
+                  void copyRecruiterMessage()
+                }}
+              />
+              <JobOfferInputBar t={t} />
+            </>
           ) : (
             <main
               className="flex min-h-[60vh] items-center justify-center"
@@ -277,14 +217,6 @@ export default function App() {
             </main>
           )}
 
-          <TrustStrip
-            t={t}
-            rateLabel={formatRateDate(
-              effectiveDate,
-              lang === "pl" ? "pl-PL" : lang === "ua" ? "uk-UA" : "en-US",
-            )}
-            isFallback={isFallback}
-          />
           <Footer t={t} />
         </AppShell>
       </div>
