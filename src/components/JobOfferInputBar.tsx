@@ -24,33 +24,35 @@ export function JobOfferInputBar({ t }: JobOfferInputBarProps) {
 
   return (
     <section
-      className="mt-6 flex max-w-3xl flex-col gap-3 desktop:mt-8 desktop:gap-4"
+      className="flex flex-col gap-2 desktop:gap-2"
       aria-labelledby="job-offer-label"
     >
       <label
         id="job-offer-label"
-        className="text-xs font-medium text-content-secondary tablet:text-sm"
+        className="font-normal text-[14px] text-[#575e7a]"
       >
         Have a job offer?
       </label>
-      <div className="flex items-center gap-2 rounded-2xl border border-border-subtle bg-surface px-4 py-3 tablet:gap-3 tablet:px-4 tablet:py-3">
-        <img
-          src={iconLink}
-          alt=""
-          className="size-5 shrink-0 tablet:size-5"
-          aria-hidden="true"
-        />
-        <input
-          type="text"
-          value={jobOfferInput}
-          onChange={(e) => setJobOfferInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Paste a vacancy link or job description"
-          className="min-w-0 flex-1 bg-transparent text-sm text-content placeholder-content-secondary outline-none tablet:text-base"
-        />
+      <div className="flex h-[59px] items-center justify-between gap-3 rounded-[16px] border border-[#dbe0ed] bg-white px-4 py-2">
+        <div className="flex items-center gap-3">
+          <img
+            src={iconLink}
+            alt=""
+            className="size-[22px] shrink-0"
+            aria-hidden="true"
+          />
+          <input
+            type="text"
+            value={jobOfferInput}
+            onChange={(e) => setJobOfferInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Paste a vacancy link or job description"
+            className="min-w-0 flex-1 bg-transparent font-normal text-[15px] text-[#8c96b2] outline-none placeholder-[#8c96b2]"
+          />
+        </div>
         <button
           onClick={handleAnalyze}
-          className="shrink-0 rounded-xl bg-action-primary px-4 py-2 font-semibold text-content-inverse hover:opacity-90 transition-opacity tablet:px-6 tablet:py-2.5"
+          className="shrink-0 rounded-[12px] bg-[#090a12] px-6 py-2.5 font-semibold text-[15px] text-white shadow-[0px_4px_12px_-4px_rgba(0,0,0,0.12)] hover:opacity-90 transition-opacity"
         >
           Analyze
         </button>

@@ -152,20 +152,20 @@ export default function App() {
   return (
     <div className="min-h-screen bg-page text-content">
       <div data-dialog-background>
-        <AppShell>
-          <Header
-            lang={lang}
-            t={t}
-            activePage="calculator"
-            onHome={() => {
-              window.scrollTo({ top: 0, behavior: "instant" })
-            }}
-            onLanguageChange={(nextLang) => {
-              setLang(nextLang)
-              trackLanguageChanged(nextLang)
-            }}
-          />
+        <Header
+          lang={lang}
+          t={t}
+          activePage="calculator"
+          onHome={() => {
+            window.scrollTo({ top: 0, behavior: "instant" })
+          }}
+          onLanguageChange={(nextLang) => {
+            setLang(nextLang)
+            trackLanguageChanged(nextLang)
+          }}
+        />
 
+        <AppShell>
           {results ? (
             <>
               <CalculatorWorkspace
