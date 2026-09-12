@@ -125,7 +125,7 @@ async function fetchPublicPage(
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
         headers: {
           Accept: "text/html,application/xhtml+xml;q=0.9",
-          "User-Agent": "ApproxMate-Job-X-Ray/1.0 (+https://approxmate.me)",
+          "User-Agent": "ApproxMate-Job-X-Ray (+https://approxmate.me)",
         },
       })
     } catch {
