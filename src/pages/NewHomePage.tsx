@@ -178,9 +178,7 @@ export function NewHomePage() {
           </div>
         </main>
 
-        <div className="home-footer">
-          <Footer t={t} />
-        </div>
+        <Footer t={t} />
       </div>
     </div>
   )
