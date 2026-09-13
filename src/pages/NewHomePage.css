@@ -138,9 +138,10 @@
 .home-slider__track,
 .home-slider__active-track {
   position: absolute;
-  top: 9px;
+  top: 50%;
   left: 0;
   height: 5px;
+  transform: translateY(-50%);
   border-radius: 999px;
 }
 
@@ -391,7 +392,7 @@ input[type="range"].new-home-salary-slider::-moz-range-thumb {
 
   .home-slider__track,
   .home-slider__active-track {
-    top: 10px;
+    top: 50%;
     height: 6px;
   }
 
