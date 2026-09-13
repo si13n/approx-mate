@@ -21,12 +21,12 @@ if (pathname === "/") {
   page = <App />
 } else if (pathname === "/job-xray") {
   page = <JobXRayPage />
-} else if (
-  pathname === "/compare" ||
-  pathname === "/how-it-works" ||
-  pathname === "/about"
-) {
-  page = <ComingSoonPage />
+} else if (pathname === "/compare") {
+  page = <ComingSoonPage activePage="compare" />
+} else if (pathname === "/how-it-works") {
+  page = <ComingSoonPage activePage="how-it-works" />
+} else if (pathname === "/about") {
+  page = <ComingSoonPage activePage="about" />
 } else {
   page = <App />
 }
