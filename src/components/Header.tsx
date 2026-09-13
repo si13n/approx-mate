@@ -2,7 +2,6 @@ import { useState } from "react"
 import type { Lang } from "../types"
 import type { Translation } from "../i18n/translations"
 import logoMark from "../assets/new-homepage/logo-mark.svg"
-import iconMoon from "../assets/new-homepage/icon-moon.svg"
 
 interface HeaderProps {
   lang: Lang
@@ -29,7 +28,7 @@ export function Header({
   ]
 
   return (
-    <header className="relative z-30 flex h-14 w-full items-center justify-between bg-transparent px-4">
+    <header className="relative z-30 mx-auto mt-4 flex h-11 w-[calc(100%-48px)] max-w-[1296px] items-center justify-between bg-transparent desktop:mt-6 desktop:h-14 desktop:w-[calc(100%-144px)]">
       {/* Brand */}
       <a
         href="/"
@@ -45,26 +44,29 @@ export function Header({
           event.preventDefault()
           onHome()
         }}
-        className="flex items-center gap-3"
+        className="flex items-center gap-[9px] desktop:gap-3"
       >
         <img
           src={logoMark}
           alt="ApproxMate"
-          className="size-8 drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)]"
+          className="h-6 w-7 desktop:h-7 desktop:w-8"
         />
-        <span className="font-display text-[22px] font-extrabold tracking-[-0.8px] text-text-primary">
+        <span className="font-display text-[18px] font-extrabold leading-6 tracking-[-0.6px] text-text-primary desktop:text-[22px] desktop:leading-7 desktop:tracking-[-0.8px]">
           ApproxMate
         </span>
       </a>
 
       {/* Navigation */}
-      <nav className="hidden items-center gap-6 desktop:flex">
+      <nav className="hidden items-center gap-9 desktop:flex">
         {navItems.map((item) => (
           <a
             key={item.id}
             href={item.href}
-            className={`text-[14px] font-medium tracking-[-0.1px] underline decoration-dotted underline-offset-4 transition-colors ${
-              activePage === item.id ? "text-[#443b8f]" : "text-text-primary"
+            aria-current={activePage === item.id ? "page" : undefined}
+            className={`text-[14px] font-medium leading-5 tracking-[-0.1px] transition-colors hover:text-accent-purple ${
+              activePage === item.id
+                ? "text-accent-purple underline decoration-solid underline-offset-2"
+                : "text-text-primary no-underline"
             }`}
           >
             {item.label}
@@ -73,7 +75,7 @@ export function Header({
       </nav>
 
       {/* Header Actions */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-[14px] desktop:gap-6">
         <label className="sr-only" htmlFor="language-select">
           {t.language}
         </label>
@@ -89,12 +91,6 @@ export function Header({
         </select>
 
         <button
-          className="hidden size-9 items-center justify-center rounded-full bg-action-primary desktop:flex"
-          aria-label="Toggle dark mode"
-        >
-          <img src={iconMoon} alt="" className="size-[18px]" />
-        </button>
-        <button
           type="button"
           className="flex size-9 items-center justify-center rounded-full bg-action-primary desktop:hidden"
           aria-label="Open navigation"
@@ -109,7 +105,7 @@ export function Header({
       </div>
 
       {mobileOpen && (
-        <nav className="absolute right-4 top-14 flex min-w-52 flex-col gap-1 rounded-2xl border border-border-subtle bg-white p-2 shadow-[0_16px_40px_rgba(55,65,110,0.14)] desktop:hidden">
+        <nav className="absolute right-0 top-12 flex min-w-52 flex-col gap-1 rounded-2xl border border-border-subtle bg-white p-2 shadow-[0_16px_40px_rgba(55,65,110,0.14)] desktop:hidden">
           {navItems.map((item) => (
             <a
               key={item.id}

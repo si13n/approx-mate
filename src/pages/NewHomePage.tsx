@@ -1,58 +1,44 @@
-import { useState, useMemo, useRef } from "react"
-import { calculateB2BFromGross } from "../lib/taxCalculations"
+import { useMemo, useRef, useState } from "react"
 import { DEFAULT_TAX_PROFILE } from "../config/tax"
 import { Footer } from "../components/Footer"
 import { Header } from "../components/Header"
 import { Button } from "../components/ui/Button"
 import { translations } from "../i18n/translations"
 import { trackLanguageChanged } from "../lib/analytics"
+import { calculateB2BFromGross } from "../lib/taxCalculations"
 import type { Lang } from "../types"
 import "./NewHomePage.css"
-
-// SVG Asset imports
-import orbitBottomLeft from "../assets/new-homepage/orbit-bottom-left.svg"
-import orbitRight from "../assets/new-homepage/orbit-right.svg"
-import orbitTopLeft from "../assets/new-homepage/orbit-top-left.svg"
-import orbitPoint from "../assets/new-homepage/orbit-point.svg"
 
 function SalarySlider({
   sliderValue,
   onSliderChange,
-  isMobile,
 }: {
   sliderValue: number
-  onSliderChange: (val: number) => void
-  isMobile?: boolean
+  onSliderChange: (value: number) => void
 }) {
   const sliderMin = 5000
-  const sliderMax = isMobile ? 50000 : 100000
+  const sliderMax = 100000
   const activeTrackRef = useRef<HTMLDivElement>(null)
+
   const getTrackWidth = (value: number) => {
     const fraction = Math.min(
       1,
       Math.max(0, (value - sliderMin) / (sliderMax - sliderMin)),
     )
-    // The 26px thumb's center travels from 13px to (input width - 13px).
+
+    // Align the fill with the centre of the 26px mobile thumb.
     return `calc(${fraction * 100}% + ${13 - fraction * 26}px)`
   }
 
   return (
-    <div className="w-full flex flex-col gap-3">
-      <div className="relative" style={{ height: "32px" }}>
-        {/* Background track */}
-        <div className="absolute left-0 top-1/2 w-full h-1.5 -translate-y-1/2 rounded-full bg-[#DEE3ED]" />
-
-        {/* Gradient active track (sized to slider value) */}
+    <div className="home-slider">
+      <div className="home-slider__track-area">
+        <div className="home-slider__track" />
         <div
           ref={activeTrackRef}
-          className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full"
-          style={{
-            width: getTrackWidth(sliderValue),
-            background: "linear-gradient(to right, #7A45F9, #42A3FE)",
-          }}
+          className="home-slider__active-track"
+          style={{ width: getTrackWidth(sliderValue) }}
         />
-
-        {/* Native range input (transparent track, styled thumb via CSS) */}
         <input
           type="range"
           min={sliderMin}
@@ -60,144 +46,59 @@ function SalarySlider({
           step={100}
           value={sliderValue}
           aria-label="Monthly gross salary in PLN"
-          onChange={(e) => {
-            const value = e.currentTarget.valueAsNumber
-            // Keep the fill aligned immediately, before the parent recalculates.
+          onChange={(event) => {
+            const value = event.currentTarget.valueAsNumber
             if (activeTrackRef.current) {
               activeTrackRef.current.style.width = getTrackWidth(value)
             }
             onSliderChange(value)
           }}
-          className="new-home-salary-slider absolute left-0 top-0 w-full"
-          style={{ height: "32px" }}
+          className="new-home-salary-slider"
         />
       </div>
-
-      {/* Min/Max labels */}
-      <div
-        className="flex justify-between text-sm"
-        style={{ color: "#8c96b2" }}
-      >
+      <div className="home-slider__labels">
         <span>5 000</span>
-        <span>{isMobile ? "50 000+" : "100 000"}</span>
+        <span>100 000</span>
       </div>
     </div>
   )
 }
 
 export function NewHomePage() {
-  const [sliderValue, setSliderValue] = useState<number>(22000)
-  const [isMobile, setIsMobile] = useState<boolean>(
-    typeof window !== "undefined" ? window.innerWidth < 768 : false,
-  )
+  const [sliderValue, setSliderValue] = useState(22000)
   const [lang, setLang] = useState<Lang>("en")
   const t = translations[lang]
 
-  // Calculate B2B net income with 1000 PLN business cost deduction
   const result = useMemo(() => {
-    const calc = calculateB2BFromGross(sliderValue, DEFAULT_TAX_PROFILE)
-    const netAfterCosts = Math.max(0, calc.monthlyNet - 1000)
+    const calculation = calculateB2BFromGross(sliderValue, DEFAULT_TAX_PROFILE)
+
     return {
       gross: sliderValue,
-      net: calc.monthlyNet,
-      netAfterCosts,
+      netAfterCosts: Math.max(0, calculation.monthlyNet - 1000),
     }
   }, [sliderValue])
 
-  const formatAmount = (amount: number) => {
-    return Math.round(amount).toLocaleString("pl-PL")
-  }
-
-  const navigate = (path: string) => {
-    window.location.href = path
-  }
+  const formatAmount = (amount: number) =>
+    Math.round(amount).toLocaleString("pl-PL")
 
   return (
-    <div
-      className="w-screen relative overflow-hidden"
-      style={{ background: "#fdfdff" }}
-    >
-      {/* Background orbit decorations (absolute, behind everything) - clipped */}
-      <div className="absolute -left-[330px] top-[570px] w-[540px] h-[540px] pointer-events-none hidden md:block">
-        <img src={orbitBottomLeft} alt="" className="w-full h-full" />
+    <div className="home-page">
+      <div className="home-editorial home-editorial--left" aria-hidden="true">
+        <span>Numbers</span>
+        <span>for a</span>
+        <span>brighter</span>
+        <span>tomorrow</span>
+        <span>·</span>
       </div>
-      <div className="absolute -left-[260px] -top-[345px] w-[620px] h-[620px] pointer-events-none hidden md:block">
-        <img src={orbitTopLeft} alt="" className="w-full h-full" />
-      </div>
-      <div className="absolute right-[-62px] top-[330px] w-[520px] h-[520px] pointer-events-none hidden md:block">
-        <img src={orbitRight} alt="" className="w-full h-full" />
-      </div>
-
-      {/* Orbit points */}
-      <div className="absolute left-[122px] top-[634px] w-2 h-2 pointer-events-none">
-        <img src={orbitPoint} alt="" className="w-full h-full" />
-      </div>
-      <div className="absolute right-[122px] top-[565px] w-2 h-2 pointer-events-none">
-        <img src={orbitPoint} alt="" className="w-full h-full" />
-      </div>
-      <div className="absolute left-[244px] top-[194px] w-2 h-2 pointer-events-none">
-        <img src={orbitPoint} alt="" className="w-full h-full" />
+      <div className="home-editorial home-editorial--right" aria-hidden="true">
+        <span>Better</span>
+        <span>jobs</span>
+        <span>brighter</span>
+        <span>futures</span>
+        <span>·</span>
       </div>
 
-      {/* Editorial text labels (decorative, behind content) */}
-      <div
-        className="absolute left-[58px] top-[338px] w-40 text-center pointer-events-none hidden md:block"
-        style={{
-          fontSize: "8px",
-          fontFamily: "Inter, sans-serif",
-          fontWeight: 500,
-          letterSpacing: "4.5px",
-          color: "rgba(143, 153, 209, 0.55)",
-          lineHeight: "22px",
-          textTransform: "uppercase",
-        }}
-      >
-        <div>Numbers</div>
-        <div>for a</div>
-        <div>brighter</div>
-        <div>tomorrow</div>
-        <div>·</div>
-      </div>
-
-      <div
-        className="absolute right-[30px] top-[130px] w-40 text-center pointer-events-none hidden md:block"
-        style={{
-          fontSize: "8px",
-          fontFamily: "Inter, sans-serif",
-          fontWeight: 500,
-          letterSpacing: "4.5px",
-          color: "rgba(143, 153, 209, 0.55)",
-          lineHeight: "22px",
-          textTransform: "uppercase",
-        }}
-      >
-        <div>Better</div>
-        <div>jobs</div>
-        <div>brighter</div>
-        <div>futures</div>
-        <div>·</div>
-      </div>
-
-      <div
-        className="absolute right-[30px] bottom-[154px] w-40 text-center pointer-events-none hidden md:block"
-        style={{
-          fontSize: "8px",
-          fontFamily: "Inter, sans-serif",
-          fontWeight: 500,
-          letterSpacing: "4.5px",
-          color: "rgba(143, 153, 209, 0.55)",
-          lineHeight: "22px",
-          textTransform: "uppercase",
-        }}
-      >
-        <div>Same</div>
-        <div>people</div>
-        <div>brighter</div>
-        <div>choices</div>
-        <div>·</div>
-      </div>
-
-      <div className="relative z-10 flex min-h-screen flex-col">
+      <div className="home-page__content">
         <Header
           lang={lang}
           t={t}
@@ -208,135 +109,78 @@ export function NewHomePage() {
           }}
         />
 
-        {/* Main content container */}
-        <div className="flex w-full flex-1 flex-col gap-2 overflow-x-hidden px-4 py-1 md:gap-4">
-          {/* Hero section */}
-          <div className="text-center py-2 max-w-5xl mx-auto">
-            <h1
-              style={{
-                fontSize: "clamp(32px, 8vw, 76px)",
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 800,
-                color: "#090a12",
-                lineHeight: "1.1",
-                marginBottom: "8px",
-              }}
-            >
-              Know what the offer
-              <br />
-              is really worth.
+        <main className="home-main">
+          <section className="home-hero">
+            <h1 className="home-hero__title">
+              <span className="home-hero__title-desktop">
+                Know what the offer
+                <br />
+                is really worth.
+              </span>
+              <span className="home-hero__title-mobile">
+                Know what the
+                <br />
+                offer is really
+                <br />
+                worth.
+              </span>
             </h1>
-            <p
-              style={{
-                fontSize: "19px",
-                fontFamily: "Inter, sans-serif",
-                fontWeight: 400,
-                color: "#575e7a",
-                lineHeight: "28px",
-              }}
-            >
-              Enter your offer and instantly see what you'll really take home in
-              Poland.
+            <p className="home-hero__subtitle">
+              Enter your offer and instantly see what you&apos;ll really take
+              home in Poland.
             </p>
-          </div>
+          </section>
 
-          {/* Calculator demo section */}
-          <div className="flex justify-center py-1">
-            <div className="w-full max-w-3xl px-2 flex flex-col gap-2 md:gap-3">
-              {/* Amount display */}
-              <div className="text-center">
-                <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-4 mb-4 md:mb-6">
-                  <span
-                    style={{
-                      fontSize: "clamp(36px, 6vw, 68px)",
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 800,
-                      color: "#090a12",
-                    }}
-                  >
-                    {formatAmount(result.gross)}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "clamp(16px, 3vw, 28px)",
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 400,
-                      color: "#575e7a",
-                    }}
-                  >
-                    PLN / month
-                  </span>
-                </div>
-
-                {/* Salary slider */}
-                <div className="px-4 md:px-8 py-2">
-                  <SalarySlider
-                    sliderValue={sliderValue}
-                    onSliderChange={setSliderValue}
-                    isMobile={isMobile}
-                  />
-                </div>
-
-                {/* Result section */}
-                <div className="mt-2 space-y-1">
-                  <div className="flex flex-col md:flex-row items-baseline justify-center gap-2 md:gap-3 flex-wrap">
-                    <span
-                      style={{
-                        fontSize: "clamp(24px, 4vw, 40px)",
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: 600,
-                        color: "#090a12",
-                      }}
-                    >
-                      You keep
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "clamp(32px, 6vw, 56px)",
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: 800,
-                        color: "#090a12",
-                      }}
-                    >
-                      {formatAmount(result.netAfterCosts)}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "clamp(18px, 3vw, 28px)",
-                        fontFamily: "Inter, sans-serif",
-                        fontWeight: 400,
-                        color: "#575e7a",
-                      }}
-                    >
-                      PLN
-                    </span>
-                  </div>
-
-                  <p
-                    style={{
-                      fontSize: "14px",
-                      fontFamily: "Inter, sans-serif",
-                      fontWeight: 400,
-                      color: "#8c96b2",
-                    }}
-                  >
-                    B2B · Ryczałt 12% · Poland · 2026
-                  </p>
-
-                  <Button
-                    variant="brand"
-                    className="mt-2 h-[52px] w-[186px] rounded-[8px] px-3 text-base underline decoration-dotted underline-offset-4"
-                    style={{ fontWeight: 400 }}
-                    onClick={() => navigate("/calculator")}
-                  >
-                    Calculate in detail →
-                  </Button>
-                </div>
+          <div className="home-calculator-region">
+            <section
+              className="home-calculator-controls"
+              aria-label="Salary calculator preview"
+            >
+              <div className="home-amount">
+                <span className="home-amount__value">
+                  {formatAmount(result.gross)}
+                </span>
+                <span className="home-amount__unit">PLN / month</span>
               </div>
-            </div>
+
+              <SalarySlider
+                sliderValue={sliderValue}
+                onSliderChange={setSliderValue}
+              />
+            </section>
+
+            <section className="home-result" aria-live="polite">
+              <div className="home-result__main">
+                <span className="home-result__lead">You keep</span>
+                <span className="home-result__value">
+                  {formatAmount(result.netAfterCosts)}
+                </span>
+                <span className="home-result__currency">PLN</span>
+              </div>
+              <p className="home-result__assumptions">
+                B2B · Ryczałt 12% · Poland · 2026
+              </p>
+              <Button
+                variant="brand"
+                className="home-result__cta"
+                style={{
+                  background:
+                    "linear-gradient(100deg, #7a45fa 0%, #40abff 100%)",
+                  fontWeight: 500,
+                }}
+                onClick={() => {
+                  window.location.href = "/calculator"
+                }}
+              >
+                Calculate in detail →
+              </Button>
+            </section>
           </div>
+        </main>
+
+        <div className="home-footer">
+          <Footer t={t} />
         </div>
-        <Footer t={t} />
       </div>
     </div>
   )
