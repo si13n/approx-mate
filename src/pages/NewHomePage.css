@@ -9,7 +9,8 @@
   position: relative;
   z-index: 10;
   display: flex;
-  min-height: 100%;
+  min-height: max(100vh, 713px);
+  padding-bottom: 25px;
   flex-direction: column;
 }
 
@@ -29,6 +30,7 @@
 
 .home-main {
   display: flex;
+  flex: 1 0 auto;
   width: 100%;
   margin-top: 32px;
   flex-direction: column;
@@ -295,6 +297,11 @@ input[type="range"].new-home-salary-slider::-moz-range-thumb {
 @media (min-width: 75rem) {
   .home-page {
     min-height: max(100vh, 938px);
+  }
+
+  .home-page__content {
+    min-height: max(100vh, 938px);
+    padding-bottom: 45px;
   }
 
   .home-editorial {

@@ -114,9 +114,12 @@ export interface Translation {
   standardUop: string
   commuterUop: string
   jobXRay: string
+  jobXRayHeadline: string
+  jobXRayHeadlineShort: string
   analyzeAnyVacancy: string
   vacancyPlaceholder: string
   analyzeOffer: string
+  analyzeOfferShort: string
   analyzingOffer: string
   jobAnalysisLimit: string
   jobAnalysisInvalid: string
@@ -269,9 +272,12 @@ const en: Translation = {
   standardUop: "Standard UoP",
   commuterUop: "Commuter UoP",
   jobXRay: "JOB X-RAY",
+  jobXRayHeadline: "See the whole offer at a glance.",
+  jobXRayHeadlineShort: "See the whole offer.",
   analyzeAnyVacancy: "Analyze any vacancy",
   vacancyPlaceholder: "Paste a link or job text",
   analyzeOffer: "Analyze offer",
+  analyzeOfferShort: "Analyze",
   analyzingOffer: "Analyzing…",
   jobAnalysisLimit: "Maximum of 3 offers reached",
   jobAnalysisInvalid: "Paste a vacancy link or a longer job description.",
@@ -425,9 +431,12 @@ const pl: Translation = {
   standardUop: "Standardowa UoP",
   commuterUop: "UoP z dojazdem",
   jobXRay: "PRZEŚWIETL OFERTĘ",
+  jobXRayHeadline: "Zobacz całą ofertę na pierwszy rzut oka.",
+  jobXRayHeadlineShort: "Zobacz całą ofertę.",
   analyzeAnyVacancy: "Przeanalizuj dowolną ofertę",
   vacancyPlaceholder: "Wklej link lub treść oferty",
   analyzeOffer: "Analizuj ofertę",
+  analyzeOfferShort: "Analizuj",
   analyzingOffer: "Analizowanie…",
   jobAnalysisLimit: "Osiągnięto limit 3 ofert",
   jobAnalysisInvalid: "Wklej link do oferty lub dłuższy opis stanowiska.",
@@ -580,9 +589,12 @@ const ua: Translation = {
   standardUop: "Стандартна UoP",
   commuterUop: "UoP з витратами на проїзд",
   jobXRay: "АНАЛІЗ ВАКАНСІЇ",
+  jobXRayHeadline: "Побачте всю пропозицію одним поглядом.",
+  jobXRayHeadlineShort: "Побачте всю пропозицію.",
   analyzeAnyVacancy: "Проаналізуйте будь-яку вакансію",
   vacancyPlaceholder: "Вставте посилання або текст вакансії",
   analyzeOffer: "Аналізувати пропозицію",
+  analyzeOfferShort: "Аналіз",
   analyzingOffer: "Аналізуємо…",
   jobAnalysisLimit: "Досягнуто ліміт у 3 пропозиції",
   jobAnalysisInvalid: "Вставте посилання або довший опис вакансії.",

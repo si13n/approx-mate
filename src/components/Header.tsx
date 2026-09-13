@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { Lang } from "../types"
 import type { Translation } from "../i18n/translations"
 import logoMark from "../assets/new-homepage/logo-mark.svg"
@@ -19,6 +19,8 @@ export function Header({
   activePage,
 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileMenuRef = useRef<HTMLElement>(null)
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const navItems = [
     { href: "/calculator", label: "Calculator", id: "calculator" },
     { href: "/job-xray", label: "Job X-RAY", id: "job-xray" },
@@ -26,6 +28,37 @@ export function Header({
     { href: "/how-it-works", label: "How it works", id: "how-it-works" },
     { href: "/about", label: "About", id: "about" },
   ]
+
+  useEffect(() => {
+    if (!mobileOpen) return
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      const target = event.target
+      if (!(target instanceof Node)) return
+      if (
+        mobileMenuRef.current?.contains(target) ||
+        mobileMenuButtonRef.current?.contains(target)
+      )
+        return
+
+      setMobileOpen(false)
+    }
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false)
+        mobileMenuButtonRef.current?.focus()
+      }
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsideClick)
+    document.addEventListener("keydown", closeOnEscape)
+
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick)
+      document.removeEventListener("keydown", closeOnEscape)
+    }
+  }, [mobileOpen])
 
   return (
     <header className="relative z-30 mx-auto mt-4 flex h-11 w-[calc(100%-48px)] max-w-[1296px] items-center justify-between bg-transparent desktop:mt-6 desktop:h-14 desktop:w-[calc(100%-144px)]">
@@ -91,10 +124,12 @@ export function Header({
         </select>
 
         <button
+          ref={mobileMenuButtonRef}
           type="button"
           className="flex size-9 items-center justify-center rounded-full bg-action-primary desktop:hidden"
-          aria-label="Open navigation"
+          aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
           onClick={() => setMobileOpen((open) => !open)}
         >
           <span className="flex w-3.5 flex-col gap-1" aria-hidden="true">
@@ -105,7 +140,11 @@ export function Header({
       </div>
 
       {mobileOpen && (
-        <nav className="absolute right-0 top-12 flex min-w-52 flex-col gap-1 rounded-2xl border border-border-subtle bg-white p-2 shadow-[0_16px_40px_rgba(55,65,110,0.14)] desktop:hidden">
+        <nav
+          ref={mobileMenuRef}
+          id="mobile-navigation"
+          className="absolute right-0 top-12 flex min-w-52 flex-col gap-1 rounded-2xl border border-border-subtle bg-white p-2 shadow-[0_16px_40px_rgba(55,65,110,0.14)] desktop:hidden"
+        >
           {navItems.map((item) => (
             <a
               key={item.id}
