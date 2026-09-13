@@ -4,6 +4,8 @@ import App from "./App"
 import NewHomePage from "./pages/NewHomePage"
 import { JobXRayPage } from "./pages/JobXRayPage"
 import { ComingSoonPage } from "./components/ComingSoonPage"
+import { AboutPage } from "./pages/AboutPage"
+import { HowItWorksPage } from "./pages/HowItWorksPage"
 import "./index.css"
 
 // Route based on pathname
@@ -24,9 +26,9 @@ if (pathname === "/") {
 } else if (pathname === "/compare") {
   page = <ComingSoonPage activePage="compare" />
 } else if (pathname === "/how-it-works") {
-  page = <ComingSoonPage activePage="how-it-works" />
+  page = <HowItWorksPage />
 } else if (pathname === "/about") {
-  page = <ComingSoonPage activePage="about" />
+  page = <AboutPage />
 } else {
   page = <App />
 }

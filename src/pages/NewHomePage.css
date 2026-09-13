@@ -290,11 +290,6 @@ input[type="range"].new-home-salary-slider::-moz-range-thumb {
   white-space: nowrap;
 }
 
-.home-footer {
-  width: 100%;
-  margin-top: 32px;
-}
-
 @media (min-width: 75rem) {
   .home-page {
     min-height: max(100vh, 938px);
@@ -466,9 +461,5 @@ input[type="range"].new-home-salary-slider::-moz-range-thumb {
     height: 52px;
     font-size: 16px;
     line-height: 24px;
-  }
-
-  .home-footer {
-    margin-top: 40px;
   }
 }
