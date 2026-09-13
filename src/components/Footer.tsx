@@ -3,12 +3,12 @@ import type { Translation } from "../i18n/translations"
 
 export function Footer({ t }: { t: Translation }) {
   return (
-    <footer className="flex min-h-[52px] w-full items-center justify-between px-8 py-2 text-[12px] font-medium text-text-muted">
+    <footer className="mx-auto flex h-16 w-[calc(100%-48px)] max-w-[1248px] items-center justify-center gap-6 text-[11px] font-normal leading-4 text-text-muted desktop:w-[calc(100%-192px)] desktop:justify-between">
       <span>ApproxMate 2026</span>
       <a
         href="mailto:si13n@yahoo.com"
         onClick={trackFeedbackClick}
-        className="underline decoration-dotted underline-offset-2 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-primary"
+        className="text-text-secondary underline decoration-dotted underline-offset-2 hover:text-text-primary focus-visible:outline-2 focus-visible:outline-primary"
       >
         {t.sendFeedback}
       </a>

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import { AppShell } from "./components/AppShell"
 import { Footer } from "./components/Footer"
 import { Header } from "./components/Header"
-import { PageDecorations } from "./components/PageDecorations"
 import { CalculatorWorkspace } from "./components/calculator/CalculatorWorkspace"
 import type { QuickScenario } from "./components/calculator/TargetPanel"
 import { TaxProfileModal } from "./components/tax-profile/TaxProfileModal"
@@ -144,7 +143,6 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-page text-content">
-      <PageDecorations />
       <div
         className="relative z-10 flex min-h-screen flex-col"
         data-dialog-background
