@@ -281,11 +281,11 @@ input[type="range"].new-home-salary-slider::-moz-range-thumb {
 
 .home-result__cta {
   min-height: 0;
-  width: 146px;
-  height: 36px;
-  padding: 0 12px;
-  border-radius: 8px;
-  font-size: 12px;
+  width: 158px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 13px;
   line-height: 18px;
   white-space: nowrap;
 }
