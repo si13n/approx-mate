@@ -19,5 +19,11 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "worker", "worker-configuration.d.ts", "vite.config.ts"]
+  "include": [
+    "src", 
+    "worker", 
+    "e2e",
+    "worker-configuration.d.ts", 
+    "vite.config.ts",
+    "playwright.config.ts"  ]
 }
