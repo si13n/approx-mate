@@ -22,3 +22,8 @@ out
 .env*.local
 .eslintcache
 .stylelintcache
+
+# Playwright generates reports, screenshots, videos, and traces in these folders.
+playwright-report/
+test-results/
+blob-report/
