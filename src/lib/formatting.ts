@@ -1,9 +1,9 @@
 import { Currency } from "../types";
 import { DEFAULT_EXCHANGE_RATES } from "../config/exchangeRates";
 
-export const RATES: Record<string, number> = DEFAULT_EXCHANGE_RATES;
+const RATES: Record<string, number> = DEFAULT_EXCHANGE_RATES;
 export const SYM: Record<Currency, string> = { USD: "$", EUR: "€", PLN: "" };
-export const SUF: Record<Currency, string> = { USD: "", EUR: "", PLN: " PLN" };
+const SUF: Record<Currency, string> = { USD: "", EUR: "", PLN: " PLN" };
 
 export function fmt(amount: number, currency: Currency, dec = 0): string {
   const n = Math.round(amount * 10 ** dec) / 10 ** dec;

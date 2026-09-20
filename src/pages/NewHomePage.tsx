@@ -64,7 +64,7 @@ function SalarySlider({
   )
 }
 
-export function NewHomePage() {
+function NewHomePage() {
   const [sliderValue, setSliderValue] = useState(22000)
   const [lang, setLang] = useState<Lang>("en")
   const t = translations[lang]

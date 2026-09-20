@@ -41,12 +41,6 @@ export interface JobAnalysis {
   warnings: string[]
 }
 
-export interface AnalyzedOffer {
-  id: string
-  analysis: JobAnalysis
-  sourceText: string | null
-}
-
 export interface JobDocumentMetadata {
   title?: string | null
   description?: string | null
@@ -63,10 +57,3 @@ export interface ParseJobInput {
 }
 
 export type JobAnalysisErrorCode = "INVALID_INPUT" | "FETCH_BLOCKED" | "UNSUPPORTED_CONTENT" | "CONTENT_TOO_LARGE" | "NO_JOB_CONTENT" | "PARSE_FAILED"
-
-export interface JobAnalysisErrorResponse {
-  error: {
-    code: JobAnalysisErrorCode
-    message: string
-  }
-}

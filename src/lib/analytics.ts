@@ -20,10 +20,6 @@ export function trackCurrencyChanged(currency: "USD" | "EUR" | "PLN"): void {
   gtag("event", "currency_changed", { currency })
 }
 
-export function trackHoursChanged(): void {
-  gtag("event", "hours_changed")
-}
-
 export function trackLanguageChanged(language: "en" | "pl" | "ua"): void {
   const langMap = { en: "EN", pl: "PL", ua: "UA" }
   gtag("event", "language_changed", { language: langMap[language] })
@@ -53,10 +49,6 @@ export function trackB2BZUSChanged(zus: string): void {
   gtag("event", "b2b_zus_changed", { zus })
 }
 
-export function trackB2BSicknessChanged(enabled: boolean): void {
-  gtag("event", "b2b_sickness_changed", { enabled })
-}
-
 export function trackUoPKUPChanged(kupType: string): void {
   gtag("event", "uop_kup_changed", { kup_type: kupType })
 }
@@ -67,36 +59,6 @@ export function trackUoPPPKChanged(enabled: boolean): void {
 
 export function trackTaxProfileReset(): void {
   gtag("event", "tax_profile_reset")
-}
-
-export function trackJobAnalysisStarted(sourceType: "url" | "text"): void {
-  gtag("event", "job_analysis_started", { source_type: sourceType })
-}
-
-export function trackJobAnalysisCompleted(
-  sourceType: "url" | "text",
-  extractedFields: number,
-): void {
-  gtag("event", "job_analysis_completed", {
-    source_type: sourceType,
-    extracted_fields: extractedFields,
-  })
-}
-
-export function trackJobAnalysisFailed(errorCode: string): void {
-  gtag("event", "job_analysis_failed", { error_code: errorCode })
-}
-
-export function trackOfferTabOpened(): void {
-  gtag("event", "offer_tab_opened")
-}
-
-export function trackOfferTabClosed(): void {
-  gtag("event", "offer_tab_closed")
-}
-
-export function trackOfferCompareClicked(): void {
-  gtag("event", "offer_compare_clicked")
 }
 
 declare global {

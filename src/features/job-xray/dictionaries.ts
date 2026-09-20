@@ -46,7 +46,7 @@ export const sectionAliases: Record<JobSection, string[]> = {
   ],
 }
 
-export interface SkillDefinition {
+interface SkillDefinition {
   label: string
   aliases: string[]
 }

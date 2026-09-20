@@ -20,7 +20,7 @@ interface PublicPageResponse {
   finalUrl: URL
 }
 
-export interface ExtractedJobDocument {
+interface ExtractedJobDocument {
   text: string
   jsonLd: unknown[]
   metadata: JobDocumentMetadata
@@ -190,7 +190,7 @@ async function readHtmlWithLimit(response: Response): Promise<string> {
   return new TextDecoder().decode(bytes)
 }
 
-export async function extractJobDocument(
+async function extractJobDocument(
   html: string,
 ): Promise<ExtractedJobDocument> {
   const textParts: string[] = []

@@ -43,7 +43,7 @@ function isPositiveRate(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
-export async function fetchExchangeRates(fetcher: typeof fetch = fetch): Promise<ExchangeRatesResponse> {
+async function fetchExchangeRates(fetcher: typeof fetch = fetch): Promise<ExchangeRatesResponse> {
   const response = await fetcher("/api/exchange-rates", {
     headers: { Accept: "application/json" },
   });
