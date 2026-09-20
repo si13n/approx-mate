@@ -1,38 +1,30 @@
-import React from "react"
+import { StrictMode, type ReactNode } from "react"
 import ReactDOM from "react-dom/client"
-import App from "./App"
-import NewHomePage from "./pages/NewHomePage"
+import { CalculatorPage } from "./pages/CalculatorPage"
+import { HomePage } from "./pages/HomePage"
 import { JobXRayPage } from "./pages/JobXRayPage"
-import { ComingSoonPage } from "./components/ComingSoonPage"
 import { AboutPage } from "./pages/AboutPage"
 import { HowItWorksPage } from "./pages/HowItWorksPage"
 import "./index.css"
 
-// Route based on pathname
 const pathname = window.location.pathname.replace(/\/+$/, "") || "/"
 
-let page: React.ReactNode
+let page: ReactNode
 
 if (pathname === "/") {
-  page = <NewHomePage />
-} else if (
-  pathname === "/calculator" ||
-  pathname === "/old" ||
-  pathname === "/app"
-) {
-  page = <App />
+  page = <HomePage />
+} else if (pathname === "/calculator") {
+  page = <CalculatorPage />
 } else if (pathname === "/job-xray") {
   page = <JobXRayPage />
-} else if (pathname === "/compare") {
-  page = <ComingSoonPage activePage="compare" />
 } else if (pathname === "/how-it-works") {
   page = <HowItWorksPage />
 } else if (pathname === "/about") {
   page = <AboutPage />
 } else {
-  page = <App />
+  page = <HomePage />
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>{page}</React.StrictMode>,
+  <StrictMode>{page}</StrictMode>,
 )

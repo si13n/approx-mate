@@ -15,7 +15,7 @@ Production: [approxmate.me](https://approxmate.me)
 - EN, PL, and UA interfaces.
 - Tax profile saved locally in the browser.
 
-The `/job-xray` screen is currently a placeholder. The Worker also exposes `/api/job-analysis`, but it is not connected to that screen yet. `/compare` is currently a placeholder page.
+The `/job-xray` screen currently contains the input-only placeholder.
 
 ## Development
 

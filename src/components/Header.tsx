@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react"
 import type { Lang } from "../types"
 import type { Translation } from "../i18n/translations"
-import logoMark from "../assets/new-homepage/logo-mark.svg"
+import logoMark from "../assets/logo-mark.svg"
 
 interface HeaderProps {
   lang: Lang
   onLanguageChange: (lang: Lang) => void
   onHome: () => void
   t: Translation
-  activePage?: "calculator" | "job-xray" | "compare" | "how-it-works" | "about"
+  activePage?: "calculator" | "job-xray" | "how-it-works" | "about"
 }
 
 export function Header({
@@ -24,7 +24,6 @@ export function Header({
   const navItems = [
     { href: "/calculator", label: "Calculator", id: "calculator" },
     { href: "/job-xray", label: "Job X-RAY", id: "job-xray" },
-    { href: "/compare", label: "Compare Offers", id: "compare" },
     { href: "/how-it-works", label: "How it works", id: "how-it-works" },
     { href: "/about", label: "About", id: "about" },
   ]

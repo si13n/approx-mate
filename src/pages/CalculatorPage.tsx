@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
-import { AppShell } from "./components/AppShell"
-import { Footer } from "./components/Footer"
-import { Header } from "./components/Header"
-import { CalculatorWorkspace } from "./components/calculator/CalculatorWorkspace"
-import type { QuickScenario } from "./components/calculator/TargetPanel"
-import { TaxProfileModal } from "./components/tax-profile/TaxProfileModal"
-import { translations } from "./i18n/translations"
+import { AppShell } from "../components/AppShell"
+import { Footer } from "../components/Footer"
+import { Header } from "../components/Header"
+import { CalculatorWorkspace } from "../components/calculator/CalculatorWorkspace"
+import type { QuickScenario } from "../components/calculator/TargetPanel"
+import { TaxProfileModal } from "../components/tax-profile/TaxProfileModal"
+import { translations } from "../i18n/translations"
 import {
   trackCalculatorUsed,
   trackCurrencyChanged,
@@ -15,24 +15,24 @@ import {
   trackQuickScenarioClick,
   trackRecruiterMessageCopy,
   trackTaxProfileOpen,
-} from "./lib/analytics"
-import { useExchangeRates } from "./lib/exchangeRates"
-import { fmt, toPLN } from "./lib/formatting"
+} from "../lib/analytics"
+import { useExchangeRates } from "../lib/exchangeRates"
+import { fmt, toPLN } from "../lib/formatting"
 import {
   convertSalaryPeriod,
   HOURS_PER_MONTH,
   toMonthlyAmount,
-} from "./lib/salaryPeriod"
+} from "../lib/salaryPeriod"
 import {
   calculateB2BFromGross,
   calculateB2BFromNet,
   calculateUoPFromGross,
   calculateUoPFromNet,
-} from "./lib/taxCalculations"
-import { useTaxProfile } from "./lib/useTaxProfile"
-import type { Currency, InputType, Lang, SalaryInputPeriod } from "./types"
+} from "../lib/taxCalculations"
+import { useTaxProfile } from "../lib/useTaxProfile"
+import type { Currency, InputType, Lang, SalaryInputPeriod } from "../types"
 
-export default function App() {
+export function CalculatorPage() {
   const [lang, setLang] = useState<Lang>("en")
   const [inputType, setInputType] = useState<InputType>("net")
   const [rawAmount, setRawAmount] = useState("5000")

@@ -1,6 +1,6 @@
 {
   "name": "approxmate",
-  "description": "Modular job, compensation, fit, and career decision platform.",
+  "description": "Poland-focused B2B and UoP salary calculator.",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -31,7 +31,6 @@
     "typescript": "^5.7.0",
     "vite": "^8.0.0",
     "vitest": "^2.0.0",
-    "@cloudflare/workers-types": "latest",
-    "wrangler": "latest"
+    "wrangler": "4.127.0"
   }
 }
