@@ -8,7 +8,7 @@ interface HeaderProps {
   onLanguageChange: (lang: Lang) => void
   onHome: () => void
   t: Translation
-  activePage?: "calculator" | "job-xray"
+  activePage?: "calculator" | "job-xray" | "how-it-works" | "about"
 }
 
 export function Header({
@@ -24,6 +24,8 @@ export function Header({
   const navItems = [
     { href: "/calculator", label: "Calculator", id: "calculator" },
     { href: "/job-xray", label: "Job X-RAY", id: "job-xray" },
+    { href: "/how-it-works", label: "How it works", id: "how-it-works" },
+    { href: "/about", label: "About", id: "about" },
   ]
 
   useEffect(() => {
