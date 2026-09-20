@@ -1,6 +1,6 @@
-export const NBP_TABLE_A_URL = "https://api.nbp.pl/api/exchangerates/tables/A/?format=json";
-export const FRESH_CACHE_TTL_SECONDS = 12 * 60 * 60;
-export const STALE_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60;
+const NBP_TABLE_A_URL = "https://api.nbp.pl/api/exchangerates/tables/A/?format=json";
+const FRESH_CACHE_TTL_SECONDS = 12 * 60 * 60;
+const STALE_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60;
 
 export interface ExchangeRatesResponse {
   source: "NBP";
@@ -72,7 +72,7 @@ function isPositiveRate(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
-export async function fetchCurrentRates(fetcher: RateFetcher = fetch): Promise<ExchangeRatesResponse> {
+async function fetchCurrentRates(fetcher: RateFetcher = fetch): Promise<ExchangeRatesResponse> {
   const response = await fetcher(NBP_TABLE_A_URL, {
     headers: { Accept: "application/json" },
   });

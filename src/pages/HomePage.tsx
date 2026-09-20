@@ -7,7 +7,7 @@ import { translations } from "../i18n/translations"
 import { trackLanguageChanged } from "../lib/analytics"
 import { calculateB2BFromGross } from "../lib/taxCalculations"
 import type { Lang } from "../types"
-import "./NewHomePage.css"
+import "./HomePage.css"
 
 function SalarySlider({
   sliderValue,
@@ -64,7 +64,7 @@ function SalarySlider({
   )
 }
 
-function NewHomePage() {
+export function HomePage() {
   const [sliderValue, setSliderValue] = useState(22000)
   const [lang, setLang] = useState<Lang>("en")
   const t = translations[lang]
@@ -183,5 +183,3 @@ function NewHomePage() {
     </div>
   )
 }
-
-export default NewHomePage

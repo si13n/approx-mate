@@ -1,5 +1,4 @@
 import { getExchangeRatesResponse } from "./exchangeRates"
-import { getJobAnalysisResponse } from "./jobAnalysis"
 
 type WorkerCacheStorage = CacheStorage & { readonly default: Cache }
 
@@ -19,10 +18,6 @@ export default {
         request,
         (caches as WorkerCacheStorage).default,
       )
-    }
-
-    if (url.pathname === "/api/job-analysis") {
-      return getJobAnalysisResponse(request)
     }
 
     return env.ASSETS.fetch(request)
