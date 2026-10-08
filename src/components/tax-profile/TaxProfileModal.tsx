@@ -19,6 +19,7 @@ import { Dialog } from "../ui/Dialog"
 import { IconButton } from "../ui/IconButton"
 import { SegmentedControl } from "../ui/SegmentedControl"
 import { Switch } from "../ui/Switch"
+import "./TaxProfileModal.css"
 
 interface TaxProfileModalProps {
   open: boolean
@@ -64,58 +65,47 @@ export function TaxProfileModal({
   }
 
   return (
-    <Dialog open={open} titleId="tax-profile-title" onClose={onClose}>
-      <div className="flex min-h-full flex-col p-4 tablet:p-7">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2
-              id="tax-profile-title"
-              className="font-display text-2xl font-bold tablet:text-[28px]"
-            >
-              {t.taxProfile}
-            </h2>
-            <p className="mt-3 max-w-[610px] text-[13px] leading-[18px] text-content-secondary tablet:mt-1 tablet:text-sm">
-              {t.setAssumptions}
-            </p>
-          </div>
-          <IconButton
-            label={`${t.close} ${t.taxProfile}`}
-            onClick={onClose}
-            className="rounded-xl bg-surface-subtle text-[22px]"
-          >
-            ×
-          </IconButton>
+    <Dialog
+      open={open}
+      titleId="tax-profile-title"
+      descriptionId="tax-profile-description"
+      className="tax-profile"
+      onClose={onClose}
+    >
+      <header className="tax-profile__header">
+        <div>
+          <h2 id="tax-profile-title">{t.taxProfile}</h2>
+          <p id="tax-profile-description">{t.setAssumptions}</p>
         </div>
+        <IconButton
+          label={`${t.close} ${t.taxProfile}`}
+          onClick={onClose}
+          className="tax-profile__close"
+        >
+          <span aria-hidden="true">×</span>
+        </IconButton>
+      </header>
 
-        <div className="mt-3 flex flex-1 flex-col gap-3 tablet:mt-4 tablet:gap-4">
+      <div className="tax-profile__body">
+        <div className="tax-profile__sections">
           <section
-            className="rounded-card border border-border bg-surface-subtle p-3.5 tablet:rounded-[18px] tablet:p-5"
+            className="tax-profile__section tax-profile__section--b2b"
             aria-labelledby="b2b-settings-title"
           >
-            <div className="flex items-center gap-2.5 tablet:gap-3">
-              <span className="rounded-full bg-primary-subtle px-2.5 py-1.5 text-xs font-semibold text-action">
-                B2B
-              </span>
-              <div>
-                <h3
-                  id="b2b-settings-title"
-                  className="font-display text-base font-semibold tablet:text-lg"
-                >
-                  {t.businessSettings}
-                </h3>
-                <p className="hidden text-xs text-content-secondary tablet:block">
-                  {t.businessDescription}
-                </p>
-              </div>
+            <div className="tax-profile__section-heading">
+              <span className="tax-profile__contract">B2B</span>
+              <h3 id="b2b-settings-title">{t.businessSettings}</h3>
+              <p>{t.businessDescription}</p>
             </div>
-            <div className="mt-3">
-              <div className="mb-1.5 flex items-center justify-between gap-3 text-xs font-medium">
+
+            <div className="tax-profile__field">
+              <div className="tax-profile__label-row">
                 <label htmlFor="ryczalt-rate">{t.ryczaltRate}</label>
                 <a
                   href={DEFAULT_TAX_RULES.sources.pit}
                   target="_blank"
                   rel="noreferrer"
-                  className="hidden font-semibold text-action tablet:block"
+                  className="tax-profile__link"
                 >
                   {t.howToChoose}
                 </a>
@@ -133,7 +123,7 @@ export function TaxProfileModal({
                     },
                   }))
                 }
-                className="h-11 w-full rounded-[10px] border border-border-strong bg-surface px-3 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary tablet:h-[52px] tablet:rounded-[13px] tablet:text-xl"
+                className="tax-profile__select"
               >
                 {DEFAULT_TAX_RULES.b2b.ryczaltRates.map((rate) => (
                   <option key={rate} value={rate}>
@@ -141,22 +131,16 @@ export function TaxProfileModal({
                   </option>
                 ))}
               </select>
-              <p
-                id="ryczalt-rate-help"
-                className="mt-1.5 text-xs text-content-secondary"
-              >
+              <p id="ryczalt-rate-help" className="tax-profile__hint">
                 {t.ryczaltHelp}
               </p>
             </div>
-            <div className="mt-3">
-              <div className="mb-1.5 flex justify-between gap-3 text-xs font-medium">
-                <span>{t.zusPlan}</span>
-                <span className="hidden text-content-secondary tablet:block">
-                  {t.appliedB2B}
-                </span>
-              </div>
+
+            <div className="tax-profile__field">
+              <p className="tax-profile__label">{t.zusPlan}</p>
               <SegmentedControl<B2BZUSProfile>
                 compact
+                className="tax-profile__segments tax-profile__segments--zus"
                 ariaLabel={t.zusPlan}
                 value={draft.b2b.zusProfile}
                 onChange={(zusProfile) =>
@@ -175,30 +159,20 @@ export function TaxProfileModal({
           </section>
 
           <section
-            className="rounded-card border border-border bg-surface-subtle p-3.5 tablet:rounded-[18px] tablet:p-5"
+            className="tax-profile__section tax-profile__section--uop"
             aria-labelledby="uop-settings-title"
           >
-            <div className="flex items-center gap-2.5 tablet:gap-3">
-              <span className="rounded-full bg-accent-subtle px-2.5 py-1.5 text-xs font-semibold text-accent">
-                UoP
-              </span>
-              <div>
-                <h3
-                  id="uop-settings-title"
-                  className="font-display text-base font-semibold tablet:text-lg"
-                >
-                  {t.employmentSettings}
-                </h3>
-                <p className="hidden text-xs text-content-secondary tablet:block">
-                  {t.employmentDescription}
-                </p>
-              </div>
+            <div className="tax-profile__section-heading">
+              <span className="tax-profile__contract">UoP</span>
+              <h3 id="uop-settings-title">{t.employmentSettings}</h3>
+              <p>{t.employmentDescription}</p>
             </div>
-            <div className="mt-3">
-              <p className="mb-1.5 text-xs font-medium">{t.kup}</p>
+
+            <div className="tax-profile__field">
+              <p className="tax-profile__label">{t.kup}</p>
               <SegmentedControl<UoPKUPType>
                 compact
-                tone="accent"
+                className="tax-profile__segments tax-profile__segments--kup"
                 ariaLabel={t.kup}
                 value={draft.uop.kupType}
                 onChange={(kupType) =>
@@ -208,17 +182,24 @@ export function TaxProfileModal({
                   }))
                 }
                 options={[
-                  { value: "standard", label: t.standard },
-                  { value: "commuter", label: t.commuter },
+                  {
+                    value: "standard",
+                    label: t.standard,
+                    description: `${DEFAULT_TAX_RULES.uop.kup.standard} PLN`,
+                  },
+                  {
+                    value: "commuter",
+                    label: t.commuter,
+                    description: `${DEFAULT_TAX_RULES.uop.kup.commuter} PLN`,
+                  },
                 ]}
               />
             </div>
-            <div className="mt-3 flex min-h-14 items-center justify-between rounded-[10px] border border-border bg-surface pl-3 pr-1.5 tablet:rounded-xl tablet:pl-3.5 tablet:pr-3">
+
+            <div className="tax-profile__ppk">
               <div>
-                <p className="text-[13px] font-semibold">{t.ppk}</p>
-                <p className="text-[11px] text-content-secondary">
-                  {t.ppkDescription}
-                </p>
+                <p className="tax-profile__label">{t.ppk}</p>
+                <p className="tax-profile__hint">{t.ppkDescription}</p>
               </div>
               <Switch
                 checked={draft.uop.ppkEnabled}
@@ -229,32 +210,43 @@ export function TaxProfileModal({
                   }))
                 }
                 label={t.ppk}
+                className="tax-profile__switch"
               />
             </div>
           </section>
-
-          <div className="rounded-[10px] bg-primary-subtle px-3 py-2.5 text-xs text-content-secondary tablet:flex tablet:items-center tablet:justify-between tablet:bg-transparent tablet:px-0 tablet:py-0">
-            <span>{t.taxRulesNote}</span>
-            <a
-              href="https://www.podatki.gov.pl/"
-              target="_blank"
-              rel="noreferrer"
-              className="hidden font-semibold text-action tablet:block"
-            >
-              {t.officialSources} →
-            </a>
-          </div>
         </div>
 
-        <div className="sticky bottom-0 mt-4 grid grid-cols-[112px_1fr] gap-3 bg-surface pt-3 tablet:static tablet:grid-cols-[194px_1fr] tablet:pt-0">
-          <Button variant="secondary" size="lg" onClick={reset}>
-            {t.reset}
-          </Button>
-          <Button size="lg" onClick={save}>
-            {t.saveProfile}
-          </Button>
+        <div className="tax-profile__note">
+          <span>{t.taxRulesNote}</span>
+          <a
+            href="https://www.podatki.gov.pl/"
+            target="_blank"
+            rel="noreferrer"
+            className="tax-profile__link"
+          >
+            {t.officialSources} <span aria-hidden="true">↗</span>
+          </a>
         </div>
       </div>
+
+      <footer className="tax-profile__footer">
+        <Button
+          variant="secondary"
+          size="lg"
+          className="tax-profile__reset"
+          onClick={reset}
+        >
+          {t.reset}
+        </Button>
+        <Button
+          variant="dark"
+          size="lg"
+          className="tax-profile__save"
+          onClick={save}
+        >
+          {t.saveProfile}
+        </Button>
+      </footer>
     </Dialog>
   )
 }

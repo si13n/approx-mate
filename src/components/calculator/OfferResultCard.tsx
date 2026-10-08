@@ -47,7 +47,7 @@ export function OfferResultCard({
       .join(" · ")
   const formattedHeadline =
     period === "hour" ? fmt(headlinePLN, "PLN", 2) : plnCompact(headlinePLN)
-  const tone = isB2B ? "bg-[#f7f3ff]" : "bg-[#edf7ff]"
+  const tone = isB2B ? "bg-contract-b2b" : "bg-contract-uop"
   const textTone = isB2B ? "text-[#7541f3]" : "text-[#269ce9]"
 
   return (

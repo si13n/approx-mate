@@ -12,6 +12,7 @@ interface SegmentedControlProps<T extends string> {
   ariaLabel: string
   compact?: boolean
   comfortable?: boolean
+  className?: string
 }
 
 export function SegmentedControl<T extends string>({
@@ -22,6 +23,7 @@ export function SegmentedControl<T extends string>({
   ariaLabel,
   compact = false,
   comfortable = false,
+  className = "",
 }: SegmentedControlProps<T>) {
   const active =
     tone === "accent"
@@ -31,7 +33,7 @@ export function SegmentedControl<T extends string>({
     <div
       role="radiogroup"
       aria-label={ariaLabel}
-      className="grid grid-flow-col auto-cols-fr gap-1 rounded-xl bg-page p-1"
+      className={`grid grid-flow-col auto-cols-fr gap-1 rounded-xl bg-page p-1 ${className}`}
     >
       {options.map((option, index) => {
         const selected = option.value === value
