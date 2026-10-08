@@ -4,6 +4,8 @@ import { createPortal } from "react-dom"
 interface DialogProps {
   open: boolean
   titleId: string
+  descriptionId?: string
+  className?: string
   onClose: () => void
   children: ReactNode
 }
@@ -11,13 +13,25 @@ interface DialogProps {
 const focusableSelector =
   "button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex='-1'])"
 
-export function Dialog({ open, titleId, onClose, children }: DialogProps) {
+export function Dialog({
+  open,
+  titleId,
+  descriptionId,
+  className = "",
+  onClose,
+  children,
+}: DialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)
+  const onCloseRef = useRef(onClose)
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
-    previousFocus.current = (document.activeElement as HTMLElement | null)
+    previousFocus.current = document.activeElement as HTMLElement | null
     const oldOverflow = document.body.style.overflow
     const background = document.querySelector<HTMLElement>(
       "[data-dialog-background]",
@@ -29,20 +43,22 @@ export function Dialog({ open, titleId, onClose, children }: DialogProps) {
       background.inert = true
       background.setAttribute("aria-hidden", "true")
     }
-    requestAnimationFrame(() =>
+    const focusFrame = requestAnimationFrame(() =>
       dialogRef.current?.querySelector<HTMLElement>(focusableSelector)?.focus(),
     )
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault()
-        onClose()
+        onCloseRef.current()
         return
       }
       if (event.key !== "Tab" || !dialogRef.current) return
       const focusable = [
         ...dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector),
-      ]
+      ].filter(
+        (element) => element.tabIndex >= 0 && element.getClientRects().length > 0,
+      )
       if (!focusable.length) return
       const first = focusable[0]
       const last = focusable[focusable.length - 1]
@@ -57,6 +73,7 @@ export function Dialog({ open, titleId, onClose, children }: DialogProps) {
 
     document.addEventListener("keydown", onKeyDown)
     return () => {
+      cancelAnimationFrame(focusFrame)
       document.removeEventListener("keydown", onKeyDown)
       document.body.style.overflow = oldOverflow
       if (background) {
@@ -66,7 +83,7 @@ export function Dialog({ open, titleId, onClose, children }: DialogProps) {
       }
       previousFocus.current?.focus()
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
   return createPortal(
@@ -79,7 +96,8 @@ export function Dialog({ open, titleId, onClose, children }: DialogProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="h-full w-full overflow-y-auto bg-surface min-[640px]:h-auto min-[640px]:max-h-[calc(100vh-3rem)] min-[640px]:max-w-[720px] min-[640px]:rounded-panel min-[640px]:shadow-2xl"
+        aria-describedby={descriptionId}
+        className={`h-full w-full overflow-y-auto bg-surface min-[640px]:h-auto min-[640px]:max-h-[calc(100dvh-3rem)] min-[640px]:max-w-[720px] min-[640px]:rounded-panel min-[640px]:shadow-2xl ${className}`}
       >
         {children}
       </div>
