@@ -1,0 +1,130 @@
+.xray-page {
+  --xray-purple-tint: rgba(122, 69, 250, 0.05);
+  --xray-blue-tint: rgba(64, 171, 255, 0.05);
+}
+
+.xray-results { display: flex; flex-direction: column; gap: 16px; margin-top: 12px; color: var(--color-text-primary); }
+.xray-results h3 { font-size: 18px; font-weight: 800; line-height: 24px; letter-spacing: -0.6px; }
+.xray-identity { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.xray-identity h2 { font-size: 22px; font-weight: 800; line-height: 28px; letter-spacing: -0.8px; }
+.xray-static-action:disabled { opacity: 1; cursor: default; }
+.xray-static-action:disabled:hover { background: transparent; }
+.xray-original { order: -1; padding: 0; min-height: 18px; border-radius: 0; font-size: 13px; font-weight: 500; line-height: 18px; color: var(--color-accent-purple); text-decoration: underline; text-underline-offset: 2px; }
+.xray-desktop-copy { display: none; }
+.xray-source { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 43px; }
+.xray-source > span { font-size: 15px; font-weight: 500; line-height: 22px; color: var(--color-accent-blue-bright); }
+.xray-source small { font-size: 12px; line-height: 18px; color: var(--color-text-muted); }
+.xray-decision { display: flex; flex-direction: column; gap: 16px; }
+.xray-snapshot { display: grid; grid-template-columns: 41% minmax(0, 1fr); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); overflow: hidden; background: var(--color-surface); }
+.xray-score, .xray-compensation { display: flex; min-width: 0; min-height: 168px; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px 16px; }
+.xray-score { background: var(--xray-purple-tint); }
+.xray-compensation { background: rgba(64, 171, 255, 0.06); }
+.xray-score h3, .xray-compensation h3 { font-size: 15px; font-weight: 600; line-height: 20px; letter-spacing: 0; }
+.xray-score-value { display: flex; align-items: baseline; gap: 5px; }
+.xray-score-value strong { font-size: 44px; font-weight: 800; line-height: 52px; letter-spacing: -1.5px; }
+.xray-score-value > span { font-size: 12px; line-height: 18px; }
+.xray-score-label { font-size: 13px; font-weight: 600; line-height: 18px; color: var(--color-accent-purple); }
+.xray-score-track { width: 100%; height: 4px; flex-shrink: 0; border-radius: 2px; background: rgba(219, 224, 237, 0.75); }
+.xray-score-track > span { display: block; width: 78%; height: 100%; border-radius: inherit; background: var(--color-accent-purple); }
+.xray-compensation > p { font-size: 22px; font-weight: 800; line-height: 28px; letter-spacing: -0.8px; }
+.xray-summary { display: flex; flex-direction: column; gap: 10px; min-height: 140px; padding: 20px; border-radius: var(--radius-card); background: rgba(0, 0, 0, 0.04); }
+.xray-summary h3 span { margin-right: 6px; }
+.xray-summary > p { font-size: 13px; line-height: 20px; color: var(--color-text-secondary); }
+.xray-glance { display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: var(--radius-card); background: var(--xray-blue-tint); }
+.xray-glance dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 8px; }
+.xray-detail { display: flex; gap: 8px; align-items: flex-start; min-height: 56px; }
+.xray-detail img { width: 16px; height: 16px; object-fit: contain; flex-shrink: 0; margin-top: 19px; }
+.xray-detail > div { min-width: 0; }
+.xray-detail dt { font-size: 11px; line-height: 16px; color: var(--color-text-muted); }
+.xray-detail dd { margin-top: 2px; font-size: 13px; font-weight: 500; line-height: 18px; }
+.xray-essentials { display: grid; gap: 16px; }
+.xray-card { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 20px; border-radius: var(--radius-card); }
+.xray-skills { min-height: 174px; border: 1px solid var(--color-border-subtle); background: var(--color-surface); }
+.xray-skills ul { display: flex; flex-wrap: wrap; gap: 8px; }
+.xray-skills li { padding: 6px 12px; border-radius: 16px; background: rgba(122, 69, 250, 0.07); font-size: 13px; font-weight: 500; line-height: 20px; }
+.xray-responsibilities { min-height: 160px; background: var(--xray-purple-tint); }
+.xray-flags { min-height: 176px; border: 1px solid #f6d1cc; background: #fff7f6; }
+.xray-responsibilities ul, .xray-flags ul { display: flex; flex-direction: column; gap: 12px; }
+.xray-responsibilities li, .xray-flags li { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; line-height: 18px; color: var(--color-text-secondary); }
+.xray-flags li { gap: 10px; }
+.xray-flags img { flex-shrink: 0; }
+.xray-questions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-height: 224px; padding: 20px; border-radius: var(--radius-card); background: rgba(0, 0, 0, 0.04); }
+.xray-questions-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.xray-questions ol { display: flex; flex-direction: column; gap: 12px; padding-left: 20px; list-style: decimal; color: var(--color-text-secondary); font-size: 13px; line-height: 20px; }
+.xray-questions li { padding-left: 3px; }
+.xray-copy { padding: 0; min-height: 18px; font-size: 13px; font-weight: 500; line-height: 18px; color: var(--color-accent-purple); }
+.xray-recommendations { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; padding: 16px 0 24px; border-top: 1px solid var(--color-border-subtle); color: var(--color-text-primary); }
+.xray-recommendations-heading { display: flex; flex-direction: column; gap: 4px; }
+.xray-recommendations-heading .xray-eyebrow { font-size: 12px; font-weight: 500; line-height: 17px; color: var(--color-accent-purple); }
+.xray-recommendations-heading h2 { font-size: 26px; font-weight: 700; line-height: 34px; }
+.xray-recommendations-heading > p, .xray-recommendation-heading p { font-size: 14px; line-height: 20px; color: var(--color-text-secondary); }
+.xray-recommendation-grid { display: grid; gap: 12px; }
+.xray-recommendation { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); }
+.xray-recommendation--compare { background: rgba(122, 69, 250, 0.06); }
+.xray-recommendation--calculator { background: rgba(64, 171, 255, 0.06); }
+.xray-recommendation-heading { display: flex; align-items: center; gap: 16px; }
+.xray-recommendation-heading h3 { margin-bottom: 4px; font-size: 20px; font-weight: 600; line-height: 28px; }
+.xray-icon-well { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 16px; background: var(--color-surface); }
+.xray-comparison { display: flex; align-items: center; gap: 12px; width: 100%; }
+.xray-comparison dl { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 16px; background: var(--color-surface); }
+.xray-comparison dt { min-height: 20px; font-size: 11px; line-height: 16px; color: var(--color-text-muted); }
+.xray-comparison dd { min-height: 20px; margin-top: 2px; font-size: 13px; font-weight: 500; line-height: 18px; }
+.xray-comparison > span { font-size: 11px; line-height: 16px; color: var(--color-text-secondary); }
+.xray-recommendation-action { min-height: 24px; padding: 0; font-size: 16px; font-weight: 500; line-height: 24px; letter-spacing: -0.1px; color: var(--color-accent-purple); }
+
+@media (min-width: 48rem) and (max-width: 74.999rem) {
+  .xray-decision { display: grid; grid-template-columns: 1fr 1fr; }
+  .xray-glance dl { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .xray-essentials { grid-template-columns: 1fr 1fr; }
+  .xray-skills { grid-column: 1 / -1; min-height: 130px; }
+  .xray-recommendation-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 75rem) {
+  .xray-results { margin-top: 24px; gap: 10px; }
+  .xray-identity { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 24px; }
+  .xray-identity h2 { font-size: 32px; font-weight: 700; line-height: 45px; letter-spacing: 0; }
+  .xray-original { order: 0; font-size: 14px; line-height: 20px; text-decoration: none; }
+  .xray-desktop-copy { display: inline; }
+  .xray-mobile-copy { display: none; }
+  .xray-source { grid-column: 1 / -1; min-height: 22px; }
+  .xray-decision { display: grid; grid-template-columns: 52% minmax(0, 1fr); gap: 0; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-card); background: var(--color-surface); }
+  .xray-snapshot { grid-template-columns: 44.45% minmax(0, 1fr); border: 0; background: transparent; }
+  .xray-score, .xray-compensation, .xray-summary { min-height: 189px; align-items: center; gap: 12px; padding: 24px; background: transparent; }
+  .xray-score h3, .xray-compensation h3, .xray-summary h3 { font-size: 26px; font-weight: 700; line-height: 34px; letter-spacing: 0; }
+  .xray-score-value { align-items: center; gap: 8px; }
+  .xray-score-value strong { font-size: 56px; line-height: 64px; }
+  .xray-score-value > span { font-size: 16px; font-weight: 500; line-height: 24px; }
+  .xray-score-label { display: none; }
+  .xray-compensation > p { font-size: 40px; line-height: 48px; letter-spacing: -1px; }
+  .xray-summary { text-align: center; }
+  .xray-summary > p { font-size: 15px; }
+  .xray-glance { flex-direction: row; align-items: center; gap: 0; min-height: 112px; padding: 20px 24px; }
+  .xray-glance h3 { flex: 0 0 12%; }
+  .xray-glance dl { flex: 1; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+  .xray-detail { align-items: center; gap: 10px; min-height: 0; }
+  .xray-detail img { width: 18px; height: 18px; margin-top: 0; }
+  .xray-essentials { grid-template-columns: minmax(0, 608fr) minmax(0, 280fr) minmax(0, 328fr); gap: 16px; }
+  .xray-card { min-height: 173px; gap: 14px; }
+  .xray-responsibilities ul, .xray-flags ul { gap: 14px; }
+  .xray-responsibilities li { font-size: 14px; line-height: 20px; letter-spacing: -0.1px; }
+  .xray-flags li { min-height: 24px; }
+  .xray-questions { flex-direction: row; align-items: center; justify-content: space-between; min-height: 76px; padding: 14px 14px 14px 20px; border: 1px solid var(--color-border-subtle); background: var(--color-surface); }
+  .xray-questions-actions { flex-direction: row; align-items: center; gap: 8px; }
+  .xray-questions ol { flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding: 0; list-style: none; }
+  .xray-questions li { padding: 8px 12px; border: 1px solid var(--color-border-subtle); border-radius: 16px; font-weight: 500; line-height: 18px; }
+  .xray-copy { min-height: 38px; padding: 8px 14px; border: 1px solid var(--color-border-subtle); border-radius: 16px; background: var(--xray-purple-tint); color: var(--color-text-primary); font-size: 14px; line-height: 20px; }
+  .xray-copy:disabled:hover { background: var(--xray-purple-tint); }
+  .xray-recommendations { gap: 24px; margin-top: 64px; padding: 24px 0 80px; }
+  .xray-recommendation-grid { grid-template-columns: minmax(0, 744fr) minmax(0, 488fr); align-items: start; gap: 16px; }
+  .xray-recommendation--compare { padding: 24px; }
+}
+
+@media (max-width: 23rem) {
+  .xray-score, .xray-compensation { padding-inline: 12px; }
+  .xray-score h3, .xray-compensation h3 { font-size: 13px; }
+  .xray-score-value strong { font-size: 38px; }
+  .xray-card, .xray-glance, .xray-summary, .xray-questions { padding: 16px; }
+  .xray-comparison { gap: 8px; }
+  .xray-comparison dl { padding-inline: 8px; }
+}

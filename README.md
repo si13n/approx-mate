@@ -15,7 +15,7 @@ Production: [approxmate.me](https://approxmate.me)
 - EN, PL, and UA interfaces.
 - Tax profile saved locally in the browser.
 
-The `/job-xray` screen currently contains the input-only placeholder.
+The `/job-xray` screen always displays a responsive, static preview of the Figma design with fixed example data. The input does not analyze vacancies, and the preview actions are inactive; no analysis API is called.
 
 ## Development
 

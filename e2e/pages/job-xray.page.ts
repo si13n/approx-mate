@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test'
 import { BasePage } from './base.page'
 
-/** Page object for the current Job X-RAY input screen. */
+/** Page object for the Job X-RAY static preview and its source input. */
 export class JobXRayPage extends BasePage {
   readonly heading: Locator
   readonly vacancyInput: Locator

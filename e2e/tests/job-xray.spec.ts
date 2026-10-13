@@ -9,7 +9,7 @@ test('Job X-RAY accepts vacancy text without leaving the page', async ({
   await jobXRayPage.goto()
   await expect(jobXRayPage.heading).toContainText('See the whole offer')
 
-  // The current page is an input-only MVP, so preserving the text is its key behavior.
+  // The design preview is static, so submitting preserves the input and the page.
   await jobXRayPage.submitVacancy(vacancy)
 
   await expect(jobXRayPage.vacancyInput).toHaveValue(vacancy)
