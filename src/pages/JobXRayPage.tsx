@@ -2,9 +2,11 @@ import { useState, type FormEvent } from "react"
 import { Footer } from "../components/Footer"
 import { Header } from "../components/Header"
 import { Button } from "../components/ui/Button"
+import { JobXRayPreview, JobXRayRecommendations } from "../components/job-xray/JobXRayPreview"
 import { translations } from "../i18n/translations"
 import { trackLanguageChanged } from "../lib/analytics"
 import type { Lang } from "../types"
+import "./JobXRayPage.css"
 
 export function JobXRayPage() {
   const [lang, setLang] = useState<Lang>("en")
@@ -16,7 +18,7 @@ export function JobXRayPage() {
   }
 
   return (
-    <div className="flex min-h-[max(100vh,713px)] flex-col overflow-hidden bg-page pb-[25px] text-content desktop:min-h-[max(100vh,938px)] desktop:pb-[46px]">
+    <div className="xray-page flex min-h-screen flex-col bg-page pb-[25px] text-content desktop:pb-[46px]">
       <Header
         lang={lang}
         t={t}
@@ -71,6 +73,9 @@ export function JobXRayPage() {
             </Button>
           </form>
         </section>
+
+        <JobXRayPreview />
+        <JobXRayRecommendations />
       </main>
 
       <Footer t={t} />
