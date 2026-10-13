@@ -19,7 +19,10 @@ export class CalculatorPage extends BasePage {
     this.twentyThousandGrossScenario = page.getByRole('button', {
       name: '20k PLN gross',
     })
-    this.resultHeading = page.getByRole('heading', { level: 2 })
+    this.resultHeading = page.getByRole('heading', {
+      level: 2,
+      name: /^(To take home|Offered gross) /,
+    })
     this.b2bResult = page.getByRole('heading', { name: 'B2B', exact: true })
     this.uopResult = page.getByRole('heading', { name: 'UoP', exact: true })
   }
