@@ -2,7 +2,8 @@ import { useState, type FormEvent } from "react"
 import { Footer } from "../components/Footer"
 import { Header } from "../components/Header"
 import { Button } from "../components/ui/Button"
-import { JobXRayPreview, JobXRayRecommendations } from "../components/job-xray/JobXRayPreview"
+import { JobXRayPreview } from "../components/job-xray/JobXRayPreview"
+import { RecommendedNext } from "../components/RecommendedNext"
 import { translations } from "../i18n/translations"
 import { trackLanguageChanged } from "../lib/analytics"
 import type { Lang } from "../types"
@@ -75,7 +76,7 @@ export function JobXRayPage() {
         </section>
 
         <JobXRayPreview />
-        <JobXRayRecommendations />
+        <RecommendedNext page="job-xray" />
       </main>
 
       <Footer t={t} />

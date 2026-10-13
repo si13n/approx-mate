@@ -1,0 +1,57 @@
+.recommended-next {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px 0 24px;
+  border-top: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.recommended-next__heading { display: flex; flex-direction: column; gap: 4px; }
+.recommended-next__heading .recommended-next__eyebrow { font-size: 12px; font-weight: 500; line-height: 17px; color: var(--color-accent-purple); }
+.recommended-next__heading h2 { font-size: 26px; font-weight: 700; line-height: 34px; }
+.recommended-next__heading > p, .recommendation-card__heading p { font-size: 14px; line-height: 20px; color: var(--color-text-secondary); }
+
+/* Equal tracks also keep stacked mobile cards the same height as each other. */
+.recommended-next__grid { display: grid; grid-auto-rows: 1fr; align-items: stretch; gap: 12px; }
+.recommendation-card {
+  display: flex;
+  min-width: 0;
+  min-height: 220px;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+}
+.recommendation-card--purple { background: rgba(122, 69, 250, 0.06); }
+.recommendation-card--blue { background: rgba(64, 171, 255, 0.06); }
+.recommendation-card__heading { display: flex; flex: 1; align-items: flex-start; gap: 16px; }
+.recommendation-card__heading h3 { margin-bottom: 4px; font-size: 20px; font-weight: 600; line-height: 28px; }
+.recommendation-card__icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 16px; background: var(--color-surface); }
+.recommendation-card__preview { display: flex; align-items: center; gap: 12px; width: 100%; }
+.recommendation-card__preview dl { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 16px; background: var(--color-surface); }
+.recommendation-card__preview dt { min-height: 20px; font-size: 11px; line-height: 16px; color: var(--color-text-muted); }
+.recommendation-card__preview dd { min-height: 20px; margin-top: 2px; font-size: 13px; font-weight: 500; line-height: 18px; }
+.recommendation-card__preview > span { font-size: 11px; line-height: 16px; color: var(--color-text-secondary); }
+.recommendation-card__action { min-height: 24px; padding: 0; font-size: 16px; font-weight: 500; line-height: 24px; letter-spacing: -0.1px; color: var(--color-accent-purple); }
+.recommendation-card__action:disabled { opacity: 1; cursor: default; }
+.recommendation-card__action:disabled:hover { background: transparent; }
+
+@media (min-width: 48rem) {
+  .recommended-next__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 75rem) {
+  .recommended-next { gap: 24px; margin-top: 64px; padding: 24px 0 80px; }
+  .recommended-next__grid { grid-template-columns: minmax(0, 744fr) minmax(0, 488fr); gap: 16px; }
+  .recommendation-card { padding: 24px; }
+}
+
+@media (max-width: 23rem) {
+  .recommendation-card__preview { gap: 8px; }
+  .recommendation-card__preview dl { padding-inline: 8px; }
+}

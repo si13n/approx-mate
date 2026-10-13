@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { AppShell } from "../components/AppShell"
 import { Footer } from "../components/Footer"
 import { Header } from "../components/Header"
+import { RecommendedNext } from "../components/RecommendedNext"
 import { CalculatorWorkspace } from "../components/calculator/CalculatorWorkspace"
 import type { QuickScenario } from "../components/calculator/TargetPanel"
 import { TaxProfileModal } from "../components/tax-profile/TaxProfileModal"
@@ -219,6 +220,7 @@ export function CalculatorPage() {
               <span className="sr-only">{t.loadingCalculator}</span>
             </main>
           )}
+          <RecommendedNext page="calculator" />
         </AppShell>
         <Footer t={t} />
       </div>
