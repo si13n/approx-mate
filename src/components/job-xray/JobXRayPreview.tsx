@@ -6,8 +6,6 @@ import scheduleIcon from "../../assets/job-xray/schedule.png"
 import experienceIcon from "../../assets/job-xray/experience.png"
 import englishIcon from "../../assets/job-xray/english.png"
 import redFlagIcon from "../../assets/job-xray/red-flag.svg"
-import compareIcon from "../../assets/job-xray/compare.svg"
-import calculatorIcon from "../../assets/job-xray/calculator.svg"
 
 // Fixed Figma content: this preview is independent of the input and makes no API calls.
 const details = [
@@ -99,51 +97,6 @@ export function JobXRayPreview() {
           </Button>
         </div>
       </section>
-    </section>
-  )
-}
-
-const recommendations = [
-  {
-    id: "compare", title: "Compare offers", icon: compareIcon,
-    description: "Compare salary, contract and benefits side by side.",
-    first: { label: "Current offer", value: "20k PLN gross" },
-    second: { label: "Next offer", value: "24k PLN gross" },
-    action: "Compare offers →",
-  },
-  {
-    id: "calculator", title: "Calculator", icon: calculatorIcon,
-    description: "Estimate take-home pay for B2B or employment.",
-    first: { label: "Desired net", value: "$5,000" },
-    second: { label: "Offer gross", value: "≈ $7,000" },
-    action: "Open calculator →",
-  },
-]
-
-export function JobXRayRecommendations() {
-  return (
-    <section className="xray-recommendations" aria-labelledby="xray-recommendations-heading" lang="en">
-      <div className="xray-recommendations-heading">
-        <p className="xray-eyebrow">EXPLORE MORE</p>
-        <h2 id="xray-recommendations-heading">Recommended next</h2>
-        <p>Keep moving with the tools that fit the next decision.</p>
-      </div>
-      <div className="xray-recommendation-grid">
-        {recommendations.map((card) => (
-          <article className={`xray-recommendation xray-recommendation--${card.id}`} key={card.id}>
-            <div className="xray-recommendation-heading">
-              <div className="xray-icon-well"><img src={card.icon} alt="" /></div>
-              <div><h3>{card.title}</h3><p>{card.description}</p></div>
-            </div>
-            <div className="xray-comparison">
-              <dl><dt>{card.first.label}</dt><dd>{card.first.value}</dd></dl>
-              <span>VS</span>
-              <dl><dt>{card.second.label}</dt><dd>{card.second.value}</dd></dl>
-            </div>
-            <Button variant="ghost" disabled className="xray-static-action xray-recommendation-action">{card.action}</Button>
-          </article>
-        ))}
-      </div>
     </section>
   )
 }
